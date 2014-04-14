@@ -1,0 +1,27 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd     = os.path.join(str(Dir('#')), 'drivers')
+
+# add the general drvers.
+src = Split("""
+board.c
+stm32f10x_it.c
+drv_led.c
+usart.c
+""")
+
+# add Ethernet drvers.
+if GetDepend('RT_USING_SPI'):
+    src += ['drv_spi.c']
+# add Ethernet drvers.
+if GetDepend('RT_USING_RTC'):
+    src += ['drv_rtc.c']
+if GetDepend('RT_USING_I2C'):
+    src += ['drv_i2c.c']
+CPPPATH = [cwd]
+
+group = DefineGroup('Drivers', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')
