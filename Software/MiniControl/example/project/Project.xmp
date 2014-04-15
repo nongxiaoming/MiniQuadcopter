@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="Windows-1252" ?>
+<TKStudioProject Name="Project" ProjectGUID="{3529A7CF-C722-4719-8692-732AB5D81485}" BuildTool="15" ToolVer="5.1" Version="3.00" Author="YinHandong[Òüº®¶¬]">
+    <Configurations>
+        <Configuration Name="Output" OP="0" XROM="0,0,0,0#0,0,0,0#0,0,0,0" XRAM="0,0,0,0#0,0,0,0#0,0,0,0" OldName="Output" OutBig="0" McLib="0" CLK="8.000000" Cross="0" IROM="1,0x08000000,0x00020000,1#0,0,0,0" IRAM="1,0x20000000,0x00005000,0#0,0,0,0" OldCPU="STM32F103RB" cfgModify="0" OPTDBG="1,-1,1,0,1,1,()" DEVICE="STM32F103RB" VENDOR="STMicroelectronics" FAMINY="3" SIMCLK="8.000000">
+            <MDK_Output OutName="1,.\Output\Project" OutType="1" OutBatch="0" OutHex="2" OutList="1,.\Listing" Debug="1" Browse="0" />
+            <MDK_User BfC="0,()#0,()" BfB="0,()#0,()" AfB="0,()#0,()" Beep="1" SDebug="0" />
+            <MDK_CParam Def="STM32F10X_MD USE_STDPERIPH_DRIVER" uDef="" Inc=".\User;.\Startup;..\Libraries\Core;..\Libraries\Device\inc;.\Hardware" Misc='-I&quot;D:\Keil\ARM\ARMCC\include&quot;' Opt="0,0" Code="0,0,0,1,0,0" Language="0,0,0,0" List="1" />
+            <MDK_AsmParam Def="" uDef="" Inc="" Misc="" Code="0,0,0,0,0,0" Language="0" List="1,1" />
+            <MDK_Linker Misc='--libpath &quot;D:\Keil\ARM\ARMCC\lib&quot;' UseDef="1" Code="0,0,0,1,()" Sct=".\Output\Project.sct" List="1,1,1,1,1,1,1,1,1" first="" Rom="0x08000000" Ram="0x20000000" />
+            <MDK_Debug DbgType="0" sfSIM="0,1,(),()" hwSIM="1,1,1,()" Drv="(),()" SrvOpt="" />
+            <DeviceProperties Item0='CPU=IRAM(0x20000000-0x20004FFF) IROM(0x8000000-0x801FFFF) CLOCK(8000000) CPUTYPE(&quot;Cortex-M3&quot;)' Item1='FLDLL=UL2CM3(-O14 -S0 -C0 -N00(&quot;ARM Cortex-M3&quot;) -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000)' Item2='MON=SARMCM3.DLL TARMSTM.DLL(&quot;-pSTM32F10x&quot;)' Item3='REGFILE=stm32f10x_lib.h(&quot;ST\STM32F10x&quot;)' Item4='SFILE=&quot;STARTUP\ST\startup_stm32f10x_md.s&quot; (&quot;STM32 Medium Density Line Startup Code&quot;)' Item5='SIM=SARMCM3.DLL  DARMSTM.DLL(&quot;-pSTM32F103RB&quot;)' />
+            <DeviceDescription Description="ARM 32-bit Cortex-M3 Microcontroller, 72MHz, 128kB Flash, 20kB SRAM,&#x0D;&#x0A;PLL, Embedded Internal RC 8MHz and 32kHz, Real-Time Clock,&#x0D;&#x0A;Nested Interrupt Controller, Power Saving Modes, JTAG and SWD,&#x0D;&#x0A;3 Synch. 16-bit Timers with Input Capture, Output Compare and PWM,&#x0D;&#x0A;16-bit 6-ch Advanced Timer, 2 16-bit Watchdog Timers, SysTick Timer,&#x0D;&#x0A;2 SPI, 2 I2C, 3 USART, USB 2.0 Full Speed Interface, CAN 2.0B Active,&#x0D;&#x0A;2 12-bit 16-ch A/D Converter,  Fast I/O Ports" />
+        </Configuration>
+    </Configurations>
+    <Files>
+        <Filter Name="User">
+            <File RelativePath=".\User\main.c" FileType="1" Output="main.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdio.h" />
+                <Header RelativePath=".\Hardware\led.h" />
+                <Header RelativePath=".\Hardware\delay.h" />
+                <Header RelativePath=".\Hardware\usart.h" />
+                <Header RelativePath=".\Hardware\mpu6050.h" />
+                <Header RelativePath=".\Hardware\si2c.h" />
+                <Header RelativePath=".\Hardware\hmc5883l.h" />
+            </File>
+            <File RelativePath=".\User\stm32f10x_it.c" FileType="1" Output="stm32f10x_it.o" ro="0" bss="0" rw="0">
+                <Header RelativePath=".\User\stm32f10x_it.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath=".\User\stm32f10x_conf.h" FileType="4" ro="0" bss="0" rw="0" />
+        </Filter>
+        <Filter Name="Hardwave">
+            <File RelativePath=".\Hardware\delay.c" FileType="1" Output="delay.o" ro="0" bss="0" rw="0">
+                <Header RelativePath=".\Hardware\delay.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath=".\Hardware\hmc5883l.c" FileType="1" Output="hmc5883l.o" ro="0" bss="0" rw="0">
+                <Header RelativePath=".\Hardware\hmc5883l.h" />
+                <Header RelativePath=".\Hardware\si2c.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath=".\Hardware\led.c" FileType="1" Output="led.o" ro="0" bss="0" rw="0">
+                <Header RelativePath=".\Hardware\led.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath=".\Hardware\mpu6050.c" FileType="1" Output="mpu6050.o" ro="0" bss="0" rw="0">
+                <Header RelativePath=".\Hardware\mpu6050.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+                <Header RelativePath=".\Hardware\si2c.h" />
+            </File>
+            <File RelativePath=".\Hardware\si2c.c" FileType="1" Output="si2c.o" ro="0" bss="0" rw="0">
+                <Header RelativePath=".\Hardware\si2c.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath=".\Hardware\usart.c" FileType="1" Output="usart.o" ro="0" bss="0" rw="0">
+                <Header RelativePath=".\Hardware\usart.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdio.h" />
+            </File>
+        </Filter>
+        <Filter Name="Startup">
+            <File RelativePath=".\Startup\startup_stm32f10x_md.s" FileType="2" Output="startup_stm32f10x_md.o" ro="0" bss="0" rw="0" />
+        </Filter>
+        <Filter Name="Libraries/Core">
+            <File RelativePath="..\Libraries\Core\core_cm3.c" FileType="1" Output="core_cm3.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+            </File>
+            <File RelativePath="..\Libraries\Core\system_stm32f10x.c" FileType="1" Output="system_stm32f10x.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+        </Filter>
+        <Filter Name="Libraries/Device">
+            <File RelativePath="..\Libraries\Device\src\misc.c" FileType="1" Output="misc.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath="..\Libraries\Device\src\stm32f10x_adc.c" FileType="1" Output="stm32f10x_adc.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath="..\Libraries\Device\src\stm32f10x_dma.c" FileType="1" Output="stm32f10x_dma.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath="..\Libraries\Device\src\stm32f10x_exti.c" FileType="1" Output="stm32f10x_exti.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath="..\Libraries\Device\src\stm32f10x_gpio.c" FileType="1" Output="stm32f10x_gpio.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath="..\Libraries\Device\src\stm32f10x_rcc.c" FileType="1" Output="stm32f10x_rcc.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath="..\Libraries\Device\src\stm32f10x_rtc.c" FileType="1" Output="stm32f10x_rtc.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath="..\Libraries\Device\src\stm32f10x_spi.c" FileType="1" Output="stm32f10x_spi.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+            <File RelativePath="..\Libraries\Device\src\stm32f10x_usart.c" FileType="1" Output="stm32f10x_usart.o" ro="0" bss="0" rw="0">
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Core\core_cm3.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="..\Libraries\Core\system_stm32f10x.h" />
+                <Header RelativePath=".\User\stm32f10x_conf.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_adc.h" />
+                <Header RelativePath="..\Libraries\Core\stm32f10x.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_bkp.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_can.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_cec.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_crc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dac.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_dma.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_exti.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_flash.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_fsmc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_gpio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_i2c.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_iwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_pwr.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rcc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_rtc.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_sdio.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_spi.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_tim.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_usart.h" />
+                <Header RelativePath="..\Libraries\Device\inc\stm32f10x_wwdg.h" />
+                <Header RelativePath="..\Libraries\Device\inc\misc.h" />
+            </File>
+        </Filter>
+    </Files>
+</TKStudioProject>
