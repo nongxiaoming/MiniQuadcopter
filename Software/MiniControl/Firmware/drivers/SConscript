@@ -9,7 +9,8 @@ src = Split("""
 board.c
 stm32f10x_it.c
 drv_led.c
-usart.c
+drv_usart.c
+drv_ssd1306.c
 """)
 
 # add Ethernet drvers.
