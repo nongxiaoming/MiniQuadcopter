@@ -1,5 +1,5 @@
 #include "rtthread.h"
-#include "ssd1306.h"
+#include "drv_ssd1306.h"
 
 #define SCL_SET() GPIO_SetBits(GPIOC,GPIO_Pin_14)
 #define SCL_CLR() GPIO_ResetBits(GPIOC,GPIO_Pin_14)
