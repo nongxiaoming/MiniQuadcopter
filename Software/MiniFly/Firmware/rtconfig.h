@@ -67,7 +67,7 @@
 // <bool name="RT_USING_SERIAL" description="Using Serial" default="true" />
 #define RT_USING_SERIAL
 #define RT_USING_SPI
-//#define RT_USING_I2C
+#define RT_USING_I2C
 /* SECTION: Console options */
 #define RT_USING_CONSOLE
 /* the buffer size of console*/
