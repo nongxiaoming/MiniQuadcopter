@@ -6,7 +6,9 @@
 #define USE_I2C1
 //#define USE_I2C2
 
-#define USE_DMA
+#define USE_I2C_DMA
+
+#define I2C_TIMEOUT_DEFAULT 500
 
 /*    -- Section 1 :                 **** Device IO Pins Selection ****
   
@@ -16,17 +18,6 @@
                For each device instance, you will change existing defines with adequate IO Pins and Port 
                ( Refer to Product Pin mapping in related datasheet). */
  
-/* To configure SCL and SDA Pin change these defines with adequate value :
-  
-#define I2C1_SCL_GPIO_PORT         GPIOX                  (X : Name of the GPIO PORT  (A,B,C,....))     
-#define I2C1_SCL_GPIO_CLK          RCC_APB2Periph_GPIOX   (X : Name of the GPIO PORT  (A,B,C,....))   
-#define I2C1_SCL_GPIO_PIN          GPIO_Pin_X             (X : Pin number (1,2,3,....))   
-  
-#define I2C1_SDA_GPIO_PORT         GPIOX                  (X : Name of the GPIO PORT  (A,B,C,....)) 
-#define I2C1_SDA_GPIO_CLK          RCC_APB2Periph_GPIOX   (X : Name of the GPIO PORT  (A,B,C,....))  
-#define I2C1_SDA_GPIO_PIN          GPIO_Pin_X             (X : Pin number (1,2,3,....))                         */
-   
-
 /* IO Pins selection possibilities 
   
 |--------|---------|--------------|-----------|-------------------------|
@@ -119,6 +110,23 @@
   
 #define I2C1_DMA                   DMA1
 #define I2C1_DMA_CLK               RCC_AHBPeriph_DMA1 
+
+#define I2C1_IT_EVT_IRQn           I2C1_EV_IRQn  
+#define I2C1_IT_ERR_IRQn           I2C1_ER_IRQn   
+  
+#define I2C1_DMA_TX_IRQn           DMA1_Channel6_IRQn
+#define I2C1_DMA_RX_IRQn           DMA1_Channel7_IRQn
+  
+#define I2C1_DMA_TX_IRQHandler     DMA1_Channel6_IRQHandler
+#define I2C1_DMA_RX_IRQHandler     DMA1_Channel7_IRQHandler
+  
+#define I2C1_DMA_TX_TC_FLAG        DMA1_FLAG_TC6
+#define I2C1_DMA_TX_HT_FLAG        DMA1_FLAG_HT6
+#define I2C1_DMA_TX_TE_FLAG        DMA1_FLAG_TE6
+  
+#define I2C1_DMA_RX_TC_FLAG        DMA1_FLAG_TC7
+#define I2C1_DMA_RX_HT_FLAG        DMA1_FLAG_HT7
+#define I2C1_DMA_RX_TE_FLAG        DMA1_FLAG_TE7
 
 /*========= I2C2 specific defines (GPIO, PINs, Clocks and DMA) =========*/   
   
