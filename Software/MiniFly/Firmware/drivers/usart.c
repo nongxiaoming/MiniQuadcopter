@@ -9,9 +9,7 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2009-01-05     Bernard      the first version
- * 2010-03-29     Bernard      remove interrupt Tx and DMA Rx mode
- * 2013-05-13     aozima       update for kehong-lingtai.
+ * 2014-05-13     xiaonong      the first version
  */
 
 #include "stm32f10x.h"
