@@ -86,7 +86,7 @@ typedef struct
  */
 void adcInit(void);
 
-bool adcTest(void);
+rt_bool_t adcTest(void);
 
 /**
  * Converts a 12 bit ADC value to battery voltage

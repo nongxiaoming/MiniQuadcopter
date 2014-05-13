@@ -51,10 +51,10 @@
 #define CH_VREF               ADC_Channel_17
 #define CH_TEMP               ADC_Channel_16
 
-static bool isInit;
+static rt_bool_t isInit;
 volatile AdcGroup adcValues[ADC_MEAN_SIZE * 2];
 
-rt_mp_t   adc_mq;
+rt_mq_t   adc_mq;
 
 static void adcDmaInit(void)
 {
@@ -85,9 +85,9 @@ static void adcDmaInit(void)
  */
 static void adcDecimate(AdcGroup* oversampled, AdcGroup* decimated)
 {
-  uint32_t i, j;
-  uint32_t sum;
-  uint32_t sumVref;
+  rt_uint32_t i, j;
+  rt_uint32_t sum;
+  rt_uint32_t sumVref;
   AdcGroup* adcIterator;
   AdcPair *adcOversampledPair;
   AdcPair *adcDecimatedPair;
@@ -115,7 +115,7 @@ static void adcDecimate(AdcGroup* oversampled, AdcGroup* decimated)
 
 void adcInit(void)
 {
-
+	rt_thread_t adc_thread;
   if(isInit)
     return;
 
@@ -206,13 +206,18 @@ void adcInit(void)
 
   adc_mq=rt_mq_create("adc_mq",sizeof(AdcGroup*),1,RT_IPC_FLAG_FIFO);
 
-  xTaskCreate(adcTask, (const signed char * const)"ADC",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
+  adc_thread = rt_thread_create("adc",
+	  adcTask, RT_NULL,
+	  512, 8, 20);
+  if (adc_thread != RT_NULL)
+	  rt_thread_startup(adc_thread);
+  ////xTaskCreate(adcTask, (const signed char * const)"ADC",
+  ////            configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
 
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool adcTest(void)
+rt_bool_t adcTest(void)
 {
   return isInit;
 }
@@ -239,20 +244,19 @@ void adcDmaStop(void)
 
 void adcInterruptHandler(void)
 {
-  portBASE_TYPE xHigherPriorityTaskWoken;
   AdcGroup* adcBuffer;
 
   if(DMA_GetITStatus(DMA1_IT_HT1))
   {
     DMA_ClearITPendingBit(DMA1_IT_HT1);
     adcBuffer = (AdcGroup*)&adcValues[0];
-    xQueueSendFromISR(adcQueue, &adcBuffer, &xHigherPriorityTaskWoken);
+	rt_mq_send(adc_mq, &adcBuffer, sizeof(AdcGroup*));
   }
   if(DMA_GetITStatus(DMA1_IT_TC1))
   {
     DMA_ClearITPendingBit(DMA1_IT_TC1);
     adcBuffer = (AdcGroup*)&adcValues[ADC_MEAN_SIZE];
-    xQueueSendFromISR(adcQueue, &adcBuffer, &xHigherPriorityTaskWoken);
+	rt_mq_send(adc_mq, &adcBuffer, sizeof(AdcGroup*));
   }
 }
 
@@ -261,14 +265,15 @@ void adcTask(void *param)
   AdcGroup* adcRawValues;
   AdcGroup adcValues;
 
-  vTaskSetApplicationTaskTag(0, (void*)TASK_ADC_ID_NBR);
-  vTaskDelay(1000);
+  //vTaskSetApplicationTaskTag(0, (void*)TASK_ADC_ID_NBR);
+  rt_thread_delay(1000);
 
   adcDmaStart();
 
   while(1)
   {
-    xQueueReceive(adcQueue, &adcRawValues, portMAX_DELAY);
+   // xQueueReceive(adcQueue, &adcRawValues, portMAX_DELAY);
+	  rt_mq_recv(adc_mq, &adcRawValues,sizeof(AdcGroup*), 50);
     adcDecimate(adcRawValues, &adcValues);  // 10% CPU
     pmBatteryUpdate(&adcValues);
 
