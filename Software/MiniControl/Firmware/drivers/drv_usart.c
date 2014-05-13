@@ -18,22 +18,21 @@
 #include "drv_usart.h"
 #include "board.h"
 
-#include <rtdevice.h>
 
 /* USART1 */
 #define UART1_GPIO_TX		GPIO_Pin_9
 #define UART1_GPIO_RX		GPIO_Pin_10
 #define UART1_GPIO			GPIOA
 
-/* USART2 */
-#define UART2_GPIO_TX	    GPIO_Pin_2
-#define UART2_GPIO_RX	    GPIO_Pin_3
-#define UART2_GPIO	    	GPIOA
+///* USART2 */
+//#define UART2_GPIO_TX	    GPIO_Pin_2
+//#define UART2_GPIO_RX	    GPIO_Pin_3
+//#define UART2_GPIO	    	GPIOA
 
-/* USART3_REMAP[1:0] = 00 */
-#define UART3_GPIO_TX		GPIO_Pin_10
-#define UART3_GPIO_RX		GPIO_Pin_11
-#define UART3_GPIO			GPIOB
+///* USART3_REMAP[1:0] = 00 */
+//#define UART3_GPIO_TX		GPIO_Pin_10
+//#define UART3_GPIO_RX		GPIO_Pin_11
+//#define UART3_GPIO			GPIOB
 
 /* STM32 uart driver */
 struct stm32_uart
@@ -50,18 +49,8 @@ static rt_err_t stm32_configure(struct rt_serial_device *serial, struct serial_c
     RT_ASSERT(serial != RT_NULL);
     RT_ASSERT(cfg != RT_NULL);
 
-    uart = (struct stm32_uart *)serial->parent.user_data;
-
     USART_InitStructure.USART_BaudRate = cfg->baud_rate;
-
-    if (cfg->data_bits == DATA_BITS_8)
-        USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-
-    if (cfg->stop_bits == STOP_BITS_1)
-        USART_InitStructure.USART_StopBits = USART_StopBits_1;
-    else if (cfg->stop_bits == STOP_BITS_2)
-        USART_InitStructure.USART_StopBits = USART_StopBits_2;
-
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_Parity = USART_Parity_No;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
@@ -75,34 +64,12 @@ static rt_err_t stm32_configure(struct rt_serial_device *serial, struct serial_c
     return RT_EOK;
 }
 
-static rt_err_t stm32_control(struct rt_serial_device *serial, int cmd, void *arg)
-{
-    struct stm32_uart* uart;
-
-    RT_ASSERT(serial != RT_NULL);
-    uart = (struct stm32_uart *)serial->parent.user_data;
-
-    switch (cmd)
-    {
-    case RT_DEVICE_CTRL_CLR_INT:
-        /* disable rx irq */
-        UART_DISABLE_IRQ(uart->irq);
-        break;
-    case RT_DEVICE_CTRL_SET_INT:
-        /* enable rx irq */
-        UART_ENABLE_IRQ(uart->irq);
-        break;
-    }
-
-    return RT_EOK;
-}
 
 static int stm32_putc(struct rt_serial_device *serial, char c)
 {
     struct stm32_uart* uart;
 
     RT_ASSERT(serial != RT_NULL);
-    uart = (struct stm32_uart *)serial->parent.user_data;
 
     while (!(uart->uart_device->SR & USART_FLAG_TXE));
     uart->uart_device->DR = c;
@@ -115,9 +82,6 @@ static int stm32_getc(struct rt_serial_device *serial)
     int ch;
     struct stm32_uart* uart;
 
-    RT_ASSERT(serial != RT_NULL);
-    uart = (struct stm32_uart *)serial->parent.user_data;
-
     ch = -1;
     if (uart->uart_device->SR & USART_FLAG_RXNE)
     {
@@ -127,13 +91,6 @@ static int stm32_getc(struct rt_serial_device *serial)
     return ch;
 }
 
-static const struct rt_uart_ops stm32_uart_ops =
-{
-    stm32_configure,
-    stm32_control,
-    stm32_putc,
-    stm32_getc,
-};
 
 #if defined(RT_USING_UART1)
 /* UART1 device driver structure */
