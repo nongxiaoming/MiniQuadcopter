@@ -26,7 +26,6 @@
  */
 
 #include <stdint.h>
-#include <stdbool.h>
 
 #include "i2cdev.h"
 
@@ -56,17 +55,17 @@
     while(GPIO_ReadInputDataBit(gpio, pin) == Bit_SET && i--);\
   }
 
-xSemaphoreHandle i2cdevDmaEventI2c1;
-xSemaphoreHandle i2cdevDmaEventI2c2;
+rt_event_t  i2cdevDmaEventI2c1;
+rt_event_t  i2cdevDmaEventI2c2;
 /* Buffer of data to be received by I2C1 */
 uint8_t* Buffer_Rx1;
 /* Buffer of data to be transmitted by I2C1 */
 uint8_t* Buffer_Tx1;
-__IO uint32_t I2CDirection;
+volatile rt_uint32_t I2CDirection;
 
 static void i2cdevResetAndLowLevelInitBusI2c1(void);
 static void i2cdevResetAndLowLevelInitBusI2c2(void);
-static inline void i2cdevRuffLoopDelay(uint32_t us);
+static inline void i2cdevRuffLoopDelay(rt_uint32_t us);
 
 
 int i2cdevInit(I2C_TypeDef *I2Cx)
@@ -99,7 +98,8 @@ int i2cdevInit(I2C_TypeDef *I2Cx)
 
     DMA_ITConfig(DMA1_Channel6, DMA_IT_TC, ENABLE);
     DMA_ITConfig(DMA1_Channel7, DMA_IT_TC, ENABLE);
-    vSemaphoreCreateBinary(i2cdevDmaEventI2c1);
+    //vSemaphoreCreateBinary(i2cdevDmaEventI2c1);
+	i2cdevDmaEventI2c1 = rt_event_create("e_i2c1", RT_IPC_FLAG_FIFO);
   }
   else if (I2Cx == I2C2)
   {
@@ -127,27 +127,27 @@ int i2cdevInit(I2C_TypeDef *I2Cx)
 
     DMA_ITConfig(DMA1_Channel4, DMA_IT_TC, ENABLE);
     DMA_ITConfig(DMA1_Channel5, DMA_IT_TC, ENABLE);
-    vSemaphoreCreateBinary(i2cdevDmaEventI2c2);
+	i2cdevDmaEventI2c2 = rt_event_create("e_i2c2", RT_IPC_FLAG_FIFO);
   }
   else
   {
-    return FALSE;
+    return RT_FALSE;
   }
   
-  return TRUE;
+  return RT_TRUE;
 }
 
-bool i2cdevReadByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevReadByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t *data)
 {
   return i2cdevRead(I2Cx, devAddress, memAddress, 1, data);
 }
 
-bool i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t  i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                      uint8_t bitNum, uint8_t *data)
 {
   uint8_t byte;
-  bool status;
+  rt_bool_t  status;
   
   status = i2cdevRead(I2Cx, devAddress, memAddress, 1, &byte);
   *data = byte & (1 << bitNum);
@@ -155,13 +155,13 @@ bool i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
   return status;
 }
 
-bool i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t  i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t bitStart, uint8_t length, uint8_t *data)
 {
-  bool status;
+	rt_bool_t  status;
   uint8_t byte;
 
-  if ((status = i2cdevReadByte(I2Cx, devAddress, memAddress, &byte)) == TRUE)
+  if ((status = i2cdevReadByte(I2Cx, devAddress, memAddress, &byte)) == RT_TRUE)
   {
       uint8_t mask = ((1 << length) - 1) << (bitStart - length + 1);
       byte &= mask;
@@ -171,10 +171,10 @@ bool i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
   return status;
 }
 
-bool i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t  i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                uint16_t len, uint8_t *data)
 {
-  bool status = TRUE;
+	rt_bool_t  status = RT_TRUE;
 
   if (memAddress != I2CDEV_NO_MEM_ADDR)
   {
@@ -189,13 +189,13 @@ bool i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
   return status;
 }
 
-bool i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t  i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t data)
 {
   return i2cdevWrite(I2Cx, devAddress, memAddress, 1, &data);
 }
 
-bool i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t  i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t bitNum, uint8_t data)
 {
     uint8_t byte;
@@ -204,13 +204,13 @@ bool i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
     return i2cdevWriteByte(I2Cx, devAddress, memAddress, byte);
 }
 
-bool i2cdevWriteBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t  i2cdevWriteBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                      uint8_t bitStart, uint8_t length, uint8_t data)
 {
-  bool status;
+	rt_bool_t  status;
   uint8_t byte;
 
-  if ((status = i2cdevReadByte(I2Cx, devAddress, memAddress, &byte)) == TRUE)
+  if ((status = i2cdevReadByte(I2Cx, devAddress, memAddress, &byte)) == RT_TRUE)
   {
       uint8_t mask = ((1 << length) - 1) << (bitStart - length + 1);
       data <<= (bitStart - length + 1); // shift data into correct position
@@ -223,10 +223,10 @@ bool i2cdevWriteBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
   return status;
 }
 
-bool i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t  i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                 uint16_t len, uint8_t *data)
 {
-  bool status;
+	rt_bool_t  status;
   static uint8_t buffer[17];
   int i;
 
@@ -251,9 +251,9 @@ bool i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
   return status;
 }
 
-static inline void i2cdevRuffLoopDelay(uint32_t us)
+static inline void i2cdevRuffLoopDelay(rt_uint32_t us)
 {
-  volatile uint32_t delay;
+  volatile rt_uint32_t delay;
 
   for(delay = I2CDEV_LOOPS_PER_US * us; delay > 0; delay--);
 }
@@ -390,13 +390,15 @@ void i2cDmaInterruptHandlerI2c1(void)
   {
     DMA_ClearITPendingBit(DMA1_IT_TC6);
 
-    xSemaphoreGive(i2cdevDmaEventI2c1);
+    //xSemaphoreGive(i2cdevDmaEventI2c1);
+	rt_event_send(i2cdevDmaEventI2c1, 0x01);
   }
   if(DMA_GetITStatus(DMA1_IT_TC7))
   {
     DMA_ClearITPendingBit(DMA1_IT_TC7);
 
-    xSemaphoreGive(i2cdevDmaEventI2c1);
+    //xSemaphoreGive(i2cdevDmaEventI2c1);
+	rt_event_send(i2cdevDmaEventI2c1, 0x01);
   }
 }
 
@@ -406,12 +408,14 @@ void i2cDmaInterruptHandlerI2c2(void)
   {
     DMA_ClearITPendingBit(DMA1_IT_TC4);
 
-    xSemaphoreGive(i2cdevDmaEventI2c2);
+    //xSemaphoreGive(i2cdevDmaEventI2c2);
+	rt_event_send(i2cdevDmaEventI2c2, 0x01);
   }
   if(DMA_GetITStatus(DMA1_IT_TC5))
   {
     DMA_ClearITPendingBit(DMA1_IT_TC5);
 
-    xSemaphoreGive(i2cdevDmaEventI2c2);
+   // xSemaphoreGive(i2cdevDmaEventI2c2);
+	rt_event_send(i2cdevDmaEventI2c2, 0x01);
   }
 }
