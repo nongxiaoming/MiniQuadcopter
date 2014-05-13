@@ -488,19 +488,9 @@
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_adc.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_dac.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_dac.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_fsmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_fsmc.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_tim.c</FileName>
@@ -523,11 +513,6 @@
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f10x_sdio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_sdio.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f10x_gpio.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_gpio.c</FilePath>
@@ -546,16 +531,6 @@
               <FileName>stm32f10x_dma.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_can.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_cec.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_cec.c</FilePath>
             </File>
             <File>
               <FileName>misc.c</FileName>

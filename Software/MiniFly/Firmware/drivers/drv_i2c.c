@@ -202,7 +202,7 @@ void rt_hw_i2c_init(void)
   */
 static uint32_t I2C_MASTER_START_Handle(struct stm32_i2c_bus *i2c_bus)
 {
-  #ifdef CPAL_I2C_10BIT_ADDR_MODE  
+  #ifdef I2C_10BIT_ADDR_MODE  
   /* Declare local variable that contains Address Header */
   uint8_t I2CHeaderAddress = 0x00;
   #endif /* CPAL_I2C_10BIT_ADDR_MODE */
@@ -221,7 +221,7 @@ static uint32_t I2C_MASTER_START_Handle(struct stm32_i2c_bus *i2c_bus)
     
     /* Send Address */
     /* If Master run as receiver */
-    if (pDevInitStruct->CPAL_State == CPAL_STATE_READY_RX)
+    if (pDevInitStruct->CPAL_State == STATE_READY_RX)
     {
       /* Send Slave address with bit0 set for read */
       __CPAL_I2C_HAL_SEND((pDevInitStruct->CPAL_Dev), (uint8_t)((pDevInitStruct->pCPAL_TransferRx->wAddr1) | I2C_OAR1_ADD0));  
@@ -470,7 +470,7 @@ static uint32_t I2C_MASTER_ADDR_Handle(CPAL_InitTypeDef* pDevInitStruct)
 static uint32_t I2C_MASTER_ADD10_Handle(CPAL_InitTypeDef* pDevInitStruct)
 { 
   /* Reinitialize Timeout Value */
-  pDevInitStruct->wCPAL_Timeout = CPAL_I2C_TIMEOUT_DEFAULT;
+  pDevInitStruct->wCPAL_Timeout = I2C_TIMEOUT_DEFAULT;
   
   i2c_dbg("\n\r\n\rLOG <I2C_EV_IRQHandler> : I2C Device Master IT");
   
@@ -1343,7 +1343,7 @@ uint32_t I2C_DMA_RX_IRQHandler(CPAL_InitTypeDef* pDevInitStruct)
     /* Call DMA RX TC UserCallback */
     CPAL_I2C_DMARXTC_UserCallback(pDevInitStruct);
     
- #ifdef CPAL_I2C_MASTER_MODE      
+ #ifdef I2C_MASTER_MODE      
     /* If Master Mode selected */
     if ((pDevInitStruct->CPAL_Mode == CPAL_MODE_MASTER))
     { 
