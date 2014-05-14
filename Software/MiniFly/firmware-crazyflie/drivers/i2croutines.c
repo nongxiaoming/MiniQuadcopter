@@ -28,8 +28,8 @@
 #include "i2cdev.h"
 #include "nvicconf.h"
 
-extern xSemaphoreHandle i2cdevDmaEventI2c1;
-extern xSemaphoreHandle i2cdevDmaEventI2c2;
+extern rt_event_t i2cdevDmaEventI2c1;
+extern rt_event_t i2cdevDmaEventI2c2;
 extern uint8_t* Buffer_Rx1;
 extern uint8_t* Buffer_Tx1;
 
@@ -38,12 +38,12 @@ extern uint8_t* Buffer_Tx1;
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 DMA_InitTypeDef I2CDMA_InitStructure;
-__IO uint32_t I2CDirection = I2C_DIRECTION_TX;
-__IO uint32_t NumbOfBytes1;
-__IO uint32_t NumbOfBytes2;
-__IO uint8_t Address;
-__IO uint8_t Tx_Idx1 = 0, Rx_Idx1 = 0;
-__IO uint8_t Tx_Idx2 = 0, Rx_Idx2 = 0;
+volatile uint32_t I2CDirection = I2C_DIRECTION_TX;
+volatile uint32_t NumbOfBytes1;
+volatile uint32_t NumbOfBytes2;
+volatile uint8_t Address;
+volatile uint8_t Tx_Idx1 = 0, Rx_Idx1 = 0;
+volatile uint8_t Tx_Idx2 = 0, Rx_Idx2 = 0;
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -60,9 +60,9 @@ ErrorStatus I2C_Master_BufferRead(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
     uint32_t timeoutMs)
 
 {
-  __IO uint32_t temp = 0;
-  __IO uint32_t Timeout = 0;
-
+  volatile uint32_t temp = 0;
+  volatile uint32_t Timeout = 0;
+  rt_uint32_t e;
   /* Enable I2C errors interrupts (used in all modes: Polling, DMA and Interrupts */
   I2Cx->CR2 |= I2C_IT_ERR;
 
@@ -102,7 +102,8 @@ ErrorStatus I2C_Master_BufferRead(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
     {
       /* Wait until DMA end of transfer */
       //while (!DMA_GetFlagStatus(DMA1_FLAG_TC7));
-      xSemaphoreTake(i2cdevDmaEventI2c1, M2T(timeoutMs));
+      //xSemaphoreTake(i2cdevDmaEventI2c1, M2T(timeoutMs));
+	  rt_event_recv(i2cdevDmaEventI2c1,0x01,RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR,M2T(timeoutMs),&e);
       /* Disable DMA Channel */
       DMA_Cmd(I2C1_DMA_CHANNEL_RX, DISABLE);
       /* Clear the DMA Transfer Complete flag */
@@ -112,7 +113,8 @@ ErrorStatus I2C_Master_BufferRead(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
     {
       /* Wait until DMA end of transfer */
       //while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
-      xSemaphoreTake(i2cdevDmaEventI2c2, M2T(timeoutMs));
+     // xSemaphoreTake(i2cdevDmaEventI2c2, M2T(timeoutMs));
+		 rt_event_recv(i2cdevDmaEventI2c2,0x01,RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR,M2T(timeoutMs),&e);
       /* Disable DMA Channel */
       DMA_Cmd(I2C2_DMA_CHANNEL_RX, DISABLE);
       /* Clear the DMA Transfer Complete flag */
@@ -178,9 +180,9 @@ ErrorStatus I2C_Master_BufferWrite(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
     uint32_t timeoutMs)
 {
 
-  __IO uint32_t temp = 0;
-  __IO uint32_t Timeout = 0;
-
+  volatile uint32_t temp = 0;
+  volatile uint32_t Timeout = 0;
+  rt_uint32_t e;
   /* Enable Error IT (used in all modes: DMA, Polling and Interrupts */
   I2Cx->CR2 |= I2C_IT_ERR;
   if (Mode == DMA) /* I2Cx Master Transmission using DMA */
@@ -218,7 +220,8 @@ ErrorStatus I2C_Master_BufferWrite(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
     {
       /* Wait until DMA end of transfer */
 //            while (!DMA_GetFlagStatus(DMA1_FLAG_TC6));
-      xSemaphoreTake(i2cdevDmaEventI2c1, M2T(5));
+      //xSemaphoreTake(i2cdevDmaEventI2c1, M2T(5));
+	  rt_event_recv(i2cdevDmaEventI2c1,0x01,RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR,M2T(5),&e);
       /* Disable the DMA1 Channel 6 */
       DMA_Cmd(I2C1_DMA_CHANNEL_TX, DISABLE);
       /* Clear the DMA Transfer complete flag */
@@ -228,7 +231,8 @@ ErrorStatus I2C_Master_BufferWrite(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
     {
       /* Wait until DMA end of transfer */
       //while (!DMA_GetFlagStatus(DMA1_FLAG_TC4))
-      xSemaphoreTake(i2cdevDmaEventI2c2, M2T(5));
+     // xSemaphoreTake(i2cdevDmaEventI2c2, M2T(5));
+	  rt_event_recv(i2cdevDmaEventI2c2,0x01,RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR,M2T(5),&e);
       /* Disable the DMA1 Channel 4 */
       DMA_Cmd(I2C2_DMA_CHANNEL_TX, DISABLE);
       /* Clear the DMA Transfer complete flag */
@@ -495,8 +499,8 @@ void I2C_DMAConfig(I2C_TypeDef* I2Cx, uint8_t* pBuffer, uint32_t BufferSize,
 void i2cInterruptHandlerI2c1(void)
 {
 
-  __IO uint32_t SR1Register = 0;
-  __IO uint32_t SR2Register = 0;
+  volatile uint32_t SR1Register = 0;
+  volatile uint32_t SR2Register = 0;
 
   /* Read the I2C1 SR1 and SR2 status registers */
   SR1Register = I2C1->SR1;
@@ -614,7 +618,7 @@ void i2cInterruptHandlerI2c1(void)
 void i2cErrorInterruptHandlerI2c1(void)
 {
 
-  __IO uint32_t SR1Register = 0;
+  volatile uint32_t SR1Register = 0;
 
   /* Read the I2C1 status register */
   SR1Register = I2C1->SR1;
