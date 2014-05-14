@@ -29,9 +29,8 @@
 #define __I2CDEV_H__
 
 #include <stdint.h>
-#include <stdbool.h>
-
-#include "stm32f10x_i2c.h"
+#include <rtthread.h>
+#include "board.h"
 
 // Delay is approx 0.2us per loop @64Mhz
 #define I2CDEV_LOOPS_PER_US  5
@@ -55,7 +54,7 @@
  *
  * @return TRUE if read was successful, otherwise FALSE.
  */
-bool i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                uint16_t len, uint8_t *data);
 /**
  * I2C device init function.
@@ -74,7 +73,7 @@ int i2cdevInit(I2C_TypeDef *I2Cx);
  *
  * @return TRUE if read was successful, otherwise FALSE.
  */
-bool i2cdevReadByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevReadByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t *data);
 
 /**
@@ -87,7 +86,7 @@ bool i2cdevReadByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  *
  * @return TRUE if read was successful, otherwise FALSE.
  */
-bool i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                      uint8_t bitNum, uint8_t *data);
 /**
  * Read up to 8 bits from an I2C peripheral
@@ -100,7 +99,7 @@ bool i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  *
  * @return TRUE if read was successful, otherwise FALSE.
  */
-bool i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t bitStart, uint8_t length, uint8_t *data);
 
 /**
@@ -113,7 +112,7 @@ bool i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  *
  * @return TRUE if write was successful, otherwise FALSE.
  */
-bool i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                  uint16_t len, uint8_t *data);
 
 /**
@@ -125,7 +124,7 @@ bool i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  *
  * @return TRUE if write was successful, otherwise FALSE.
  */
-bool i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                      uint8_t data);
 
 /**
@@ -138,7 +137,7 @@ bool i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  *
  * @return TRUE if read was successful, otherwise FALSE.
  */
-bool i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t bitNum, uint8_t data);
 
 /**
@@ -152,7 +151,7 @@ bool i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  *
  * @return TRUE if read was successful, otherwise FALSE.
  */
-bool i2cdevWriteBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
+rt_bool_t i2cdevWriteBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                      uint8_t bitStart, uint8_t length, uint8_t data);
 
 /**
