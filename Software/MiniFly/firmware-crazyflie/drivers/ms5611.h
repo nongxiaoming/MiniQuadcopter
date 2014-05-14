@@ -79,7 +79,7 @@ int32_t ms5611GetDeltaTemp(uint8_t osr);
 int32_t ms5611CalcDeltaTemp(int32_t rawTemp);
 int32_t ms5611RawPressure(uint8_t osr);
 int32_t ms5611RawTemperature(uint8_t osr);
-bool ms5611ReadPROM(void);
+rt_bool_t ms5611ReadPROM(void);
 void ms5611Reset(void);
 void ms5611StartConversion(uint8_t command);
 int32_t ms5611GetConversion(uint8_t command);

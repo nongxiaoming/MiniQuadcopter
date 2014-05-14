@@ -28,9 +28,8 @@
 
 #include <math.h>
 
-#include "stm32f10x_conf.h"
-#include "FreeRTOS.h"
-#include "task.h"
+#include <rtthread.h>
+#include "board.h"
 
 #include "debug.h"
 #include "configblock.h"
@@ -78,8 +77,8 @@
 typedef struct
 {
   Axis3i16   bias;
-  bool       isBiasValueFound;
-  bool       isBufferFilled;
+  rt_bool_t  isBiasValueFound;
+  rt_bool_t  isBufferFilled;
   Axis3i16*  bufHead;
   Axis3i16   buffer[IMU_NBR_OF_BIAS_SAMPLES];
 } BiasObj;
@@ -94,12 +93,12 @@ static Axis3i16   accelLPFAligned;
 static Axis3i16   mag;
 static Axis3i32   accelStoredFilterValues;
 static uint8_t    imuAccLpfAttFactor;
-static bool       isHmc5883lPresent;
-static bool       isMs5611Present;
+static rt_bool_t  isHmc5883lPresent;
+static rt_bool_t  isMs5611Present;
 
-static bool isMpu6050TestPassed;
-static bool isHmc5883lTestPassed;
-static bool isMs5611TestPassed;
+static rt_bool_t isMpu6050TestPassed;
+static rt_bool_t isHmc5883lTestPassed;
+static rt_bool_t isMs5611TestPassed;
 
 // Pre-calculated values for accelerometer alignment
 static float cosPitch;
@@ -123,22 +122,22 @@ static void imuAccAlignToGravity(Axis3i16* in, Axis3i16* out);
 // TODO: Fix __errno linker error with math lib
 int __attribute__((used)) __errno;
 
-static bool isInit;
+static rt_bool_t isInit;
 
 void imu6Init(void)
 {
   if(isInit)
     return;
 
- isHmc5883lPresent = FALSE;
- isMs5611Present = FALSE;
+ isHmc5883lPresent = RT_FALSE;
+ isMs5611Present = RT_FALSE;
 
   // Wait for sensors to startup
-  while (xTaskGetTickCount() < M2T(IMU_STARTUP_TIME_MS));
+ while (rt_tick_get() < M2T(IMU_STARTUP_TIME_MS));
 
   i2cdevInit(I2C1);
   mpu6050Init(I2C1);
-  if (mpu6050TestConnection() == TRUE)
+  if (mpu6050TestConnection() == RT_TRUE)
   {
     DEBUG_PRINT("MPU6050 I2C connection [OK].\n");
   }
@@ -148,15 +147,15 @@ void imu6Init(void)
   }
 
   mpu6050Reset();
-  vTaskDelay(M2T(50));
+  rt_thread_delay(M2T(50));
   // Activate MPU6050
-  mpu6050SetSleepEnabled(FALSE);
+  mpu6050SetSleepEnabled(RT_FALSE);
   // Enable temp sensor
-  mpu6050SetTempSensorEnabled(TRUE);
+  mpu6050SetTempSensorEnabled(RT_TRUE);
   // Disable interrupts
-  mpu6050SetIntEnabled(FALSE);
+  mpu6050SetIntEnabled(RT_FALSE);
   // Connect the HMC5883L to the main I2C bus
-  mpu6050SetI2CBypassEnabled(TRUE);
+  mpu6050SetI2CBypassEnabled(RT_TRUE);
   // Set x-axis gyro as clock source
   mpu6050SetClockSource(MPU6050_CLOCK_PLL_XGYRO);
   // Set gyro full scale range
@@ -182,9 +181,9 @@ void imu6Init(void)
 
 #ifdef IMU_ENABLE_MAG_HMC5883
   hmc5883lInit(I2C1);
-  if (hmc5883lTestConnection() == TRUE)
+  if (hmc5883lTestConnection() == RT_TRUE)
   {
-    isHmc5883lPresent = TRUE;
+    isHmc5883lPresent = RT_TRUE;
     DEBUG_PRINT("HMC5883 I2C connection [OK].\n");
   }
   else
@@ -194,9 +193,9 @@ void imu6Init(void)
 #endif
 
 #ifdef IMU_ENABLE_PRESSURE_MS5611
-  if (ms5611Init(I2C1) == TRUE)
+  if (ms5611Init(I2C1) == RT_TRUE)
   {
-    isMs5611Present = TRUE;
+    isMs5611Present = RT_TRUE;
     DEBUG_PRINT("MS5611 I2C connection [OK].\n");
   }
   else
@@ -215,24 +214,24 @@ void imu6Init(void)
   cosRoll = cos(configblockGetCalibRoll() * M_PI/180);
   sinRoll = sin(configblockGetCalibRoll() * M_PI/180);
 
-  isInit = TRUE;
+  isInit = RT_TRUE;
 }
 
-bool imu6Test(void)
+rt_bool_t imu6Test(void)
 {
-  bool testStatus = TRUE;
+  rt_bool_t testStatus = RT_TRUE;
 
   if (!isInit)
   {
     DEBUG_PRINT("Uninitialized");
-    testStatus = FALSE;
+    testStatus = RT_FALSE;
   }
   // Test for CF 10-DOF variant with none responding sensor
   if((isHmc5883lPresent && !isMs5611Present) ||
      (!isHmc5883lPresent && isMs5611Present))
   {
     DEBUG_PRINT("HMC5883L or MS5611 is not responding");
-    testStatus = FALSE;
+    testStatus = RT_FALSE;
   }
   if (testStatus)
   {
@@ -284,7 +283,7 @@ void imu6Read(Axis3f* gyroOut, Axis3f* accOut)
     accelBias.bias.x = mean.x;
     accelBias.bias.y = mean.y;
     accelBias.bias.z = mean.z - IMU_1G_RAW;
-    accelBias.isBiasValueFound = TRUE;
+    accelBias.isBiasValueFound = RT_TRUE;
     //uartPrintf("Accel bias: %i, %i, %i\n",
     //            accelBias.bias.x, accelBias.bias.y, accelBias.bias.z);
   }
@@ -324,9 +323,9 @@ void imu9Read(Axis3f* gyroOut, Axis3f* accOut, Axis3f* magOut)
   }
 }
 
-bool imu6IsCalibrated(void)
+rt_bool_t imu6IsCalibrated(void)
 {
-  bool status;
+  rt_bool_t status;
 
   status = gyroBias.isBiasValueFound;
 #ifdef IMU_TAKE_ACCEL_BIAS
@@ -336,19 +335,19 @@ bool imu6IsCalibrated(void)
   return status;
 }
 
-bool imuHasBarometer(void)
+rt_bool_t imuHasBarometer(void)
 {
   return isMs5611Present;
 }
 
-bool imuHasMangnetometer(void)
+rt_bool_t imuHasMangnetometer(void)
 {
   return isHmc5883lPresent;
 }
 
 static void imuBiasInit(BiasObj* bias)
 {
-  bias->isBufferFilled = FALSE;
+  bias->isBufferFilled = RT_FALSE;
   bias->bufHead = bias->buffer;
 }
 
@@ -379,7 +378,7 @@ static void imuCalculateVarianceAndMean(BiasObj* bias, Axis3i32* varOut, Axis3i3
   meanOut->y = sum[1] / IMU_NBR_OF_BIAS_SAMPLES;
   meanOut->z = sum[2] / IMU_NBR_OF_BIAS_SAMPLES;
 
-  isInit = TRUE;
+  isInit = RT_TRUE;
 }
 
 /**
@@ -417,7 +416,7 @@ static void imuAddBiasValue(BiasObj* bias, Axis3i16* dVal)
   if (bias->bufHead >= &bias->buffer[IMU_NBR_OF_BIAS_SAMPLES])
   {
     bias->bufHead = bias->buffer;
-    bias->isBufferFilled = TRUE;
+    bias->isBufferFilled = RT_TRUE;
   }
 }
 
@@ -426,9 +425,9 @@ static void imuAddBiasValue(BiasObj* bias, Axis3i16* dVal)
  * The bias value should have been added before calling this.
  * @param bias  The bias object
  */
-static bool imuFindBiasValue(BiasObj* bias)
+static rt_bool_t imuFindBiasValue(BiasObj* bias)
 {
-  bool foundBias = FALSE;
+  rt_bool_t foundBias = RT_FALSE;
 
   if (bias->isBufferFilled)
   {
@@ -445,14 +444,14 @@ static bool imuFindBiasValue(BiasObj* bias)
     if (variance.x < GYRO_VARIANCE_THRESHOLD_X &&
         variance.y < GYRO_VARIANCE_THRESHOLD_Y &&
         variance.z < GYRO_VARIANCE_THRESHOLD_Z &&
-        (varianceSampleTime + GYRO_MIN_BIAS_TIMEOUT_MS < xTaskGetTickCount()))
+		(varianceSampleTime + GYRO_MIN_BIAS_TIMEOUT_MS < rt_tick_get()))
     {
-      varianceSampleTime = xTaskGetTickCount();
+		varianceSampleTime = rt_tick_get();
       bias->bias.x = mean.x;
       bias->bias.y = mean.y;
       bias->bias.z = mean.z;
-      foundBias = TRUE;
-      bias->isBiasValueFound = TRUE;
+      foundBias = RT_TRUE;
+      bias->isBiasValueFound = RT_TRUE;
     }
   }
 
