@@ -60,37 +60,37 @@ static I2C_TypeDef *I2Cx;
 static bool isInit;
 
 static CalReg   calReg;
-static uint32_t lastPresConv;
-static uint32_t lastTempConv;
+static rt_uint32_t lastPresConv;
+static rt_uint32_t lastTempConv;
 static int32_t  tempCache;
 
 static uint8_t readState=0;
-static uint32_t lastConv=0;
+static rt_uint32_t lastConv=0;
 static int32_t tempDeltaT;
 
-bool ms5611Init(I2C_TypeDef *i2cPort)
+rt_bool_t ms5611Init(I2C_TypeDef *i2cPort)
 {
   if (isInit)
-    return TRUE;
+    return RT_TRUE;
 
   I2Cx = i2cPort;
   devAddr = MS5611_ADDR_CSB_LOW;
 
   ms5611Reset(); // reset the device to populate its internal PROM registers
-  vTaskDelay(M2T(5));
-  if (ms5611ReadPROM() == FALSE) // reads the PROM into object variables for later use
+  rt_thread_delay(M2T(5));
+  if (ms5611ReadPROM() == RT_FALSE) // reads the PROM into object variables for later use
   {
-    return FALSE;
+    return RT_FALSE;
   }
 
-  isInit = TRUE;
+  isInit = RT_TRUE;
 
-  return TRUE;
+  return RT_TRUE;
 }
 
-bool ms5611SelfTest(void)
+rt_bool_t ms5611SelfTest(void)
 {
-  bool testStatus = TRUE;
+  rt_bool_t testStatus = RT_TRUE;
   int32_t rawPress;
   int32_t rawTemp;
   int32_t deltaT;
@@ -98,14 +98,14 @@ bool ms5611SelfTest(void)
   float temperature;
 
   if (!isInit)
-    return FALSE;
+    return RT_FALSE;
 
   ms5611StartConversion(MS5611_D1 + MS5611_OSR_4096);
-  vTaskDelay(M2T(CONVERSION_TIME_MS));
+  rt_thread_delay(M2T(CONVERSION_TIME_MS));
   rawPress = ms5611GetConversion(MS5611_D1 + MS5611_OSR_4096);
 
   ms5611StartConversion(MS5611_D2 + MS5611_OSR_4096);
-  vTaskDelay(M2T(CONVERSION_TIME_MS));
+  rt_thread_delay(M2T(CONVERSION_TIME_MS));
   rawTemp = ms5611GetConversion(MS5611_D2 + MS5611_OSR_4096);
 
   deltaT = ms5611CalcDeltaTemp(rawTemp);
@@ -119,21 +119,21 @@ bool ms5611SelfTest(void)
   }
   else
   {
-   testStatus = FALSE;
+   testStatus = RT_FALSE;
   }
 
   return testStatus;
 }
 
-bool ms5611EvaluateSelfTest(float min, float max, float value, char* string)
+rt_bool_t ms5611EvaluateSelfTest(float min, float max, float value, char* string)
 {
   if (value < min || value > max)
   {
     DEBUG_PRINT("Self test %s [FAIL]. low: %0.2f, high: %0.2f, measured: %0.2f\n",
                 string, min, max, value);
-    return FALSE;
+    return RT_FALSE;
   }
-  return TRUE;
+  return RT_TRUE;
 }
 
 float ms5611GetPressure(uint8_t osr)
@@ -232,7 +232,7 @@ int32_t ms5611CalcDeltaTemp(int32_t rawTemp)
 
 int32_t ms5611RawPressure(uint8_t osr)
 {
-  uint32_t now = xTaskGetTickCount();
+	rt_uint32_t now = rt_tick_get();
   if (lastPresConv != 0 && (now - lastPresConv) >= CONVERSION_TIME_MS)
   {
     lastPresConv = 0;
@@ -251,7 +251,7 @@ int32_t ms5611RawPressure(uint8_t osr)
 
 int32_t ms5611RawTemperature(uint8_t osr)
 {
-  uint32_t now = xTaskGetTickCount();
+	rt_uint32_t now = rt_tick_get();
   if (lastTempConv != 0 && (now - lastTempConv) >= CONVERSION_TIME_MS)
   {
     lastTempConv = 0;
@@ -294,12 +294,12 @@ int32_t ms5611GetConversion(uint8_t command)
 /**
  * Reads factory calibration and store it into object variables.
  */
-bool ms5611ReadPROM()
+rt_bool_t ms5611ReadPROM()
 {
   uint8_t buffer[MS5611_PROM_REG_SIZE];
   uint16_t* pCalRegU16 = (uint16_t*)&calReg;
   int32_t i = 0;
-  bool status = FALSE;
+  rt_bool_t status = RT_FALSE;
 
   for (i = 0; i < MS5611_PROM_REG_COUNT; i++)
   {
@@ -339,7 +339,7 @@ void ms5611GetData(float* pressure, float* temperature, float* asl)
     int32_t tempPressureRaw, tempTemperatureRaw;
 
     // Dont reader faster than we can
-    uint32_t now = xTaskGetTickCount();
+	rt_uint32_t now = rt_tick_get();
     if ((now - lastConv) < CONVERSION_TIME_MS)
     {
         return;

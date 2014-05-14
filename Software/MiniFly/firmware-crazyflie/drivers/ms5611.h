@@ -29,8 +29,7 @@
  */
 #ifndef MS5611_H
 #define MS5611_H
-
-#include <stdbool.h>
+#include  <rtthread.h>
 
 // addresses of the device
 #define MS5611_ADDR_CSB_HIGH  0x76   //CBR=1 0x76 I2C address when CSB is connected to HIGH (VCC)
@@ -69,9 +68,9 @@
 #define CONST_PF2 44330.0f
 
 
-bool ms5611Init(I2C_TypeDef *i2cPort);
-bool ms5611SelfTest(void);
-bool ms5611EvaluateSelfTest(float min, float max, float value, char* string);
+rt_bool_t ms5611Init(I2C_TypeDef *i2cPort);
+rt_bool_t ms5611SelfTest(void);
+rt_bool_t ms5611EvaluateSelfTest(float min, float max, float value, char* string);
 float ms5611GetPressure(uint8_t osr);
 float ms5611CalcPressure(int32_t rawPress, int32_t dT);
 float ms5611GetTemperature(uint8_t osr);
@@ -80,8 +79,8 @@ int32_t ms5611GetDeltaTemp(uint8_t osr);
 int32_t ms5611CalcDeltaTemp(int32_t rawTemp);
 int32_t ms5611RawPressure(uint8_t osr);
 int32_t ms5611RawTemperature(uint8_t osr);
-bool ms5611ReadPROM();
-void ms5611Reset();
+bool ms5611ReadPROM(void);
+void ms5611Reset(void);
 void ms5611StartConversion(uint8_t command);
 int32_t ms5611GetConversion(uint8_t command);
 
