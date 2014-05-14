@@ -30,7 +30,8 @@ THE SOFTWARE.
 
 #ifndef HMC5883L_H_
 #define HMC5883L_H_
-#include <stdbool.h>
+#include <rtthread.h>
+#include "board.h"
 
 #define HMC5883L_ADDRESS            0x1E // this device only has one address
 #define HMC5883L_DEFAULT_ADDRESS    0x1E
@@ -110,39 +111,39 @@ THE SOFTWARE.
 #define HMC5883L_ST_Z_MAX           (int32_t)(HMC5883L_ST_Z_NORM + (HMC5883L_ST_Z_NORM * HMC5883L_ST_ERROR))
 
 void hmc5883lInit(I2C_TypeDef *i2cPort);
-bool hmc5883lTestConnection();
-bool hmc5883lSelfTest();
-bool hmc5883lEvaluateSelfTest(int16_t min, int16_t max, int16_t value, char* string);
+rt_bool_t hmc5883lTestConnection(void);
+rt_bool_t hmc5883lSelfTest(void);
+rt_bool_t hmc5883lEvaluateSelfTest(int16_t min, int16_t max, int16_t value, char* string);
 
 // CONFIG_A register
-uint8_t hmc5883lGetSampleAveraging();
+uint8_t hmc5883lGetSampleAveraging(void);
 void hmc5883lSetSampleAveraging(uint8_t averaging);
-uint8_t hmc5883lGetDataRate();
+uint8_t hmc5883lGetDataRate(void);
 void hmc5883lSetDataRate(uint8_t rate);
-uint8_t hmc5883lGetMeasurementBias();
+uint8_t hmc5883lGetMeasurementBias(void);
 void hmc5883lSetMeasurementBias(uint8_t bias);
 
 // CONFIG_B register
-uint8_t hmc5883lGetGain();
+uint8_t hmc5883lGetGain(void);
 void hmc5883lSetGain(uint8_t gain);
 
 // MODE register
-uint8_t hmc5883lGetMode();
+uint8_t hmc5883lGetMode(void);
 void hmc5883lSetMode(uint8_t mode);
 
 // DATA* registers
 void hmc5883lGetHeading(int16_t *x, int16_t *y, int16_t *z);
-int16_t hmc5883lGetHeadingX();
-int16_t hmc5883lGetHeadingY();
-int16_t hmc5883lGetHeadingZ();
+int16_t hmc5883lGetHeadingX(void);
+int16_t hmc5883lGetHeadingY(void);
+int16_t hmc5883lGetHeadingZ(void);
 
 // STATUS register
-bool hmc5883lGetLockStatus();
-bool hmc5883lGetReadyStatus();
+rt_bool_t hmc5883lGetLockStatus(void);
+rt_bool_t hmc5883lGetReadyStatus(void);
 
 // ID_* registers
-uint8_t hmc5883lGetIDA();
-uint8_t hmc5883lGetIDB();
-uint8_t hmc5883lGetIDC();
+uint8_t hmc5883lGetIDA(void);
+uint8_t hmc5883lGetIDB(void);
+uint8_t hmc5883lGetIDC(void);
 
 #endif /* HMC5883L_H_ */

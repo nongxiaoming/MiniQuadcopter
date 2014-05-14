@@ -43,7 +43,7 @@ uint8_t devAddr;
 uint8_t buffer[6];
 uint8_t mode;
 static I2C_TypeDef *I2Cx;
-static bool isInit;
+static rt_bool_t isInit;
 
 /** Power on and prepare for general usage.
  * This will prepare the magnetometer with default settings, ready for single-
@@ -70,29 +70,29 @@ void hmc5883lInit(I2C_TypeDef *i2cPort)
   // write CONFIG_B register
   hmc5883lSetGain(HMC5883L_GAIN_660);
 
-  isInit = TRUE;
+  isInit = RT_TRUE;
 }
 
 /** Verify the I2C connection.
  * Make sure the device is connected and responds as expected.
  * @return True if connection is valid, false otherwise
  */
-bool hmc5883lTestConnection()
+rt_bool_t hmc5883lTestConnection()
 {
   if (i2cdevRead(I2Cx, devAddr, HMC5883L_RA_ID_A, 3, buffer))
   {
     return (buffer[0] == 'H' && buffer[1] == '4' && buffer[2] == '3');
   }
 
-  return FALSE;
+  return RT_FALSE;
 }
 
 /** Do a self test.
  * @return True if self test passed, false otherwise
  */
-bool hmc5883lSelfTest()
+rt_bool_t hmc5883lSelfTest()
 {
-  bool testStatus = TRUE;
+ rt_bool_t testStatus = RT_TRUE;
   int16_t mxp, myp, mzp;  // positive magnetometer measurements
   int16_t mxn, myn, mzn;  // negative magnetometer measurements
   struct
@@ -103,10 +103,10 @@ bool hmc5883lSelfTest()
   } regSave;
 
   // Save register values
-  if (i2cdevRead(I2Cx, devAddr, HMC5883L_RA_CONFIG_A, sizeof(regSave), (uint8_t *)&regSave) == FALSE)
+  if (i2cdevRead(I2Cx, devAddr, HMC5883L_RA_CONFIG_A, sizeof(regSave), (uint8_t *)&regSave) == RT_FALSE)
   {
     // TODO: error handling
-    return FALSE;
+    return RT_FALSE;
   }
   // Set gain (sensitivity)
   hmc5883lSetGain(HMC5883L_ST_GAIN);
@@ -119,7 +119,8 @@ bool hmc5883lSelfTest()
 
   /* Perform test measurement & check results */
   hmc5883lSetMode(HMC5883L_MODE_SINGLE);
-  vTaskDelay(M2T(HMC5883L_ST_DELAY_MS));
+  //vTaskDelay(M2T(HMC5883L_ST_DELAY_MS));
+  rt_thread_delay(M2T(HMC5883L_ST_DELAY_MS));
   hmc5883lGetHeading(&mxp, &myp, &mzp);
 
   // Write CONFIG_A register and do negative test
@@ -130,7 +131,8 @@ bool hmc5883lSelfTest()
 
   /* Perform test measurement & check results */
   hmc5883lSetMode(HMC5883L_MODE_SINGLE);
-  vTaskDelay(M2T(HMC5883L_ST_DELAY_MS));
+  //vTaskDelay(M2T(HMC5883L_ST_DELAY_MS));
+  rt_thread_delay(M2T(HMC5883L_ST_DELAY_MS));
   hmc5883lGetHeading(&mxn, &myn, &mzn);
 
   if (hmc5883lEvaluateSelfTest(HMC5883L_ST_X_MIN, HMC5883L_ST_X_MAX, mxp, "pos X") &&
@@ -144,14 +146,14 @@ bool hmc5883lSelfTest()
   }
   else
   {
-    testStatus = FALSE;
+    testStatus = RT_FALSE;
   }
 
   // Restore registers
-  if (i2cdevWrite(I2Cx, devAddr, HMC5883L_RA_CONFIG_A, sizeof(regSave), (uint8_t *)&regSave) == FALSE)
+  if (i2cdevWrite(I2Cx, devAddr, HMC5883L_RA_CONFIG_A, sizeof(regSave), (uint8_t *)&regSave) == RT_FALSE)
   {
     // TODO: error handling
-    return FALSE;
+    return RT_FALSE;
   }
 
   return testStatus;
@@ -164,15 +166,15 @@ bool hmc5883lSelfTest()
  * @param string A pointer to a string describing the value.
  * @return True if self test within min - max limit, false otherwise
  */
-bool hmc5883lEvaluateSelfTest(int16_t min, int16_t max, int16_t value, char* string)
+rt_bool_t hmc5883lEvaluateSelfTest(int16_t min, int16_t max, int16_t value, char* string)
 {
   if (value < min || value > max)
   {
     DEBUG_PRINT("Self test %s [FAIL]. low: %d, high: %d, measured: %d\n",
                 string, min, max, value);
-    return FALSE;
+    return RT_FALSE;
   }
-  return TRUE;
+  return RT_TRUE;
 }
 
 // CONFIG_A register
@@ -427,7 +429,7 @@ int16_t hmc5883lGetHeadingZ()
  * @see HMC5883L_RA_STATUS
  * @see HMC5883L_STATUS_LOCK_BIT
  */
-bool hmc5883lGetLockStatus()
+rt_bool_t hmc5883lGetLockStatus()
 {
   i2cdevReadBit(I2Cx, devAddr, HMC5883L_RA_STATUS, HMC5883L_STATUS_LOCK_BIT, buffer);
   return buffer[0];
@@ -442,7 +444,7 @@ bool hmc5883lGetLockStatus()
  * @see HMC5883L_RA_STATUS
  * @see HMC5883L_STATUS_READY_BIT
  */
-bool hmc5883lGetReadyStatus()
+rt_bool_t hmc5883lGetReadyStatus()
 {
   i2cdevReadBit(I2Cx, devAddr, HMC5883L_RA_STATUS, HMC5883L_STATUS_READY_BIT, buffer);
   return buffer[0];
