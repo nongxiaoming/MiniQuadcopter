@@ -31,7 +31,7 @@
 
 #include "nrf24l01.h"
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 #include <string.h>
 
 #include "cfassert.h"
@@ -95,7 +95,7 @@
 #define ACTIVATE_DATA   0x73
 
 /* Private variables */
-static bool isInit;
+static rt_bool_t isInit;
 static void (*interruptCb)(void) = NULL;
 
 /***********************
@@ -326,7 +326,7 @@ void nrfSetAddress(unsigned int pipe, char* address)
   nrfWriteReg(REG_RX_ADDR_P0 + pipe, address, len);
 }
 
-void nrfSetEnable(bool enable)
+void nrfSetEnable(rt_bool_t enable)
 {
   if (enable)
   {
@@ -427,10 +427,10 @@ void nrfInit(void)
   /* Enable the SPI  */
   SPI_Cmd(RADIO_SPI, ENABLE);
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool nrfTest(void)
+rt_bool_t nrfTest(void)
 {
   //TODO implement real tests!
   return isInit & extiTest();

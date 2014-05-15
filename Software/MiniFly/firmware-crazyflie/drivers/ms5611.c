@@ -57,7 +57,7 @@ typedef struct
 
 static uint8_t devAddr;
 static I2C_TypeDef *I2Cx;
-static bool isInit;
+static rt_bool_t isInit;
 
 static CalReg   calReg;
 static rt_uint32_t lastPresConv;

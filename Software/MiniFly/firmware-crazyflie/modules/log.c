@@ -30,7 +30,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdint.h>
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 /* FreeRtos includes */
 #include "FreeRTOS.h"
@@ -131,7 +131,7 @@ static int logsLen;
 static uint32_t logsCrc;
 static int logsCount = 0;
 
-static bool isInit = false;
+static rt_bool_t isInit = RT_FALSE;
 
 /* Log management functions */
 static int logAppendBlock(int id, struct ops_setting * settings, int len);
@@ -172,10 +172,10 @@ void logInit(void)
   xTaskCreate(logTask, (const signed char * const)"log",
     configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
 
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool logTest(void)
+rt_bool_t logTest(void)
 {
   return isInit;
 }
@@ -312,7 +312,7 @@ static int logCreateBlock(unsigned char id, struct ops_setting * settings, int l
   
   logBlocks[i].id = id;
   logBlocks[i].timer = xTimerCreate( (const signed char *)"logTimer", M2T(1000), 
-                                     pdTRUE, &logBlocks[i], logBlockTimed );
+                                     pdRT_TRUE, &logBlocks[i], logBlockTimed );
   logBlocks[i].ops = NULL;
   
   if (logBlocks[i].timer == NULL)

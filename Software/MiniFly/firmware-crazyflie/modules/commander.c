@@ -45,12 +45,12 @@ struct CommanderCrtpValues
 } __attribute__((packed));
 
 static struct CommanderCrtpValues targetVal[2];
-static bool isInit;
+static rt_bool_t isInit;
 static int side=0;
 static uint32_t lastUpdate;
-static bool isInactive;
-static bool altHoldMode = FALSE;
-static bool altHoldModeOld = FALSE;
+static rt_bool_t isInactive;
+static rt_bool_t altHoldMode = RT_FALSE;
+static rt_bool_t altHoldModeOld = RT_FALSE;
 
 static void commanderCrtpCB(CRTPPacket* pk);
 static void commanderWatchdogReset(void);
@@ -65,11 +65,11 @@ void commanderInit(void)
   crtpRegisterPortCB(CRTP_PORT_COMMANDER, commanderCrtpCB);
 
   lastUpdate = xTaskGetTickCount();
-  isInactive = TRUE;
-  isInit = TRUE;
+  isInactive = RT_TRUE;
+  isInit = RT_TRUE;
 }
 
-bool commanderTest(void)
+rt_bool_t commanderTest(void)
 {
   crtpTest();
   return isInit;
@@ -98,12 +98,12 @@ void commanderWatchdog(void)
   if (ticktimeSinceUpdate > COMMANDER_WDT_TIMEOUT_SHUTDOWN)
   {
     targetVal[usedSide].thrust = 0;
-    altHoldMode = FALSE; // do we need this? It would reset the target altitude upon reconnect if still hovering
-    isInactive = TRUE;
+    altHoldMode = RT_FALSE; // do we need this? It would reset the target altitude upon reconnect if still hovering
+    isInactive = RT_TRUE;
   }
   else
   {
-    isInactive = FALSE;
+    isInactive = RT_FALSE;
   }
 }
 
@@ -126,7 +126,7 @@ void commanderGetRPY(float* eulerRollDesired, float* eulerPitchDesired, float* e
   *eulerYawDesired   = targetVal[usedSide].yaw;
 }
 
-void commanderGetAltHold(bool* altHold, bool* setAltHold, float* altHoldChange)
+void commanderGetAltHold(rt_bool_t* altHold, rt_bool_t* setAltHold, float* altHoldChange)
 {
   *altHold = altHoldMode; // Still in altitude hold mode
   *setAltHold = !altHoldModeOld && altHoldMode; // Hover just activated

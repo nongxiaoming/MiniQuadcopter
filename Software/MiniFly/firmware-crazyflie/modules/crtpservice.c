@@ -24,7 +24,7 @@
  * crtpservice.c - Implements low level services for CRTP
  */
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 /* FreeRtos includes */
 #include "FreeRTOS.h"
@@ -33,7 +33,7 @@
 #include "crtp.h"
 #include "crtpservice.h"
 
-static bool isInit=false;
+static rt_bool_t isInit=RT_FALSE;
 
 typedef enum {
   linkEcho   = 0x00,
@@ -51,10 +51,10 @@ void crtpserviceInit(void)
   // Register a callback to service the Link port
   crtpRegisterPortCB(CRTP_PORT_LINK, crtpserviceHandler);
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool crtpserviceTest(void)
+rt_bool_t crtpserviceTest(void)
 {
   return isInit;
 }

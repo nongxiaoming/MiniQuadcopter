@@ -27,13 +27,12 @@
 #ifndef __NRF24L01_H__
 #define __NRF24L01_H__
 
-#include <stdbool.h>
-
+#include <rtthread.h>
 #include "nRF24L01reg.h"
 
 // Init and test of the connection to the chip
 void nrfInit(void);
-bool nrfTest(void);
+rt_bool_t nrfTest(void);
 
 // Interrupt routine
 void nrfIsr();
@@ -65,7 +64,7 @@ unsigned char nrfReadRX(char *buffer, int len);
 void nrfSetChannel(unsigned int channel);
 void nrfSetDatarate(int datarate);
 void nrfSetAddress(unsigned int pipe, char* address);
-void nrfSetEnable(bool enable);
+void nrfSetEnable(rt_bool_t enable);
 unsigned char nrfGetStatus();
 
 

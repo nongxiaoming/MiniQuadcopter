@@ -27,17 +27,17 @@
 #ifndef __SYSTEM_H__
 #define __SYSTEM_H__
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 void systemInit(void);
-bool systemTest(void);
+rt_bool_t systemTest(void);
 
 void systemLaunch(void);
 
 
 void systemStart();
 void systemWaitStart(void);
-void systemSetCanFly(bool val);
-bool systemCanFly(void);
+void systemSetCanFly(rt_bool_t val);
+rt_bool_t systemCanFly(void);
 
 #endif //__SYSTEM_H__

@@ -23,17 +23,15 @@
  *
  * exti.c - Unified implementation of the exti interrupts
  */
-#include <stdbool.h>
-
-#include "stm32f10x_conf.h"
-#include "stm32f10x_exti.h"
+#include <rtthread.h>
+#include "board.h"
 
 #include "nvicconf.h"
 #include "nrf24l01.h"
 
 #define RADIO_GPIO_IRQ_LINE EXTI_Line9
 
-static bool isInit;
+static rt_bool_t isInit;
 
 /* Interruption initialisation */
 void extiInit()
@@ -48,11 +46,11 @@ void extiInit()
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-  
-  isInit = true;
+
+  isInit = RT_TRUE;
 }
 
-bool extiTest(void)
+rt_bool_t extiTest(void)
 {
   return isInit;
 }

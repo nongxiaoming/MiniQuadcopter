@@ -56,15 +56,15 @@
 /* Using Small MM */
 #define RT_USING_SMALL_MEM
 
-// <bool name="RT_USING_COMPONENTS_INIT" description="Using RT-Thread components initialization" default="true" />
+// <rt_bool_t name="RT_USING_COMPONENTS_INIT" description="Using RT-Thread components initialization" default="RT_TRUE" />
 #define RT_USING_COMPONENTS_INIT
 
 /* SECTION: Device System */
 /* Using Device System */
 #define RT_USING_DEVICE
-// <bool name="RT_USING_DEVICE_IPC" description="Using device communication" default="true" />
+// <rt_bool_t name="RT_USING_DEVICE_IPC" description="Using device communication" default="RT_TRUE" />
 #define RT_USING_DEVICE_IPC
-// <bool name="RT_USING_SERIAL" description="Using Serial" default="true" />
+// <rt_bool_t name="RT_USING_SERIAL" description="Using Serial" default="RT_TRUE" />
 #define RT_USING_SERIAL
 //#define RT_USING_SPI
 //#define RT_USING_I2C
@@ -81,11 +81,11 @@
 #define FINSH_USING_SYMTAB
 #define FINSH_USING_DESCRIPTION
 
-// <bool name="RT_USING_CMSIS_OS" description="Using CMSIS OS API" default="true" />
+// <rt_bool_t name="RT_USING_CMSIS_OS" description="Using CMSIS OS API" default="RT_TRUE" />
 // #define RT_USING_CMSIS_OS
-// <bool name="RT_USING_RTT_CMSIS" description="Using CMSIS in RTT" default="true" />
+// <rt_bool_t name="RT_USING_RTT_CMSIS" description="Using CMSIS in RTT" default="RT_TRUE" />
 #define RT_USING_RTT_CMSIS
-// <bool name="RT_USING_BSP_CMSIS" description="Using CMSIS in BSP" default="true" />
+// <rt_bool_t name="RT_USING_BSP_CMSIS" description="Using CMSIS in BSP" default="RT_TRUE" />
 // #define RT_USING_BSP_CMSIS
 
 #endif

@@ -54,7 +54,7 @@ float q1 = 0.0f;
 float q2 = 0.0f;
 float q3 = 0.0f;  // quaternion of sensor frame relative to auxiliary frame
 
-static bool isInit;
+static rt_bool_t isInit;
 
 // TODO: Make math util file
 static float invSqrt(float x);
@@ -64,10 +64,10 @@ void sensfusion6Init()
   if(isInit)
     return;
 
-  isInit = TRUE;
+  isInit = RT_TRUE;
 }
 
-bool sensfusion6Test(void)
+rt_bool_t sensfusion6Test(void)
 {
   return isInit;
 }

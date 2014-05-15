@@ -29,7 +29,7 @@
 #include <rtthread.h>
 #include "board.h"
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 #include "motors.h"
 
@@ -61,7 +61,7 @@
 #endif
 
 const int MOTORS[] = { MOTOR_M1, MOTOR_M2, MOTOR_M3, MOTOR_M4 };
-static bool isInit = false;
+static rt_bool_t isInit = RT_FALSE;
 
 /* Public functions */
 
@@ -132,10 +132,10 @@ void motorsInit()
   DBGMCU_Config(MOTORS_GPIO_TIM_M1_2_DBG, ENABLE);
   DBGMCU_Config(MOTORS_GPIO_TIM_M3_4_DBG, ENABLE);
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool motorsTest(void)
+rt_bool_t motorsTest(void)
 {
 #ifndef BRUSHLESS_MOTORCONTROLLER
   int i;

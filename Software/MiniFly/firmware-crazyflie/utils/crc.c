@@ -27,7 +27,7 @@
 #define WIDTH    (8 * sizeof(crc))
 #define TOPBIT   (1 << (WIDTH - 1))
 
-#if (REFLECT_DATA == TRUE)
+#if (REFLECT_DATA == RT_TRUE)
 #undef  REFLECT_DATA
 #define REFLECT_DATA(X)			((unsigned char) reflect((X), 8))
 #else
@@ -35,7 +35,7 @@
 #define REFLECT_DATA(X)			(X)
 #endif
 
-#if (REFLECT_REMAINDER == TRUE)
+#if (REFLECT_REMAINDER == RT_TRUE)
 #undef  REFLECT_REMAINDER
 #define REFLECT_REMAINDER(X)	((crc) reflect((X), WIDTH))
 #else

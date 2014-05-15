@@ -27,7 +27,7 @@
 #ifndef CRTP_H_
 #define CRTP_H_
 
-#include <stdbool.h>
+#include <rtthread.h>
 
 #define CRTP_MAX_DATA_SIZE 30
 
@@ -45,26 +45,26 @@ typedef enum {
 
 typedef struct _CRTPPacket
 {
-  uint8_t size;
+  rt_uint8_t size;
   union {
     struct {
       union {
-        uint8_t header;
+        rt_uint8_t header;
         struct {
 #ifndef CRTP_HEADER_COMPAT
-          uint8_t channel     : 2;
-          uint8_t reserved    : 2;
-          uint8_t port        : 4;
+          rt_uint8_t channel     : 2;
+          rt_uint8_t reserved    : 2;
+          rt_uint8_t port        : 4;
 #else
-          uint8_t channel  : 2;
-          uint8_t port     : 4;
-          uint8_t reserved : 2;
+          rt_uint8_t channel  : 2;
+          rt_uint8_t port     : 4;
+          rt_uint8_t reserved : 2;
 #endif
         };
       };
-      uint8_t data[CRTP_MAX_DATA_SIZE];
+      rt_uint8_t data[CRTP_MAX_DATA_SIZE];
     };
-    uint8_t raw[CRTP_MAX_DATA_SIZE+1];
+    rt_uint8_t raw[CRTP_MAX_DATA_SIZE+1];
   };
 } __attribute__((packed)) CRTPPacket;
 
@@ -75,7 +75,7 @@ typedef void (*CrtpCallback)(CRTPPacket *);
  */
 void crtpInit(void);
 
-bool crtpTest(void);
+rt_bool_t crtpTest(void);
 
 /**
  * Initializes the queue and dispatch of an task.
@@ -151,10 +151,10 @@ void crtpPacketReveived(CRTPPacket *p);
  */
 struct crtpLinkOperations
 {
-  int (*setEnable)(bool enable);
+  int (*setEnable)(rt_bool_t enable);
   int (*sendPacket)(CRTPPacket *pk);
   int (*receivePacket)(CRTPPacket *pk);
-  bool (*isConnected)(void);
+  rt_bool_t (*isConnected)(void);
   int (*reset)(void);
 };
 
@@ -164,9 +164,9 @@ void crtpSetLink(struct crtpLinkOperations * lk);
  * Check if the connection timeout has been reached, otherwise
  * we will assume that we are connected.
  *
- * @return true if conencted, otherwise false
+ * @return RT_TRUE if conencted, otherwise RT_FALSE
  */
-bool crtpIsConnected(void);
+rt_bool_t crtpIsConnected(void);
 
 /**
  * Reset the CRTP communication by flushing all the queues that

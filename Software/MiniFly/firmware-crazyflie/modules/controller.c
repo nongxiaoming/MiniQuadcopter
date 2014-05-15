@@ -23,7 +23,7 @@
  *
  *
  */
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
  
 #include "stm32f10x_conf.h"
 #include "FreeRTOS.h"
@@ -59,7 +59,7 @@ int16_t rollOutput;
 int16_t pitchOutput;
 int16_t yawOutput;
 
-static bool isInit;
+static rt_bool_t isInit;
 
 void controllerInit()
 {
@@ -81,10 +81,10 @@ void controllerInit()
   pidSetIntegralLimit(&pidPitch, PID_PITCH_INTEGRATION_LIMIT);
   pidSetIntegralLimit(&pidYaw, PID_YAW_INTEGRATION_LIMIT);
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool controllerTest()
+rt_bool_t controllerTest()
 {
   return isInit;
 }
@@ -94,13 +94,13 @@ void controllerCorrectRatePID(
        float rollRateDesired, float pitchRateDesired, float yawRateDesired)
 {
   pidSetDesired(&pidRollRate, rollRateDesired);
-  TRUNCATE_SINT16(rollOutput, pidUpdate(&pidRollRate, rollRateActual, TRUE));
+  TRUNCATE_SINT16(rollOutput, pidUpdate(&pidRollRate, rollRateActual, RT_TRUE));
 
   pidSetDesired(&pidPitchRate, pitchRateDesired);
-  TRUNCATE_SINT16(pitchOutput, pidUpdate(&pidPitchRate, pitchRateActual, TRUE));
+  TRUNCATE_SINT16(pitchOutput, pidUpdate(&pidPitchRate, pitchRateActual, RT_TRUE));
 
   pidSetDesired(&pidYawRate, yawRateDesired);
-  TRUNCATE_SINT16(yawOutput, pidUpdate(&pidYawRate, yawRateActual, TRUE));
+  TRUNCATE_SINT16(yawOutput, pidUpdate(&pidYawRate, yawRateActual, RT_TRUE));
 }
 
 void controllerCorrectAttitudePID(
@@ -109,11 +109,11 @@ void controllerCorrectAttitudePID(
        float* rollRateDesired, float* pitchRateDesired, float* yawRateDesired)
 {
   pidSetDesired(&pidRoll, eulerRollDesired);
-  *rollRateDesired = pidUpdate(&pidRoll, eulerRollActual, TRUE);
+  *rollRateDesired = pidUpdate(&pidRoll, eulerRollActual, RT_TRUE);
 
   // Update PID for pitch axis
   pidSetDesired(&pidPitch, eulerPitchDesired);
-  *pitchRateDesired = pidUpdate(&pidPitch, eulerPitchActual, TRUE);
+  *pitchRateDesired = pidUpdate(&pidPitch, eulerPitchActual, RT_TRUE);
 
   // Update PID for yaw axis
   float yawError;
@@ -123,7 +123,7 @@ void controllerCorrectAttitudePID(
   else if (yawError < -180.0)
     yawError += 360.0;
   pidSetError(&pidYaw, yawError);
-  *yawRateDesired = pidUpdate(&pidYaw, eulerYawActual, FALSE);
+  *yawRateDesired = pidUpdate(&pidYaw, eulerYawActual, RT_FALSE);
 }
 
 void controllerResetAllPID(void)

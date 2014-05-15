@@ -26,11 +26,11 @@
 #ifndef __WORKER_H
 #define __WORKER_H
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 void workerInit();
 
-bool workerTest();
+rt_bool_t workerTest();
 
 /**
  * Light printf implementation

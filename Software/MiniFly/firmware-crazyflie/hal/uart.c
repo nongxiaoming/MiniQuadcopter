@@ -25,18 +25,8 @@
  */
 #include <string.h>
 
-/*ST includes */
-#include "stm32f10x.h"
-#include "stm32f10x_dma.h"
-#include "stm32f10x_rcc.h"
-#include "stm32f10x_usart.h"
-#include "stm32f10x_gpio.h"
-
-/*FreeRtos includes*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
-#include "queue.h"
+#include <rtthread.h>
+#include "board.h"
 
 #include "uart.h"
 #include "crtp.h"
@@ -45,18 +35,18 @@
 #include "config.h"
 
 #define UART_DATA_TIMEOUT_MS 1000
-#define UART_DATA_TIMEOUT_TICKS (UART_DATA_TIMEOUT_MS / portTICK_RATE_MS)
+#define UART_DATA_TIMEOUT_TICKS (UART_DATA_TIMEOUT_MS / RT_TICK_PER_SECOND)
 #define CRTP_START_BYTE 0xAA
 #define CCR_ENABLE_SET  ((uint32_t)0x00000001)
 
-static bool isInit = false;
+static rt_bool_t isInit = RT_FALSE;
 
 xSemaphoreHandle waitUntilSendDone = NULL;
 static uint8_t outBuffer[64];
 static uint8_t dataIndex;
 static uint8_t dataSize;
 static uint8_t crcIndex = 0;
-static bool    isUartDmaInitialized;
+static rt_bool_t    isUartDmaInitialized;
 static enum { notSentSecondStart, sentSecondStart} txState;
 static xQueueHandle packetDelivery;
 static xQueueHandle uartDataDelivery;
@@ -91,7 +81,7 @@ void uartDmaInit(void)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  isUartDmaInitialized = TRUE;
+  isUartDmaInitialized = RT_TRUE;
 }
 
 void uartInit(void)
@@ -151,10 +141,10 @@ void uartInit(void)
   //Enable it
   USART_Cmd(UART_TYPE, ENABLE);
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool uartTest(void)
+rt_bool_t uartTest(void)
 {
   return isInit;
 }
@@ -172,7 +162,7 @@ void uartRxTask(void *param)
   uint8_t counter = 0;
   while(1)
   {
-    if (xQueueReceive(uartDataDelivery, &c, UART_DATA_TIMEOUT_TICKS) == pdTRUE)
+    if (xQueueReceive(uartDataDelivery, &c, UART_DATA_TIMEOUT_TICKS) == pdRT_TRUE)
     {
       counter++;
      /* if (counter > 4)
@@ -234,7 +224,7 @@ void uartRxTask(void *param)
 
 static int uartReceiveCRTPPacket(CRTPPacket *p)
 {
-  if (xQueueReceive(packetDelivery, p, portMAX_DELAY) == pdTRUE)
+  if (xQueueReceive(packetDelivery, p, portMAX_DELAY) == pdRT_TRUE)
   {
     return 0;
   }
@@ -242,7 +232,7 @@ static int uartReceiveCRTPPacket(CRTPPacket *p)
   return -1;
 }
 
-static portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+static portBASE_TYPE xHigherPriorityTaskWoken = pdRT_FALSE;
 static uint8_t rxDataInterrupt;
 
 void uartIsr(void)
@@ -261,7 +251,7 @@ void uartIsr(void)
     else
     {
       USART_ITConfig(UART_TYPE, USART_IT_TXE, DISABLE);
-      xHigherPriorityTaskWoken = pdFALSE;
+      xHigherPriorityTaskWoken = pdRT_FALSE;
       xSemaphoreGiveFromISR(waitUntilSendDone, &xHigherPriorityTaskWoken);
     }
   }
@@ -293,7 +283,7 @@ static int uartSendCRTPPacket(CRTPPacket *p)
   return 0;
 }
 
-static int uartSetEnable(bool enable)
+static int uartSetEnable(rt_bool_t enable)
 {
   return 0;
 }

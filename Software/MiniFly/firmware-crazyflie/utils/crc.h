@@ -33,8 +33,8 @@
 
 #include <stdint.h>
 
-#define FALSE	0
-#define TRUE	!FALSE
+#define RT_FALSE	0
+#define RT_TRUE	!RT_FALSE
 
 /**
  * Select the CRC standard from the list that follows.
@@ -50,8 +50,8 @@ typedef uint16_t crc;
 #define POLYNOMIAL			0x1021
 #define INITIAL_REMAINDER	0xFFFF
 #define FINAL_XOR_VALUE		0x0000
-#define REFLECT_DATA		FALSE
-#define REFLECT_REMAINDER	FALSE
+#define REFLECT_DATA		RT_FALSE
+#define REFLECT_REMAINDER	RT_FALSE
 #define CHECK_VALUE			0x29B1
 
 #elif defined(CRC16)
@@ -62,8 +62,8 @@ typedef uint16_t crc;
 #define POLYNOMIAL			0x8005
 #define INITIAL_REMAINDER	0x0000
 #define FINAL_XOR_VALUE		0x0000
-#define REFLECT_DATA		TRUE
-#define REFLECT_REMAINDER	TRUE
+#define REFLECT_DATA		RT_TRUE
+#define REFLECT_REMAINDER	RT_TRUE
 #define CHECK_VALUE			0xBB3D
 
 #elif defined(CRC32)
@@ -74,8 +74,8 @@ typedef uint32_t crc;
 #define POLYNOMIAL			0x04C11DB7
 #define INITIAL_REMAINDER	0xFFFFFFFF
 #define FINAL_XOR_VALUE		0xFFFFFFFF
-#define REFLECT_DATA		TRUE
-#define REFLECT_REMAINDER	TRUE
+#define REFLECT_DATA		RT_TRUE
+#define REFLECT_REMAINDER	RT_TRUE
 #define CHECK_VALUE			0xCBF43926
 
 #else

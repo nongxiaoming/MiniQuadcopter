@@ -34,7 +34,7 @@
 #define __MOTORS_H__
 
 #include <stdint.h>
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 #include "config.h"
 
 /******** Defines ********/
@@ -93,7 +93,7 @@ void motorsInit();
  * Test of the motor modules. The test will spin each motor very short in
  * the sequence M1 to M4.
  */
-bool motorsTest(void);
+rt_bool_t motorsTest(void);
 
 /**
  * Set the PWM ratio of the motor 'id'

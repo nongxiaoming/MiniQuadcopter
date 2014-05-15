@@ -27,12 +27,12 @@
 #ifndef __PARAM_H__
 #define __PARAM_H__
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 #include <stdint.h>
 
 /* Public functions */
 void paramInit(void);
-bool paramTest(void);
+rt_bool_t paramTest(void);
 
 /* Basic parameter structure */
 struct param_s {

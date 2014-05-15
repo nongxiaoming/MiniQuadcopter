@@ -49,7 +49,7 @@ void pidInit(PidObject* pid, const float desired, const float kp,
   pid->dt        = dt;
 }
 
-float pidUpdate(PidObject* pid, const float measured, const bool updateError)
+float pidUpdate(PidObject* pid, const float measured, const rt_bool_t updateError)
 {
     float output;
 
@@ -113,13 +113,13 @@ float pidGetDesired(PidObject* pid)
   return pid->desired;
 }
 
-bool pidIsActive(PidObject* pid)
+rt_bool_t pidIsActive(PidObject* pid)
 {
-  bool isActive = TRUE;
+  rt_bool_t isActive = RT_TRUE;
 
   if (pid->kp < 0.0001 && pid->ki < 0.0001 && pid->kd < 0.0001)
   {
-    isActive = FALSE;
+    isActive = RT_FALSE;
   }
 
   return isActive;

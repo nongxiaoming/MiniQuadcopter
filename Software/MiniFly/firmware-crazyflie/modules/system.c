@@ -25,7 +25,7 @@
  */
 #define DEBUG_MODULE "SYS"
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 /* FreeRtos includes */
 #include "FreeRTOS.h"
@@ -52,9 +52,9 @@
 #include "console.h"
 
 /* Private variable */
-static bool canFly;
+static rt_bool_t canFly;
 
-static bool isInit;
+static rt_bool_t isInit;
 
 /* System wide synchronisation */
 xSemaphoreHandle canStartMutex;
@@ -85,12 +85,12 @@ void systemInit(void)
   ledseqInit();
   pmInit();
     
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool systemTest()
+rt_bool_t systemTest()
 {
-  bool pass=isInit;
+  rt_bool_t pass=isInit;
   
   pass &= adcTest();
   pass &= ledseqTest();
@@ -106,7 +106,7 @@ extern int paramsLen;
 
 void systemTask(void *arg)
 {
-  bool pass = true;
+  rt_bool_t pass = RT_TRUE;
   
   //Init the high-levels modules
   systemInit();
@@ -158,7 +158,7 @@ void systemTask(void *arg)
     else
     {
       ledInit();
-      ledSet(LED_RED, true);
+      ledSet(LED_RED, RT_TRUE);
     }
   }
   
@@ -187,12 +187,12 @@ void systemWaitStart(void)
   xSemaphoreGive(canStartMutex);
 }
 
-void systemSetCanFly(bool val)
+void systemSetCanFly(rt_bool_t val)
 {
   canFly = val;
 }
 
-bool systemCanFly(void)
+rt_bool_t systemCanFly(void)
 {
   return canFly;
 }

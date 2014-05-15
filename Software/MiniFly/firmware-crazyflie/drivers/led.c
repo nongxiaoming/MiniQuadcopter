@@ -31,11 +31,11 @@
 
 #include "motors.h"
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 #include "stm32f10x_conf.h"
 
 
-static bool isInit=false;
+static rt_bool_t isInit=RT_FALSE;
 
 static GPIO_TypeDef* led_port[] = {
   [LED_GREEN] = LED_GPIO_PORT, 
@@ -75,16 +75,16 @@ void ledInit()
   ledSet(LED_GREEN, 0);
   ledSet(LED_RED, 0);
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool ledTest(void)
+rt_bool_t ledTest(void)
 {
   return isInit;
 }
 
 
-void ledSet(led_t led, bool value) {
+void ledSet(led_t led, rt_bool_t value) {
   if (led>LED_NUM)
     return;
 

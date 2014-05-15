@@ -24,30 +24,27 @@
  * radiolink.c: nRF24L01 implementation of the CRTP link
  */
 
-#include <stdbool.h>
 #include <errno.h>
+#include <rtthread.h>
+#include "board.h"
 
 #include "nrf24l01.h"
 #include "crtp.h"
 #include "configblock.h"
 #include "ledseq.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include "semphr.h"
 
-static bool isInit;
+static rt_bool_t isInit;
 
 #define RADIO_CONNECTED_TIMEOUT   M2T(2000)
 
 /* Synchronisation */
-xSemaphoreHandle dataRdy;
+rt_event_t dataRdy;
 /* Data queue */
-xQueueHandle txQueue;
-xQueueHandle rxQueue;
+rt_mq_t txQueue;
+rt_mq_t rxQueue;
 
-static uint32_t lastPacketTick;
+static rt_uint32_t lastPacketTick;
 
 //Union used to efficiently handle the packets (Private type)
 typedef union
@@ -60,22 +57,22 @@ typedef union
 } RadioPacket;
 
 static struct {
-  bool enabled;
+  rt_bool_t enabled;
 } state;
 
 static void interruptCallback()
 {
-  portBASE_TYPE  xHigherPriorityTaskWoken = pdFALSE;
+  //portBASE_TYPE  xHigherPriorityTaskWoken = pdRT_FALSE;
 
   //To unlock RadioTask
-  xSemaphoreGiveFromISR(dataRdy, &xHigherPriorityTaskWoken);
+  rt_event_send(dataRdy, 0x01);
 
-  if(xHigherPriorityTaskWoken)
-    vPortYieldFromISR();
+ // if(xHigherPriorityTaskWoken)
+  //  vPortYieldFromISR();
 }
 
 // 'Class' functions, called from callbacks
-static int setEnable(bool enable)
+static int setEnable(rt_bool_t enable)
 {
   nrfSetEnable(enable);
   state.enabled = enable;
@@ -87,8 +84,8 @@ static int sendPacket(CRTPPacket * pk)
 {
   if (!state.enabled)
     return ENETDOWN;
-  xQueueSend( txQueue, pk, portMAX_DELAY);
-
+  //xQueueSend( txQueue, pk, portMAX_DELAY);
+  rt_mq_send(pk, sizeof(CRTPPacket));
   return 0;
 }
 
@@ -97,8 +94,8 @@ static int receivePacket(CRTPPacket * pk)
   if (!state.enabled)
     return ENETDOWN;
 
-  xQueueReceive( rxQueue, pk, portMAX_DELAY);
-
+  rt_mq_recv(rxQueue, pk, sizeof(CRTPPacket), RT_WAITING_FOREVER);
+  
   return 0;
 }
 
@@ -110,12 +107,12 @@ static int reset(void)
   return 0;
 }
 
-static bool isConnected(void)
+static rt_bool_t isConnected(void)
 {
   if ((xTaskGetTickCount() - lastPacketTick) > RADIO_CONNECTED_TIMEOUT)
-    return false;
+    return RT_FALSE;
 
-  return true;
+  return RT_TRUE;
 }
 
 static struct crtpLinkOperations radioOp =
@@ -144,7 +141,7 @@ static void radiolinkTask(void * arg)
     xSemaphoreTake(dataRdy, portMAX_DELAY);
     lastPacketTick = xTaskGetTickCount();
     
-    nrfSetEnable(false);
+    nrfSetEnable(RT_FALSE);
     
     //Fetch all the data (Loop until the RX Fifo is NOT empty)
     while( !(nrfRead1Reg(REG_FIFO_STATUS)&0x01) )
@@ -178,7 +175,7 @@ static void radiolinkTask(void * arg)
     nrfWrite1Reg(REG_STATUS, 0x70);
     
     //Re-enable the radio
-    nrfSetEnable(true);
+    nrfSetEnable(RT_TRUE);
   }
 }
 
@@ -237,10 +234,10 @@ void radiolinkInit()
   xTaskCreate(radiolinkTask, (const signed char * const)"RadioLink",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
 
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool radiolinkTest()
+rt_bool_t radiolinkTest()
 {
   return nrfTest();
 }

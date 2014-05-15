@@ -71,9 +71,9 @@ void pidCrtlTask(void *param)
   }  __attribute__((packed));
   struct pidValues *pPid;
 
-  while (TRUE)
+  while (RT_TRUE)
   {
-    if (crtpReceivePacketBlock(6, &p) == pdTRUE)
+    if (crtpReceivePacketBlock(6, &p) == pdRT_TRUE)
     {
       PIDCrtlNbr pidNbr = p.channel;
       

@@ -24,7 +24,7 @@
  * console.c - Used to send console data to client
  */
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 /*FreeRtos includes*/
 #include "FreeRTOS.h"
@@ -36,7 +36,7 @@
 CRTPPacket messageToPrint;
 xSemaphoreHandle synch = NULL;
 
-static bool isInit;
+static rt_bool_t isInit;
 
 /**
  * Send the data to the client
@@ -56,17 +56,17 @@ void consoleInit()
   messageToPrint.header = CRTP_HEADER(CRTP_PORT_CONSOLE, 0);
   vSemaphoreCreateBinary(synch);
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool consoleTest(void)
+rt_bool_t consoleTest(void)
 {
   return isInit;
 }
 
 int consolePutchar(int ch)
 {
-  if (xSemaphoreTake(synch, portMAX_DELAY) == pdTRUE)
+  if (xSemaphoreTake(synch, portMAX_DELAY) == pdRT_TRUE)
   {
     messageToPrint.data[messageToPrint.size] = (unsigned char)ch;
     messageToPrint.size++;
@@ -92,7 +92,7 @@ int consolePuts(char *str)
 
 void consoleFlush(void)
 {
-  if (xSemaphoreTake(synch, portMAX_DELAY) == pdTRUE)
+  if (xSemaphoreTake(synch, portMAX_DELAY) == pdRT_TRUE)
   {
     consoleSendMessage();
     xSemaphoreGive(synch);

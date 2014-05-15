@@ -26,7 +26,7 @@
 #ifndef UART_H_
 #define UART_H_
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 #include "crtp.h"
 #include "eprintf.h"
@@ -53,9 +53,9 @@ void uartInit(void);
 /**
  * Test the UART status.
  *
- * @return true if the UART is initialized
+ * @return RT_TRUE if the UART is initialized
  */
-bool uartTest(void);
+rt_bool_t uartTest(void);
 
 /**
  * Get CRTP link data structure

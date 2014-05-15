@@ -50,7 +50,7 @@ void workerInit()
   workerQueue = xQueueCreate(WORKER_QUEUE_LENGTH, sizeof(struct worker_work));
 }
 
-bool workerTest()
+rt_bool_t workerTest()
 {
   return (workerQueue != NULL);
 }
@@ -80,7 +80,7 @@ int workerSchedule(void (*function)(void*), void *arg)
   
   work.function = function;
   work.arg = arg;
-  if (xQueueSend(workerQueue, &work, 0) == pdFALSE)
+  if (xQueueSend(workerQueue, &work, 0) == pdRT_FALSE)
     return ENOMEM;
 
   return 0; 

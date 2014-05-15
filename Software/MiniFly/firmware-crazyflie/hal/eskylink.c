@@ -68,7 +68,7 @@ static struct {
 
 static void interruptCallback()
 {
-  //portBASE_TYPE  xHigherPriorityTaskWoken = pdFALSE;
+  //portBASE_TYPE  xHigherPriorityTaskWoken = pdRT_FALSE;
 
   //To unlock RadioTask
   //xSemaphoreGiveFromISR(dataRdy, &xHigherPriorityTaskWoken);

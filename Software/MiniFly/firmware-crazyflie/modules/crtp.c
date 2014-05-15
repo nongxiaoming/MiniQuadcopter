@@ -24,7 +24,7 @@
  * crtp.c - CrazyRealtimeTransferProtocol stack
  */
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 #include <errno.h>
 
 /*FreeRtos includes*/
@@ -41,7 +41,7 @@
 #include "info.h"
 #include "cfassert.h"
 
-static bool isInit;
+static rt_bool_t isInit;
 
 static int nopFunc(void);
 static struct crtpLinkOperations nopLink = {
@@ -79,10 +79,10 @@ void crtpInit(void)
   xTaskCreate(crtpRxTask, (const signed char * const)"CRTP-Rx",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool crtpTest(void)
+rt_bool_t crtpTest(void)
 {
   return isInit;
 }
@@ -122,9 +122,9 @@ void crtpTxTask(void *param)
 {
   CRTPPacket p;
 
-  while (TRUE)
+  while (RT_TRUE)
   {
-    if (xQueueReceive(tmpQueue, &p, portMAX_DELAY) == pdTRUE)
+    if (xQueueReceive(tmpQueue, &p, portMAX_DELAY) == pdRT_TRUE)
     {
       link->sendPacket(&p);
     }
@@ -136,7 +136,7 @@ void crtpRxTask(void *param)
   CRTPPacket p;
   static unsigned int droppedPacket=0;
 
-  while (TRUE)
+  while (RT_TRUE)
   {
     if (!link->receivePacket(&p))
     {
@@ -186,32 +186,32 @@ int crtpReset(void)
   return 0;
 }
 
-bool crtpIsConnected(void)
+rt_bool_t crtpIsConnected(void)
 {
   if (link->isConnected)
     return link->isConnected();
-  return true;
+  return RT_TRUE;
 }
 
 void crtpPacketReveived(CRTPPacket *p)
 {
   portBASE_TYPE xHigherPriorityTaskWoken;
 
-  xHigherPriorityTaskWoken = pdFALSE;
+  xHigherPriorityTaskWoken = pdRT_FALSE;
   xQueueSendFromISR(rxQueue, p, &xHigherPriorityTaskWoken);
 }
 
 void crtpSetLink(struct crtpLinkOperations * lk)
 {
   if(link)
-    link->setEnable(false);
+    link->setEnable(RT_FALSE);
 
   if (lk)
     link = lk;
   else
     link = &nopLink;
 
-  link->setEnable(true);
+  link->setEnable(RT_TRUE);
 }
 
 static int nopFunc(void)

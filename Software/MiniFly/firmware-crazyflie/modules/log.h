@@ -27,12 +27,12 @@
 #ifndef __LOG_H__
 #define __LOG_H__
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 #include <stdint.h>
 
 /* Public functions */
 void logInit(void);
-bool logTest(void);
+rt_bool_t logTest(void);
 
 /* Internal access of log variables */
 int logGetVarId(char* group, char* name);

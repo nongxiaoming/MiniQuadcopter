@@ -27,7 +27,7 @@
 #ifndef PID_H_
 #define PID_H_
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 #define PID_ROLL_RATE_KP  70.0
 #define PID_ROLL_RATE_KI  0.0
@@ -113,11 +113,11 @@ void pidReset(PidObject* pid);
  *
  * @param[in] pid         A pointer to the pid object.
  * @param[in] measured    The measured value
- * @param[in] updateError Set to TRUE if error should be calculated.
- *                        Set to False if pidSetError() has been used.
+ * @param[in] updateError Set to RT_TRUE if error should be calculated.
+ *                        Set to RT_FALSE if pidSetError() has been used.
  * @return PID algorithm output
  */
-float pidUpdate(PidObject* pid, const float measured, const bool updateError);
+float pidUpdate(PidObject* pid, const float measured, const rt_bool_t updateError);
 
 /**
  * Set a new set point for the PID to track.
@@ -135,9 +135,9 @@ float pidGetDesired(PidObject* pid);
 
 /**
  * Find out if PID is active
- * @return TRUE if active, FALSE otherwise
+ * @return RT_TRUE if active, RT_FALSE otherwise
  */
-bool pidIsActive(PidObject* pid);
+rt_bool_t pidIsActive(PidObject* pid);
 
 /**
  * Set a new error. Use if a special error calculation is needed.

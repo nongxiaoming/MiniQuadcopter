@@ -52,7 +52,7 @@
  * @param len  Number of bytes to read.
  * @param data  Pointer to a buffer to read the data to.
  *
- * @return TRUE if read was successful, otherwise FALSE.
+ * @return RT_TRUE if read was successful, otherwise RT_FALSE.
  */
 rt_bool_t i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                uint16_t len, uint8_t *data);
@@ -60,7 +60,7 @@ rt_bool_t i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  * I2C device init function.
  * @param I2Cx  Pointer to I2C peripheral to initialize.
  *
- * @return TRUE if initialization went OK otherwise FALSE.
+ * @return RT_TRUE if initialization went OK otherwise RT_FALSE.
  */
 int i2cdevInit(I2C_TypeDef *I2Cx);
 
@@ -71,7 +71,7 @@ int i2cdevInit(I2C_TypeDef *I2Cx);
  * @param memAddress  The internal address to read from, I2CDEV_NO_MEM_ADDR if none.
  * @param data  Pointer to a buffer to read the data to.
  *
- * @return TRUE if read was successful, otherwise FALSE.
+ * @return RT_TRUE if read was successful, otherwise RT_FALSE.
  */
 rt_bool_t i2cdevReadByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t *data);
@@ -84,7 +84,7 @@ rt_bool_t i2cdevReadByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddre
  * @param bitNum  The bit number 0 - 7 to read.
  * @param data  Pointer to a buffer to read the data to.
  *
- * @return TRUE if read was successful, otherwise FALSE.
+ * @return RT_TRUE if read was successful, otherwise RT_FALSE.
  */
 rt_bool_t i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                      uint8_t bitNum, uint8_t *data);
@@ -97,7 +97,7 @@ rt_bool_t i2cdevReadBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddres
  * @param length  The number of bits to read, 1 - 8.
  * @param data  Pointer to a buffer to read the data to.
  *
- * @return TRUE if read was successful, otherwise FALSE.
+ * @return RT_TRUE if read was successful, otherwise RT_FALSE.
  */
 rt_bool_t i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t bitStart, uint8_t length, uint8_t *data);
@@ -110,7 +110,7 @@ rt_bool_t i2cdevReadBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddre
  * @param len  Number of bytes to read.
  * @param data  Pointer to a buffer to read the data from that will be written.
  *
- * @return TRUE if write was successful, otherwise FALSE.
+ * @return RT_TRUE if write was successful, otherwise RT_FALSE.
  */
 rt_bool_t i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                  uint16_t len, uint8_t *data);
@@ -122,7 +122,7 @@ rt_bool_t i2cdevWrite(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
  * @param memAddress  The internal address to write from, I2CDEV_NO_MEM_ADDR if none.
  * @param data  The byte to write.
  *
- * @return TRUE if write was successful, otherwise FALSE.
+ * @return RT_TRUE if write was successful, otherwise RT_FALSE.
  */
 rt_bool_t i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                      uint8_t data);
@@ -135,7 +135,7 @@ rt_bool_t i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddr
  * @param bitNum  The bit number, 0 - 7, to write.
  * @param data  The bit to write.
  *
- * @return TRUE if read was successful, otherwise FALSE.
+ * @return RT_TRUE if read was successful, otherwise RT_FALSE.
  */
 rt_bool_t i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                     uint8_t bitNum, uint8_t data);
@@ -149,7 +149,7 @@ rt_bool_t i2cdevWriteBit(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddre
  * @param length  The number of bits to write, 1 - 8.
  * @param data  The byte containing the bits to write.
  *
- * @return TRUE if read was successful, otherwise FALSE.
+ * @return RT_TRUE if read was successful, otherwise RT_FALSE.
  */
 rt_bool_t i2cdevWriteBits(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
                      uint8_t bitStart, uint8_t length, uint8_t data);

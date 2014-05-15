@@ -30,7 +30,7 @@
 #include "crtp.h"
 
 void radiolinkInit();
-bool radiolinkTest();
+rt_bool_t radiolinkTest();
 struct crtpLinkOperations * radiolinkGetLink();
 void radiolinkReInit(void);
 

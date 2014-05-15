@@ -41,7 +41,7 @@
  * with the highest priority is run.
  */
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 #include <led.h>
 
 #define LEDSEQ_CHARGE_CYCLE_TIME_500MA  1000
@@ -51,13 +51,13 @@
 #define LEDSEQ_STOP      -1
 #define LEDSEQ_LOOP      -2
 typedef struct {
-  bool value;
+  rt_bool_t value;
   int action;
 } ledseq_t;
 
 //Public API
 void ledseqInit(void);
-bool ledseqTest(void);
+rt_bool_t ledseqTest(void);
 
 void ledseqRun(led_t led, ledseq_t * sequence);
 void ledseqStop(led_t led, ledseq_t * sequence);

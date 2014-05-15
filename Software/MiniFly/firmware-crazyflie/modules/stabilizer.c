@@ -82,8 +82,8 @@ static float aslLong; // long term asl
 
 // Altitude hold variables
 static PidObject altHoldPID; // Used for altitute hold mode. I gets reset when the bat status changes
-bool altHold = false;          // Currently in altitude hold mode
-bool setAltHold = false;      // Hover mode has just been activated
+rt_bool_t altHold = RT_FALSE;          // Currently in altitude hold mode
+rt_bool_t setAltHold = RT_FALSE;      // Hover mode has just been activated
 static float accWZ     = 0.0;
 static float accMAG    = 0.0;
 static float vSpeedASL = 0.0;
@@ -130,7 +130,7 @@ uint32_t motorPowerM2;
 uint32_t motorPowerM1;
 uint32_t motorPowerM3;
 
-static bool isInit;
+static rt_bool_t isInit;
 
 static void stabilizerAltHoldUpdate(void);
 static void distributePower(const uint16_t thrust, const int16_t roll,
@@ -157,12 +157,12 @@ void stabilizerInit(void)
   xTaskCreate(stabilizerTask, (const signed char * const)"STABILIZER",
               2*configMINIMAL_STACK_SIZE, NULL, /*Piority*/2, NULL);
 
-  isInit = TRUE;
+  isInit = RT_TRUE;
 }
 
-bool stabilizerTest(void)
+rt_bool_t stabilizerTest(void)
 {
-  bool pass = true;
+  rt_bool_t pass = RT_TRUE;
 
   pass &= motorsTest();
   pass &= imu6Test();
@@ -317,7 +317,7 @@ static void stabilizerAltHoldUpdate(void)
     altHoldPID.integ = pre_integral;
 
     // Reset altHoldPID
-    altHoldPIDVal = pidUpdate(&altHoldPID, asl, false);
+    altHoldPIDVal = pidUpdate(&altHoldPID, asl, RT_FALSE);
   }
 
   // In altitude hold mode
@@ -336,7 +336,7 @@ static void stabilizerAltHoldUpdate(void)
     // Smooth it and include barometer vspeed
     // TODO same as smoothing the error??
     altHoldPIDVal = (pidAlpha) * altHoldPIDVal + (1.f - pidAlpha) * ((vSpeedAcc * vSpeedAccFac) +
-                    (vSpeedASL * vSpeedASLFac) + pidUpdate(&altHoldPID, asl, false));
+                    (vSpeedASL * vSpeedASLFac) + pidUpdate(&altHoldPID, asl, RT_FALSE));
 
     // compute new thrust
     actuatorThrust =  max(altHoldMinThrust, min(altHoldMaxThrust,

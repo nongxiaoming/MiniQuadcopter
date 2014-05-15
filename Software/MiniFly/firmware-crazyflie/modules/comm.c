@@ -24,7 +24,7 @@
  * comm.c - High level communication module
  */
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 #include "config.h"
 
@@ -37,7 +37,7 @@
 #include "eskylink.h"
 #include "uart.h"
 
-static bool isInit;
+static rt_bool_t isInit;
 
 void commInit(void)
 {
@@ -72,12 +72,12 @@ void commInit(void)
   //else if(radioTest())
   //  crtpSetLink(radioGetLink());
   
-  isInit = true;
+  isInit = RT_TRUE;
 }
 
-bool commTest(void)
+rt_bool_t commTest(void)
 {
-  bool pass=isInit;
+  rt_bool_t pass=isInit;
   
   #ifdef USE_UART_CRTP
   pass &= uartTest();

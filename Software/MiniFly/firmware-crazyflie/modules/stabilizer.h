@@ -26,11 +26,11 @@
 #ifndef STABALIZER_H_
 #define STABALIZER_H_
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 void stabilizerInit(void);
 
-bool stabilizerTest(void);
+rt_bool_t stabilizerTest(void);
 
 
 #endif /* STABALIZER_H_ */

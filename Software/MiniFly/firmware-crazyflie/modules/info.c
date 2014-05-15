@@ -76,9 +76,9 @@ void infoTask(void *param)
   int i;
   static int ctr=0;
 
-  while (TRUE)
+  while (RT_TRUE)
   {
-    if (crtpReceivePacketWait(crtpInfo, &p, 1000) == pdTRUE)
+    if (crtpReceivePacketWait(crtpInfo, &p, 1000) == pdRT_TRUE)
     {
       InfoNbr infoNbr = CRTP_GET_NBR(p.port);
 

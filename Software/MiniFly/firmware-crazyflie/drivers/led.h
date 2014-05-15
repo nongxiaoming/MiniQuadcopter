@@ -26,7 +26,7 @@
 #ifndef __LED_H__
 #define __LED_H__
 
-#include <stdbool.h>
+#include <stdrt_bool_t.h>
 
 #include "stm32f10x_conf.h"
 
@@ -47,10 +47,10 @@
 typedef enum {LED_RED=0, LED_GREEN} led_t;
 
 void ledInit();
-bool ledTest();
+rt_bool_t ledTest();
 
 // Procedures to set the status of the LEDs
-void ledSet(led_t led, bool value);
+void ledSet(led_t led, rt_bool_t value);
 
 void ledTask(void *param);
 

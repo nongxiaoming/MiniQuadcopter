@@ -75,7 +75,7 @@ void hmc5883lInit(I2C_TypeDef *i2cPort)
 
 /** Verify the I2C connection.
  * Make sure the device is connected and responds as expected.
- * @return True if connection is valid, false otherwise
+ * @return RT_TRUE if connection is valid, RT_FALSE otherwise
  */
 rt_bool_t hmc5883lTestConnection()
 {
@@ -88,7 +88,7 @@ rt_bool_t hmc5883lTestConnection()
 }
 
 /** Do a self test.
- * @return True if self test passed, false otherwise
+ * @return RT_TRUE if self test passed, RT_FALSE otherwise
  */
 rt_bool_t hmc5883lSelfTest()
 {
@@ -164,7 +164,7 @@ rt_bool_t hmc5883lSelfTest()
  * @param max The max limit of the self test
  * @param value The value to compare with.
  * @param string A pointer to a string describing the value.
- * @return True if self test within min - max limit, false otherwise
+ * @return RT_TRUE if self test within min - max limit, RT_FALSE otherwise
  */
 rt_bool_t hmc5883lEvaluateSelfTest(int16_t min, int16_t max, int16_t value, char* string)
 {
