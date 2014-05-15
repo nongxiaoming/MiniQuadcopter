@@ -24,13 +24,8 @@
  * pm.c - Power Management driver and functions.
  */
 
-#include "stm32f10x_conf.h"
-#include <string.h>
-#include <stdbool.h>
-
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
+#include <rtthread.h>
+#include "board.h"
 
 #include "config.h"
 #include "system.h"
@@ -45,11 +40,11 @@
 static float    batteryVoltage;
 static float    batteryVoltageMin = 6.0;
 static float    batteryVoltageMax = 0.0;
-static int32_t  batteryVRawFilt = PM_BAT_ADC_FOR_3_VOLT;
-static int32_t  batteryVRefRawFilt = PM_BAT_ADC_FOR_1p2_VOLT;
-static uint32_t batteryLowTimeStamp;
-static uint32_t batteryCriticalLowTimeStamp;
-static bool isInit;
+static rt_int32_t  batteryVRawFilt = PM_BAT_ADC_FOR_3_VOLT;
+static rt_int32_t  batteryVRefRawFilt = PM_BAT_ADC_FOR_1p2_VOLT;
+static rt_uint32_t batteryLowTimeStamp;
+static rt_uint32_t batteryCriticalLowTimeStamp;
+static rt_bool_t isInit;
 static PMStates pmState;
 static PMChargeStates pmChargeState;
 
@@ -72,7 +67,7 @@ const static float bat671723HS25C[10] =
 void pmInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-
+  rt_thread_t power_thread;
   if(isInit)
     return;
 
@@ -115,13 +110,17 @@ void pmInit(void)
   GPIO_InitStructure.GPIO_Pin = PM_GPIO_USB_CON;
   GPIO_Init(PM_GPIO_USB_CON_PORT, &GPIO_InitStructure);
   
-  xTaskCreate(pmTask, (const signed char * const)"PWRMGNT",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
-  
-  isInit = true;
+  //xTaskCreate(pmTask, (const signed char * const)"PWRMGNT",
+  //            configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
+  power_thread = rt_thread_create("pwrmg", pmTask, RT_NULL, 512, 14, 5);
+  if (power_thread != RT_NULL)
+  {
+	  rt_thread_startup(power_thread);
+  }
+  isInit = RT_TRUE;
 }
 
-bool pmTest(void)
+rt_bool_t pmTest(void)
 {
   return isInit;
 }
@@ -303,11 +302,11 @@ PMChargeStates pmGetChargeState(void)
 PMStates pmUpdateState()
 {
   PMStates state;
-  bool isCharging = !GPIO_ReadInputDataBit(PM_GPIO_IN_CHG_PORT, PM_GPIO_IN_CHG);
-  bool isPgood = !GPIO_ReadInputDataBit(PM_GPIO_IN_PGOOD_PORT, PM_GPIO_IN_PGOOD);
-  uint32_t batteryLowTime;
+  rt_bool_t isCharging = !GPIO_ReadInputDataBit(PM_GPIO_IN_CHG_PORT, PM_GPIO_IN_CHG);
+  rt_bool_t isPgood = !GPIO_ReadInputDataBit(PM_GPIO_IN_PGOOD_PORT, PM_GPIO_IN_PGOOD);
+  rt_uint32_t batteryLowTime;
 
-  batteryLowTime = xTaskGetTickCount() - batteryLowTimeStamp;
+  batteryLowTime = rt_tick_get() - batteryLowTimeStamp;
 
   if (isPgood && !isCharging)
   {
@@ -330,8 +329,8 @@ PMStates pmUpdateState()
 }
 
 
-// return true if battery discharging
-bool pmIsDischarging(void) {
+// return RT_TRUE if battery discharging
+rt_bool_t pmIsDischarging(void) {
     PMStates pmState;
     pmState = pmUpdateState();
     return (pmState == lowPower )|| (pmState == battery);
@@ -342,20 +341,20 @@ void pmTask(void *param)
   PMStates pmStateOld = battery;
   uint32_t tickCount;
 
-  vTaskSetApplicationTaskTag(0, (void*)TASK_PM_ID_NBR);
+ // vTaskSetApplicationTaskTag(0, (void*)TASK_PM_ID_NBR);
 
-  tickCount = xTaskGetTickCount();
+  tickCount = rt_tick_get();
   batteryLowTimeStamp = tickCount;
   batteryCriticalLowTimeStamp = tickCount;
 
   pmSetChargeState(charge500mA);
 
-  vTaskDelay(1000);
+  rt_thread_delay(1000);
 
   while(1)
   {
-    vTaskDelay(100);
-    tickCount = xTaskGetTickCount();
+   rt_thread_delay(100);
+    tickCount = rt_tick_get();
 
     if (pmGetBatteryVoltage() > PM_BAT_LOW_VOLTAGE)
     {
@@ -377,7 +376,7 @@ void pmTask(void *param)
           ledseqStop(LED_GREEN, seq_charging);
           ledseqStop(LED_GREEN, seq_chargingMax);
           ledseqRun(LED_GREEN, seq_charged);
-          systemSetCanFly(false);
+          systemSetCanFly(RT_FALSE);
           break;
         case charging:
           ledseqStop(LED_RED, seq_lowbat);
@@ -392,24 +391,24 @@ void pmTask(void *param)
             pmSetChargeState(charge500mA);
             ledseqRun(LED_GREEN, seq_charging);
           }
-          systemSetCanFly(false);
+          systemSetCanFly(RT_FALSE);
           //Due to voltage change radio must be restarted
           radiolinkReInit();
           break;
         case lowPower:
           ledseqRun(LED_RED, seq_lowbat);
-          systemSetCanFly(true);
+          systemSetCanFly(RT_TRUE);
           break;
         case battery:
           ledseqStop(LED_GREEN, seq_charging);
           ledseqStop(LED_GREEN, seq_chargingMax);
           ledseqStop(LED_GREEN, seq_charged);
-          systemSetCanFly(true);
+          systemSetCanFly(RT_TRUE);
           //Due to voltage change radio must be restarted
           radiolinkReInit();
           break;
         default:
-          systemSetCanFly(true);
+          systemSetCanFly(RT_TRUE);
           break;
       }
       pmStateOld = pmState;
@@ -421,7 +420,7 @@ void pmTask(void *param)
         break;
       case charging:
         {
-          uint32_t onTime;
+          rt_uint32_t onTime;
           if (pmGetChargeState() == chargeMax)
           {
             onTime = pmBatteryChargeFromVoltage(pmGetBatteryVoltage()) *
@@ -438,7 +437,7 @@ void pmTask(void *param)
         break;
       case lowPower:
         {
-          uint32_t batteryCriticalLowTime;
+          rt_uint32_t batteryCriticalLowTime;
 
           batteryCriticalLowTime = tickCount - batteryCriticalLowTimeStamp;
           if (batteryCriticalLowTime > PM_BAT_CRITICAL_LOW_TIMEOUT)

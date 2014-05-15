@@ -146,7 +146,7 @@ typedef enum
 
 void pmInit(void);
 
-bool pmTest(void);
+rt_bool_t pmTest(void);
 
 /**
  * Power management task
@@ -177,7 +177,7 @@ float pmGetBatteryVoltageMax(void);
 void pmBatteryUpdate(AdcGroup* adcValues);
 
 /**
- * Returns true if the battery is currently in use
+ * Returns RT_TRUE if the battery is currently in use
  */
-bool pmIsDischarging(void);
+rt_bool_t pmIsDischarging(void);
 #endif /* PM_H_ */
