@@ -33,19 +33,15 @@
  *  -> http://sourceforge.net/p/arduinorclib/wiki/Esky%20Radio/
  */
 
-#include <stdbool.h>
 #include <errno.h>
 #include <string.h>
+#include <rtthread.h>
 
 #include "nrf24l01.h"
 #include "crtp.h"
 #include "configblock.h"
 #include "ledseq.h"
 
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-#include "semphr.h"
 
 /* FIXME: This might be a bit tight range? */
 #define PPM_ZERO 1500
@@ -59,9 +55,9 @@ static char address[4] = {0x00, 0x00, 0x00, 0xBB};
 static char packet[32];
 
 /* Synchronisation */
-xSemaphoreHandle dataRdy;
+rt_event_t dataRdy;
 /* Data queue */
-xQueueHandle rxQueue;
+rt_mq_t rxQueue;
 
 static struct {
   bool enabled;
@@ -72,17 +68,17 @@ static struct {
 
 static void interruptCallback()
 {
-  portBASE_TYPE  xHigherPriorityTaskWoken = pdFALSE;
+  //portBASE_TYPE  xHigherPriorityTaskWoken = pdFALSE;
 
   //To unlock RadioTask
-  xSemaphoreGiveFromISR(dataRdy, &xHigherPriorityTaskWoken);
-
-  if(xHigherPriorityTaskWoken)
-    vPortYieldFromISR();
+  //xSemaphoreGiveFromISR(dataRdy, &xHigherPriorityTaskWoken);
+	rt_event_send(dataRdy, 0x01);
+  //if(xHigherPriorityTaskWoken)
+   // vPortYieldFromISR();
 }
 
 // 'Class' functions, called from callbacks
-static int setEnable(bool enable)
+static int setEnable(rt_bool_t enable)
 {
   nrfSetEnable(enable);
   state.enabled = enable;
@@ -105,8 +101,8 @@ static int receivePacket(CRTPPacket * pk)
   if (!state.enabled)
     return ENETDOWN;
 
-  xQueueReceive( rxQueue, pk, portMAX_DELAY);
-
+ // xQueueReceive( rxQueue, pk, portMAX_DELAY);
+  rt_mq_recv(rxQueue, pk, sizeof(CRTPPacket), RT_WAITING_FOREVER);
   return 0;
 }
 
@@ -119,7 +115,7 @@ static struct crtpLinkOperations eskyOp =
 
 static int eskylinkFetchData(char * packet, int dataLen)
 {
-  nrfSetEnable(false);
+  nrfSetEnable(RT_FALSE);
 
   //Fetch the data
   nrfReadRX(packet, dataLen);
@@ -127,7 +123,7 @@ static int eskylinkFetchData(char * packet, int dataLen)
   //clear the interruptions flags
   nrfWrite1Reg(REG_STATUS, 0x70);
   
-  nrfSetEnable(true);
+  nrfSetEnable(RT_TRUE);
   
   return dataLen;
 }
@@ -138,7 +134,7 @@ static void eskylinkInitPairing(void)
   
   //Power the radio, Enable the DR interruption, set the radio in PRX mode with 2bytes CRC
   nrfWrite1Reg(REG_CONFIG, 0x3F);
-  vTaskDelay(M2T(2)); //Wait for the chip to be ready
+  rt_thread_delay(M2T(2)); //Wait for the chip to be ready
   
    //Set the radio channel, pairing channel is 50
   nrfSetChannel(50);
@@ -209,7 +205,8 @@ static void eskylinkDecode(char* packet)
   memcpy(&crtpPacket.data[8],  (char*)&yaw,    4);
   memcpy(&crtpPacket.data[12], (char*)&thrust, 2);
   
-  xQueueSend(rxQueue, &crtpPacket, 0);
+ // xQueueSend(rxQueue, &crtpPacket, 0);
+  rt_mq_send(rxQueue, &crtpPacket, sizeof(CRTPPacket));
 }
 
 static void eskylinkTask(void * arg)
@@ -217,11 +214,12 @@ static void eskylinkTask(void * arg)
   int channel = 7;
   int channel1 = -1; //As long as channel1<0 the copter is in scann mode
   int channel2 = 0;
-
+  rt_uint32_t e;
   //Waiting for pairing packet
   while (!state.paired)
   {
-    xSemaphoreTake(dataRdy, portMAX_DELAY);
+    //xSemaphoreTake(dataRdy, portMAX_DELAY);
+	  rt_event_recv(dataRdy, 0x01, RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER, &e);
     ledseqRun(LED_GREEN, seq_linkup);
     
     eskylinkFetchData(packet, 13);
@@ -232,20 +230,20 @@ static void eskylinkTask(void * arg)
       address[1]=packet[1];
       address[0]=packet[2];
       state.band = packet[3];
-      state.paired = true;
+      state.paired = RT_TRUE;
     }
   }
 
   ledseqRun(LED_GREEN, seq_testPassed);
 
-  nrfSetEnable(false);
+  nrfSetEnable(RT_FALSE);
   eskylinkInitPaired(channel);
-  nrfSetEnable(true);
+  nrfSetEnable(RT_TRUE);
 
   //Paired! handling packets.
   while(1)
   {
-    if (xSemaphoreTake(dataRdy, M2T(10))==pdTRUE)
+	  if (rt_event_recv(dataRdy, 0x01, RT_EVENT_FLAG_AND | RT_EVENT_FLAG_CLEAR, M2T(10),&e) == RT_EOK)
     {
       ledseqRun(LED_GREEN, seq_linkup);
     
@@ -265,9 +263,9 @@ static void eskylinkTask(void * arg)
       {
         channel++;
         if(channel>83) channel=7;
-        nrfSetEnable(false);
+        nrfSetEnable(RT_FALSE);
         nrfSetChannel(channel);
-        nrfSetEnable(true);
+        nrfSetEnable(RT_FALSE);
       }
       else
       {
@@ -276,9 +274,9 @@ static void eskylinkTask(void * arg)
         else
           channel = channel1;
         
-        nrfSetEnable(false);
+        nrfSetEnable(RT_FALSE);
         nrfSetChannel(channel);
-        nrfSetEnable(true);
+        nrfSetEnable(RT_TRUE);
       }
       
     }
@@ -291,6 +289,7 @@ static void eskylinkTask(void * arg)
 
 void eskylinkInit()
 {
+	rt_thread_t eskylink_thread;
   if(isInit)
     return;
 
@@ -301,21 +300,25 @@ void eskylinkInit()
   //vTaskSetApplicationTaskTag(0, (void*)TASK_RADIO_ID_NBR);
 
   /* Initialise the semaphores */
-  vSemaphoreCreateBinary(dataRdy);
-
+  //vSemaphoreCreateBinary(dataRdy);
+  dataRdy=rt_event_create("data_rdy", RT_IPC_FLAG_FIFO);
   /* Queue init */
-  rxQueue = xQueueCreate(3, sizeof(CRTPPacket));
+  rxQueue = rt_mq_create("rx_mq",sizeof(CRTPPacket),3,RT_IPC_FLAG_FIFO);
 
   eskylinkInitPairing();
 
     /* Launch the Radio link task */
-  xTaskCreate(eskylinkTask, (const signed char * const)"EskyLink",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
-
-  isInit = true;
+  ////xTaskCreate(eskylinkTask, (const signed char * const)"EskyLink",
+  ////            configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
+  eskylink_thread = rt_thread_create("eskylink", eskylinkTask, RT_NULL, 512, 12, 5);
+  if (eskylink_thread != RT_NULL)
+  {
+	  rt_thread_startup(eskylink_thread);
+  }
+  isInit = RT_TRUE;
 }
 
-bool eskylinkTest()
+rt_bool_t eskylinkTest()
 {
   return nrfTest();
 }
