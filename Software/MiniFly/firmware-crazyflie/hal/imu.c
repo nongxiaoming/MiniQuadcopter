@@ -113,7 +113,7 @@ static float sinRoll;
 static void imuBiasInit(BiasObj* bias);
 static void imuCalculateBiasMean(BiasObj* bias, Axis3i32* meanOut);
 static void imuCalculateVarianceAndMean(BiasObj* bias, Axis3i32* varOut, Axis3i32* meanOut);
-static bool imuFindBiasValue(BiasObj* bias);
+static rt_bool_t imuFindBiasValue(BiasObj* bias);
 static void imuAddBiasValue(BiasObj* bias, Axis3i16* dVal);
 static void imuAccIIRLPFilter(Axis3i16* in, Axis3i16* out,
                               Axis3i32* storedValues, int32_t attenuation);
