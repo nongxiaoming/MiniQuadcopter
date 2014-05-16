@@ -26,8 +26,8 @@
 #ifndef UART_H_
 #define UART_H_
 
-#include <stdrt_bool_t.h>
-
+#include <rtthread.h>
+#include "board.h"
 #include "crtp.h"
 #include "eprintf.h"
 

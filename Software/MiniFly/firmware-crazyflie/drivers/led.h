@@ -26,9 +26,9 @@
 #ifndef __LED_H__
 #define __LED_H__
 
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 
-#include "stm32f10x_conf.h"
+#include "board.h"
 
 //Led polarity configuration constant
 #define LED_POL_POS 0
