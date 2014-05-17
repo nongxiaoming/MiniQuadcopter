@@ -34,7 +34,7 @@
 #define __MOTORS_H__
 
 #include <stdint.h>
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 #include "config.h"
 
 /******** Defines ********/

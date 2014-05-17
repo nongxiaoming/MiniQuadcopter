@@ -29,8 +29,6 @@
 #include <rtthread.h>
 #include "board.h"
 
-#include <stdrt_bool_t.h>
-
 #include "motors.h"
 
 
@@ -143,9 +141,9 @@ rt_bool_t motorsTest(void)
   for (i = 0; i < sizeof(MOTORS) / sizeof(*MOTORS); i++)
   {
     motorsSetRatio(MOTORS[i], MOTORS_TEST_RATIO);
-    vTaskDelay(M2T(MOTORS_TEST_ON_TIME_MS));
+	rt_thread_delay(M2T(MOTORS_TEST_ON_TIME_MS));
     motorsSetRatio(MOTORS[i], 0);
-    vTaskDelay(M2T(MOTORS_TEST_DELAY_TIME_MS));
+	rt_thread_delay(M2T(MOTORS_TEST_DELAY_TIME_MS));
   }
 #endif
 
@@ -227,7 +225,7 @@ void motorsTestTask(void* params)
   int step=0;
 
   //Wait 3 seconds before starting the motors
-  vTaskDelay(M2T(3000));
+  rt_thread_delay(M2T(3000));
 
   while(1)
   {
@@ -238,7 +236,7 @@ void motorsTestTask(void* params)
 
     if(++step>3) step=0;
 
-    vTaskDelay(M2T(1000));
+    rt_thread_delay(M2T(1000));
   }
 }
 #endif
