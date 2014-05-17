@@ -31,8 +31,6 @@
 
 #include "motors.h"
 
-#include <stdrt_bool_t.h>
-#include "stm32f10x_conf.h"
 
 
 static rt_bool_t isInit=RT_FALSE;
