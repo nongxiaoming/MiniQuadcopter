@@ -49,7 +49,7 @@
 #define PPM_MIN 1000
 #define PPM_MAX 2000
 
-static bool isInit;
+static rt_bool_t isInit;
 
 static char address[4] = {0x00, 0x00, 0x00, 0xBB};
 static char packet[32];
@@ -60,9 +60,9 @@ rt_event_t dataRdy;
 rt_mq_t rxQueue;
 
 static struct {
-  bool enabled;
+  rt_bool_t enabled;
   
-  bool paired;
+  rt_bool_t paired;
   uint8_t band;
 } state;
 
