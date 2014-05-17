@@ -31,7 +31,6 @@
 
 #include "nrf24l01.h"
 
-#include <stdrt_bool_t.h>
 #include <string.h>
 
 #include "cfassert.h"
