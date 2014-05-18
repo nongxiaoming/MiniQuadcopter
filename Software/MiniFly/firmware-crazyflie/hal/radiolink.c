@@ -85,7 +85,7 @@ static int sendPacket(CRTPPacket * pk)
   if (!state.enabled)
     return ENETDOWN;
   //xQueueSend( txQueue, pk, portMAX_DELAY);
-  rt_mq_send(pk, sizeof(CRTPPacket));
+  rt_mq_send(txQueue,pk, sizeof(CRTPPacket));
   return 0;
 }
 
@@ -101,7 +101,8 @@ static int receivePacket(CRTPPacket * pk)
 
 static int reset(void)
 {
-  xQueueReset(txQueue);
+  //xQueueReset(txQueue);
+  rt_mq_detach(txQueue);
   nrfFlushTx();
 
   return 0;
@@ -109,7 +110,7 @@ static int reset(void)
 
 static rt_bool_t isConnected(void)
 {
-  if ((xTaskGetTickCount() - lastPacketTick) > RADIO_CONNECTED_TIMEOUT)
+  if ((rt_tick_get() - lastPacketTick) > RADIO_CONNECTED_TIMEOUT)
     return RT_FALSE;
 
   return RT_TRUE;
@@ -130,6 +131,7 @@ static struct crtpLinkOperations radioOp =
  */
 static void radiolinkTask(void * arg)
 {
+	rt_uint32_t e = 0;
   unsigned char dataLen;
   static RadioPacket pk;
 
@@ -138,8 +140,8 @@ static void radiolinkTask(void * arg)
   {
     ledseqRun(LED_GREEN, seq_linkup);
 
-    xSemaphoreTake(dataRdy, portMAX_DELAY);
-    lastPacketTick = xTaskGetTickCount();
+    rt_event_recv(dataRdy,0x01,RT_EVENT_FLAG_AND|RT_EVENT_FLAG_CLEAR, RT_WAITING_FOREVER,&e);
+    lastPacketTick = rt_tick_get();
     
     nrfSetEnable(RT_FALSE);
     
@@ -158,14 +160,15 @@ static void radiolinkTask(void * arg)
 
         //Push it in the queue (If overflow, the packet is dropped)
         if (!CRTP_IS_NULL_PACKET(pk.crtp))  //Don't follow the NULL packets
-          xQueueSend( rxQueue, &pk, 0);
+			rt_mq_send(rxQueue, &pk, sizeof(RadioPacket));
       }
     }
 
     //Push the data to send (Loop until the TX Fifo is full or there is no more data to send)
-    while( (uxQueueMessagesWaiting((xQueueHandle)txQueue) > 0) && !(nrfRead1Reg(REG_FIFO_STATUS)&0x20) )
+    while( (uxQueueMessagesWaiting(txQueue) > 0) && !(nrfRead1Reg(REG_FIFO_STATUS)&0x20) )
     {
-      xQueueReceive(txQueue, &pk, 0);
+      //xQueueReceive(txQueue, &pk, 0);
+		rt_mq_recv(txQueue, &pk, sizeof(RadioPacket), RT_WAITING_FOREVER);
       pk.raw.size++;
 
       nrfWriteAck(0, (char*) pk.raw.data, pk.raw.size);
@@ -193,7 +196,7 @@ static void radiolinkInitNRF24L01P(void)
 
   //Power the radio, Enable the DS interruption, set the radio in PRX mode
   nrfWrite1Reg(REG_CONFIG, 0x3F);
-  vTaskDelay(M2T(2)); //Wait for the chip to be ready
+  rt_thread_delay(M2T(2)); //Wait for the chip to be ready
   // Enable the dynamic payload size and the ack payload for the pipe 0
   nrfWrite1Reg(REG_FEATURE, 0x06);
   nrfWrite1Reg(REG_DYNPD, 0x01);
@@ -212,6 +215,7 @@ static void radiolinkInitNRF24L01P(void)
 
 void radiolinkInit()
 {
+	rt_thread_t radio_thread;
   if(isInit)
     return;
 
@@ -219,20 +223,25 @@ void radiolinkInit()
 
   nrfSetInterruptCallback(interruptCallback);
 
-  vTaskSetApplicationTaskTag(0, (void*)TASK_RADIO_ID_NBR);
+  //vTaskSetApplicationTaskTag(0, (void*)TASK_RADIO_ID_NBR);
 
   /* Initialise the semaphores */
-  vSemaphoreCreateBinary(dataRdy);
-
+  //vSemaphoreCreateBinary(dataRdy);
+  dataRdy = rt_event_create("dataRdy", RT_IPC_FLAG_FIFO);
   /* Queue init */
-  rxQueue = xQueueCreate(3, sizeof(RadioPacket));
-  txQueue = xQueueCreate(3, sizeof(RadioPacket));
+  //rxQueue = xQueueCreate(3, sizeof(RadioPacket));
+  rxQueue = rt_mq_create("rx_mq", sizeof(RadioPacket), 3, RT_IPC_FLAG_FIFO);
+  //txQueue = xQueueCreate(3, sizeof(RadioPacket));
+  txQueue = rt_mq_create("tx_mq", sizeof(RadioPacket), 3, RT_IPC_FLAG_FIFO);
 
   radiolinkInitNRF24L01P();
 
     /* Launch the Radio link task */
-  xTaskCreate(radiolinkTask, (const signed char * const)"RadioLink",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
+ // xTaskCreate(radiolinkTask, (const signed char * const)"RadioLink",
+  //            configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
+  radio_thread = rt_thread_create("radiolink", radiolinkTask, RT_NULL, 512, 10, 5);
+  if (radio_thread != RT_NULL)
+	  rt_thread_startup(radio_thread);
 
   isInit = RT_TRUE;
 }
