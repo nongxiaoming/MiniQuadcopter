@@ -127,7 +127,7 @@ ledseq_t seq_testPassed[] = {
 /* Led sequence handling machine implementation */
 #define SEQ_NUM (sizeof(sequences)/sizeof(sequences[0]))
 
-static void runLedseq(xTimerHandle xTimer);
+static void runLedseq(void* parameter);
 static int getPrio(ledseq_t *seq);
 static void updateActive(led_t led);
 
@@ -137,9 +137,9 @@ static int state[LED_NUM][SEQ_NUM];
 //Active sequence for each led
 static int activeSeq[LED_NUM];
 
-static xTimerHandle timer[LED_NUM];
+static rt_timer_t timer[LED_NUM];
 
-static xSemaphoreHandle ledseqSem;
+static rt_mutex_t ledseqSem;
 
 static rt_bool_t isInit = RT_FALSE;
 
@@ -160,10 +160,18 @@ void ledseqInit()
   }
   
   //Init the soft timers that runs the led sequences for each leds
-  for(i=0; i<LED_NUM; i++)
-    timer[i] = xTimerCreate((const signed char *)"ledseqTimer", M2T(1000), pdRT_FALSE, (void*)i, runLedseq);
+  for (i = 0; i < LED_NUM; i++)
+  {
+	  timer[i] = rt_timer_create("ledseqTimer",
+		  runLedseq,
+		  (void*)i,
+		  M2T(1000),
+		  RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
 
-  vSemaphoreCreateBinary(ledseqSem);
+  }
+	  
+  //vSemaphoreCreateBinary(ledseqSem);
+  ledseqSem = rt_mutex_create("ledseq", RT_IPC_FLAG_FIFO);
   
   isInit = RT_TRUE;
 }
@@ -179,10 +187,10 @@ void ledseqRun(led_t led, ledseq_t *sequence)
   
   if(prio<0) return;
   
-  xSemaphoreTake(ledseqSem, portMAX_DELAY);
+  rt_mutex_take(ledseqSem, RT_WAITING_FOREVER);
   state[led][prio] = 0;  //Reset the seq. to its first step
   updateActive(led);
-  xSemaphoreGive(ledseqSem);
+  rt_mutex_release(ledseqSem);
   
   //Run the first step if the new seq is the active sequence
   if(activeSeq[led] == prio)
@@ -201,10 +209,10 @@ void ledseqStop(led_t led, ledseq_t *sequence)
   
   if(prio<0) return;
   
-  xSemaphoreTake(ledseqSem, portMAX_DELAY);
+  rt_mutex_take(ledseqSem, RT_WAITING_FOREVER);
   state[led][prio] = LEDSEQ_STOP;  //Stop the seq.
   updateActive(led);
-  xSemaphoreGive(ledseqSem);
+  rt_mutex_release(ledseqSem);
   
   //Run the next active sequence (if any...)
   runLedseq(timer[led]);
@@ -213,9 +221,10 @@ void ledseqStop(led_t led, ledseq_t *sequence)
 /* Center of the led sequence machine. This function is executed by the FreeRTOS
  * timer and runs the sequences
  */
-static void runLedseq( xTimerHandle xTimer )
+static void runLedseq(void* parameter)
 {
-  led_t led = (led_t)pvTimerGetTimerID(xTimer);
+ led_t led = (led_t)parameter;
+ rt_uint32_t index = (rt_uint32_t)parameter;
   ledseq_t *step;
   rt_bool_t leave=RT_FALSE;
 
@@ -229,7 +238,7 @@ static void runLedseq( xTimerHandle xTimer )
 
     state[led][prio]++;
     
-    xSemaphoreTake(ledseqSem, portMAX_DELAY);
+    rt_mutex_take(ledseqSem, RT_WAITING_FOREVER);
     switch(step->action)
     {
       case LEDSEQ_LOOP:
@@ -243,12 +252,14 @@ static void runLedseq( xTimerHandle xTimer )
         ledSet(led, step->value);
         if (step->action == 0)
           break;
-        xTimerChangePeriod(xTimer, M2T(step->action), 0);
-        xTimerStart(xTimer, 0);
+        //xTimerChangePeriod(xTimer, M2T(step->action), 0);
+		timer[index]->init_tick = M2T(step->action);
+        //xTimerStart(xTimer, 0);
+		rt_timer_start(timer[index]);
         leave=RT_TRUE;
         break;
     }
-    xSemaphoreGive(ledseqSem);
+    rt_mutex_release(ledseqSem);
   }
 }
 
