@@ -30,7 +30,7 @@
 #include "nvicconf.h"
 #include "stm32f10x.h"
 
-uint32_t usecTimerHighCount;
+rt_uint32_t usecTimerHighCount;
 
 void initUsecTimer(void)
 {
