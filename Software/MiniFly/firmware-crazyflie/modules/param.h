@@ -27,7 +27,7 @@
 #ifndef __PARAM_H__
 #define __PARAM_H__
 
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 #include <stdint.h>
 
 /* Public functions */

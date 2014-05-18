@@ -27,7 +27,7 @@
 #ifndef __SYSTEM_H__
 #define __SYSTEM_H__
 
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 
 void systemInit(void);
 rt_bool_t systemTest(void);
