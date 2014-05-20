@@ -23,12 +23,8 @@
  *
  *
  */
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
  
-#include "stm32f10x_conf.h"
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include "controller.h"
 #include "pid.h"
 #include "param.h"
