@@ -24,17 +24,12 @@
  * console.c - Used to send console data to client
  */
 
-#include <stdrt_bool_t.h>
-
-/*FreeRtos includes*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
+#include <rtthread.h>
 
 #include "crtp.h"
 
 CRTPPacket messageToPrint;
-xSemaphoreHandle synch = NULL;
+rt_mutex_t synch = RT_NULL;
 
 static rt_bool_t isInit;
 
@@ -54,8 +49,8 @@ void consoleInit()
 
   messageToPrint.size = 0;
   messageToPrint.header = CRTP_HEADER(CRTP_PORT_CONSOLE, 0);
-  vSemaphoreCreateBinary(synch);
-  
+  //vSemaphoreCreateBinary(synch);
+  synch = rt_mutex_create("cs_lock", RT_IPC_FLAG_FIFO);
   isInit = RT_TRUE;
 }
 
@@ -66,7 +61,7 @@ rt_bool_t consoleTest(void)
 
 int consolePutchar(int ch)
 {
-  if (xSemaphoreTake(synch, portMAX_DELAY) == pdRT_TRUE)
+  if (rt_mutex_take(synch,RT_WAITING_FOREVER) == RT_EOK)
   {
     messageToPrint.data[messageToPrint.size] = (unsigned char)ch;
     messageToPrint.size++;
@@ -74,7 +69,7 @@ int consolePutchar(int ch)
     {
       consoleSendMessage();
     }
-    xSemaphoreGive(synch);
+    rt_mutex_release(synch);
   }
   
   return (unsigned char)ch;
@@ -92,9 +87,9 @@ int consolePuts(char *str)
 
 void consoleFlush(void)
 {
-  if (xSemaphoreTake(synch, portMAX_DELAY) == pdRT_TRUE)
+	if (rt_mutex_take(synch, RT_WAITING_FOREVER) == RT_EOK)
   {
     consoleSendMessage();
-    xSemaphoreGive(synch);
+	rt_mutex_release(synch);
   }
 }
