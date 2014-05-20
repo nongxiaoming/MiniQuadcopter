@@ -26,7 +26,7 @@
 #ifndef COMMANDER_H_
 #define COMMANDER_H_
 #include <stdint.h>
-#include <stdbool.h>
+#include <rtthread.h>
 
 #define COMMANDER_WDT_TIMEOUT_STABALIZE  M2T(500)
 #define COMMANDER_WDT_TIMEOUT_SHUTDOWN   M2T(2000)
@@ -38,12 +38,12 @@ typedef enum
 } RPYType;
 
 void commanderInit(void);
-bool commanderTest(void);
+rt_bool_t commanderTest(void);
 void commanderWatchdog(void);
-uint32_t commanderGetInactivityTime(void);
+rt_uint32_t commanderGetInactivityTime(void);
 void commanderGetRPY(float* eulerRollDesired, float* eulerPitchDesired, float* eulerYawDesired);
 void commanderGetRPYType(RPYType* rollType, RPYType* pitchType, RPYType* yawType);
 void commanderGetThrust(uint16_t* thrust);
-void commanderGetAltHold(bool* altHold, bool* setAltHold, float* altHoldChange);
+void commanderGetAltHold(rt_bool_t* altHold, rt_bool_t* setAltHold, float* altHoldChange);
 
 #endif /* COMMANDER_H_ */

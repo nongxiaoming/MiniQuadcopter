@@ -23,10 +23,8 @@
  *
  *
  */
-#include "stm32f10x_conf.h"
-
-#include "FreeRTOS.h"
-#include "task.h"
+#include <rtthread.h>
+#include "board.h"
 
 #include "commander.h"
 #include "crtp.h"
@@ -47,7 +45,7 @@ struct CommanderCrtpValues
 static struct CommanderCrtpValues targetVal[2];
 static rt_bool_t isInit;
 static int side=0;
-static uint32_t lastUpdate;
+static rt_uint32_t lastUpdate;
 static rt_bool_t isInactive;
 static rt_bool_t altHoldMode = RT_FALSE;
 static rt_bool_t altHoldModeOld = RT_FALSE;
@@ -64,8 +62,8 @@ void commanderInit(void)
   crtpInit();
   crtpRegisterPortCB(CRTP_PORT_COMMANDER, commanderCrtpCB);
 
-  lastUpdate = xTaskGetTickCount();
-  isInactive = RT_TRUE;
+  lastUpdate = rt_();
+  isInactive = RT_TRUE; rt_tick_get();
   isInit = RT_TRUE;
 }
 
@@ -85,9 +83,9 @@ static void commanderCrtpCB(CRTPPacket* pk)
 void commanderWatchdog(void)
 {
   int usedSide = side;
-  uint32_t ticktimeSinceUpdate;
+  rt_uint32_t ticktimeSinceUpdate;
 
-  ticktimeSinceUpdate = xTaskGetTickCount() - lastUpdate;
+  ticktimeSinceUpdate = rt_tick_get() - lastUpdate;
 
   if (ticktimeSinceUpdate > COMMANDER_WDT_TIMEOUT_STABALIZE)
   {
@@ -112,9 +110,9 @@ static void commanderWatchdogReset(void)
   lastUpdate = xTaskGetTickCount();
 }
 
-uint32_t commanderGetInactivityTime(void)
+rt_uint32_t commanderGetInactivityTime(void)
 {
-  return xTaskGetTickCount() - lastUpdate;
+  return (rt_tick_get() - lastUpdate);
 }
 
 void commanderGetRPY(float* eulerRollDesired, float* eulerPitchDesired, float* eulerYawDesired)
