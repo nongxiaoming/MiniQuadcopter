@@ -24,11 +24,7 @@
  * crtpservice.c - Implements low level services for CRTP
  */
 
-#include <stdrt_bool_t.h>
-
-/* FreeRtos includes */
-#include "FreeRTOS.h"
-#include "task.h"
+#include <rtthread.h>
 
 #include "crtp.h"
 #include "crtpservice.h"

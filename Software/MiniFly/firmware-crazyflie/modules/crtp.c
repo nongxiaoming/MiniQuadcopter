@@ -24,14 +24,9 @@
  * crtp.c - CrazyRealtimeTransferProtocol stack
  */
 
-#include <stdrt_bool_t.h>
 #include <errno.h>
 
-/*FreeRtos includes*/
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
-#include "queue.h"
+#include <rtthread.h>
 
 #include "uart.h"
 
@@ -52,9 +47,9 @@ static struct crtpLinkOperations nopLink = {
 
 static struct crtpLinkOperations *link = &nopLink;
 
-static xQueueHandle  tmpQueue;
+static rt_mq_t  tmpQueue;
 
-static xQueueHandle  rxQueue;
+static rt_mq_t  rxQueue;
 
 #define CRTP_NBR_OF_PORTS 16
 #define CRTP_TX_QUEUE_SIZE 20
@@ -63,7 +58,7 @@ static xQueueHandle  rxQueue;
 static void crtpTxTask(void *param);
 static void crtpRxTask(void *param);
 
-static xQueueHandle queues[CRTP_NBR_OF_PORTS];
+static rt_mq_t queues[CRTP_NBR_OF_PORTS];
 static volatile CrtpCallback callbacks[CRTP_NBR_OF_PORTS];
 
 void crtpInit(void)
@@ -71,8 +66,10 @@ void crtpInit(void)
   if(isInit)
     return;
 
-  tmpQueue = xQueueCreate(CRTP_TX_QUEUE_SIZE, sizeof(CRTPPacket));
-  rxQueue = xQueueCreate(CRTP_RX_QUEUE_SIZE, sizeof(CRTPPacket));
+  //tmpQueue = xQueueCreate(CRTP_TX_QUEUE_SIZE, sizeof(CRTPPacket));
+  tmpQueue = rt_mq_create("crtp_tmp", sizeof(CRTPPacket), CRTP_TX_QUEUE_SIZE, RT_IPC_FLAG_FIFO);
+  //rxQueue = xQueueCreate(CRTP_RX_QUEUE_SIZE, sizeof(CRTPPacket));
+  rxQueue = rt_mq_create("crtp_rx", sizeof(CRTPPacket), CRTP_RX_QUEUE_SIZE, RT_IPC_FLAG_FIFO);
   /* Start Rx/Tx tasks */
   xTaskCreate(crtpTxTask, (const signed char * const)"CRTP-Tx",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
@@ -89,31 +86,31 @@ rt_bool_t crtpTest(void)
 
 void crtpInitTaskQueue(CRTPPort portId)
 {
-  ASSERT(queues[portId] == NULL);
+  RT_ASSERT(queues[portId] == RT_NULL);
   
   queues[portId] = xQueueCreate(1, sizeof(CRTPPacket));
 }
 
 int crtpReceivePacket(CRTPPort portId, CRTPPacket *p)
 {
-  ASSERT(queues[portId]);
-  ASSERT(p);
+  RT_ASSERT(queues[portId]);
+  RT_ASSERT(p);
     
   return xQueueReceive(queues[portId], p, 0);
 }
 
 int crtpReceivePacketBlock(CRTPPort portId, CRTPPacket *p)
 {
-  ASSERT(queues[portId]);
-  ASSERT(p);
+  RT_ASSERT(queues[portId]);
+  RT_ASSERT(p);
   
   return xQueueReceive(queues[portId], p, portMAX_DELAY);
 }
 
 
 int crtpReceivePacketWait(CRTPPort portId, CRTPPacket *p, int wait) {
-  ASSERT(queues[portId]);
-  ASSERT(p);
+  RT_ASSERT(queues[portId]);
+  RT_ASSERT(p);
   
   return xQueueReceive(queues[portId], p, M2T(wait));
 }
@@ -164,14 +161,14 @@ void crtpRegisterPortCB(int port, CrtpCallback cb)
 
 int crtpSendPacket(CRTPPacket *p)
 {
-  ASSERT(p); 
+  RT_ASSERT(p); 
 
   return xQueueSend(tmpQueue, p, 0);
 }
 
 int crtpSendPacketBlock(CRTPPacket *p)
 {
-  ASSERT(p); 
+  RT_ASSERT(p); 
 
   return xQueueSend(tmpQueue, p, portMAX_DELAY);
 }
