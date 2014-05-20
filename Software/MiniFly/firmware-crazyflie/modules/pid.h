@@ -27,7 +27,7 @@
 #ifndef PID_H_
 #define PID_H_
 
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 
 #define PID_ROLL_RATE_KP  70.0
 #define PID_ROLL_RATE_KI  0.0

@@ -27,8 +27,6 @@
 #include "stm32f10x_conf.h"
 #include <math.h>
 
-#include "FreeRTOS.h"
-#include "task.h"
 #include "pid.h"
 #include "led.h"
 #include "motors.h"
