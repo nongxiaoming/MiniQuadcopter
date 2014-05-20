@@ -103,14 +103,14 @@ void crtpRegisterPortCB(int port, CrtpCallback cb);
  *
  * @param[in] p CRTPPacket to send
  */
-int crtpSendPacket(CRTPPacket *p);
+rt_err_t crtpSendPacket(CRTPPacket *p);
 
 /**
  * Put a packet in the TX task
  *
  * If the TX stack is full, the function block until one place is free (Good for console implementation)
  */
-int crtpSendPacketBlock(CRTPPacket *p);
+rt_err_t crtpSendPacketBlock(CRTPPacket *p);
 
 /**
  * Fetch a packet with a specidied task ID.
@@ -120,7 +120,7 @@ int crtpSendPacketBlock(CRTPPacket *p);
  *
  * @returns status of fetch from queue
  */
-int crtpReceivePacket(CRTPPort taskId, CRTPPacket *p);
+rt_err_t crtpReceivePacket(CRTPPort taskId, CRTPPacket *p);
 
 /**
  * Fetch a packet with a specidied task ID. Wait some time befor giving up
@@ -131,7 +131,7 @@ int crtpReceivePacket(CRTPPort taskId, CRTPPacket *p);
  *
  * @returns status of fetch from queue
  */
-int crtpReceivePacketWait(CRTPPort taskId, CRTPPacket *p, int wait);
+rt_err_t crtpReceivePacketWait(CRTPPort taskId, CRTPPacket *p, int wait);
 
 /**
  * Wait for a packet to arrive for the specified taskID
@@ -141,7 +141,7 @@ int crtpReceivePacketWait(CRTPPort taskId, CRTPPacket *p, int wait);
  *
  * @return status of fetch from queue
  */
-int crtpReceivePacketBlock(CRTPPort taskId, CRTPPacket *p);
+rt_err_t crtpReceivePacketBlock(CRTPPort taskId, CRTPPacket *p);
 
 void crtpPacketReveived(CRTPPacket *p);
 

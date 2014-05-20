@@ -63,6 +63,7 @@ static volatile CrtpCallback callbacks[CRTP_NBR_OF_PORTS];
 
 void crtpInit(void)
 {
+	rt_thread_t crtp_tx_thread, crtp_rx_thread;
   if(isInit)
     return;
 
@@ -71,11 +72,17 @@ void crtpInit(void)
   //rxQueue = xQueueCreate(CRTP_RX_QUEUE_SIZE, sizeof(CRTPPacket));
   rxQueue = rt_mq_create("crtp_rx", sizeof(CRTPPacket), CRTP_RX_QUEUE_SIZE, RT_IPC_FLAG_FIFO);
   /* Start Rx/Tx tasks */
-  xTaskCreate(crtpTxTask, (const signed char * const)"CRTP-Tx",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
-  xTaskCreate(crtpRxTask, (const signed char * const)"CRTP-Rx",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
-  
+  //xTaskCreate(crtpTxTask, (const signed char * const)"CRTP-Tx",
+  //            configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
+ // xTaskCreate(crtpRxTask, (const signed char * const)"CRTP-Rx",
+    //          configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
+  crtp_tx_thread = rt_thread_create("crtp_tx", crtpTxTask, RT_NULL, 512, 10, 5);
+  crtp_rx_thread = rt_thread_create("crtp_rx", crtpRxTask, RT_NULL, 512, 10, 5);
+  if (crtp_tx_thread != RT_NULL)
+	  rt_thread_startup(crtp_tx_thread);
+  if (crtp_rx_thread != RT_NULL)
+	  rt_thread_startup(crtp_rx_thread);
+
   isInit = RT_TRUE;
 }
 
@@ -88,31 +95,35 @@ void crtpInitTaskQueue(CRTPPort portId)
 {
   RT_ASSERT(queues[portId] == RT_NULL);
   
-  queues[portId] = xQueueCreate(1, sizeof(CRTPPacket));
+  //queues[portId] = xQueueCreate(1, sizeof(CRTPPacket));
+  queues[portId]=rt_mq_create("queues", sizeof(CRTPPacket), 1, RT_IPC_FLAG_FIFO);
 }
 
-int crtpReceivePacket(CRTPPort portId, CRTPPacket *p)
+rt_err_t crtpReceivePacket(CRTPPort portId, CRTPPacket *p)
 {
   RT_ASSERT(queues[portId]);
   RT_ASSERT(p);
     
-  return xQueueReceive(queues[portId], p, 0);
+  //return xQueueReceive(queues[portId], p, 0);
+  return rt_mq_recv(queues[portId], p, sizeof(CRTPPacket), RT_WAITING_FOREVER);
 }
 
-int crtpReceivePacketBlock(CRTPPort portId, CRTPPacket *p)
+rt_err_t crtpReceivePacketBlock(CRTPPort portId, CRTPPacket *p)
 {
   RT_ASSERT(queues[portId]);
   RT_ASSERT(p);
   
-  return xQueueReceive(queues[portId], p, portMAX_DELAY);
+  //return xQueueReceive(queues[portId], p, portMAX_DELAY);
+  return rt_mq_recv(queues[portId], p, sizeof(CRTPPacket), RT_WAITING_FOREVER);
 }
 
 
-int crtpReceivePacketWait(CRTPPort portId, CRTPPacket *p, int wait) {
+rt_err_t crtpReceivePacketWait(CRTPPort portId, CRTPPacket *p, int wait) {
   RT_ASSERT(queues[portId]);
   RT_ASSERT(p);
   
-  return xQueueReceive(queues[portId], p, M2T(wait));
+ // return xQueueReceive(queues[portId], p, M2T(wait));
+  return rt_mq_recv(queues[portId], p, sizeof(CRTPPacket), M2T(wait));
 }
 
 void crtpTxTask(void *param)
@@ -121,7 +132,8 @@ void crtpTxTask(void *param)
 
   while (RT_TRUE)
   {
-    if (xQueueReceive(tmpQueue, &p, portMAX_DELAY) == pdRT_TRUE)
+    //if (xQueueReceive(tmpQueue, &p, portMAX_DELAY) == pdRT_TRUE)
+	  if (rt_mq_recv(tmpQueue, &p, sizeof(CRTPPacket), RT_WAITING_FOREVER) == RT_EOK)
     {
       link->sendPacket(&p);
     }
@@ -140,7 +152,8 @@ void crtpRxTask(void *param)
       if(queues[p.port])
       {
         // TODO: If full, remove one packet and then send
-        xQueueSend(queues[p.port], &p, 0);
+        //xQueueSend(queues[p.port], &p, 0);
+		  rt_mq_send(queues[p.port], &p, sizeof(CRTPPacket));
       } else {
         droppedPacket++;
       }
@@ -159,23 +172,24 @@ void crtpRegisterPortCB(int port, CrtpCallback cb)
   callbacks[port] = cb;
 }
 
-int crtpSendPacket(CRTPPacket *p)
+rt_err_t crtpSendPacket(CRTPPacket *p)
 {
   RT_ASSERT(p); 
 
-  return xQueueSend(tmpQueue, p, 0);
+  return rt_mq_send(tmpQueue, p, sizeof(CRTPPacket));//xQueueSend(tmpQueue, p, 0);
 }
 
-int crtpSendPacketBlock(CRTPPacket *p)
+rt_err_t crtpSendPacketBlock(CRTPPacket *p)
 {
   RT_ASSERT(p); 
 
-  return xQueueSend(tmpQueue, p, portMAX_DELAY);
+  return rt_mq_send(tmpQueue, p, sizeof(CRTPPacket));//xQueueSend(tmpQueue, p, portMAX_DELAY);
 }
 
 int crtpReset(void)
 {
-  xQueueReset(tmpQueue);
+  //xQueueReset(tmpQueue);
+	rt_mq_detach(tmpQueue);
   if (link->reset) {
     link->reset();
   }
@@ -192,10 +206,11 @@ rt_bool_t crtpIsConnected(void)
 
 void crtpPacketReveived(CRTPPacket *p)
 {
-  portBASE_TYPE xHigherPriorityTaskWoken;
+  //portBASE_TYPE xHigherPriorityTaskWoken;
 
-  xHigherPriorityTaskWoken = pdRT_FALSE;
-  xQueueSendFromISR(rxQueue, p, &xHigherPriorityTaskWoken);
+  //xHigherPriorityTaskWoken = pdRT_FALSE;
+  //xQueueSendFromISR(rxQueue, p, &xHigherPriorityTaskWoken);
+	rt_mq_send(rxQueue, p, sizeof(CRTPPacket));
 }
 
 void crtpSetLink(struct crtpLinkOperations * lk)
