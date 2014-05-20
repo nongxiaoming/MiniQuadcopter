@@ -30,13 +30,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdint.h>
-#include <stdrt_bool_t.h>
-
-/* FreeRtos includes */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "timers.h"
-#include "semphr.h"
+#include <rtthread.h>
 
 #include "config.h"
 #include "crtp.h"
@@ -83,13 +77,13 @@ struct log_ops {
 
 struct log_block {
   int id;
-  xTimerHandle timer;
+  rt_timer_t timer;
   struct log_ops * ops;
 };
 
 static struct log_ops logOps[LOG_MAX_OPS];
 static struct log_block logBlocks[LOG_MAX_BLOCKS];
-static xSemaphoreHandle logLock;
+static rt_mutex_t logLock;
 
 struct ops_setting {
     uint8_t logType;
@@ -119,7 +113,7 @@ static void logTOCProcess(int command);
 static void logControlProcess(void);
 
 void logRunBlock(void * arg);
-void logBlockTimed(xTimerHandle timer);
+void logBlockTimed(void* parameter);
 
 //These are set by the Linker
 extern struct log_s _log_start;
@@ -144,7 +138,7 @@ static void logReset();
 void logInit(void)
 {
   int i;
-  
+  rt_thread_t log_thread;
   if(isInit)
     return;
 
@@ -153,7 +147,7 @@ void logInit(void)
   logsCrc = crcSlow(logs, logsLen);
   
   // Big lock that protects the log datastructures
-  logLock = xSemaphoreCreateMutex();
+  logLock = rt_mutex_create("log_lock",RT_IPC_FLAG_FIFO);
 
   for (i=0; i<logsLen; i++)
   {
@@ -169,9 +163,9 @@ void logInit(void)
   logReset();
   
   //Start the log task
-  xTaskCreate(logTask, (const signed char * const)"log",
-    configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
-
+  //xTaskCreate(logTask, (const signed char * const)"log",
+   // configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
+  log_thread = rt_thread_create("log", logTask, RT_NULL, 512, 10, 5);
   isInit = RT_TRUE;
 }
 
@@ -189,12 +183,14 @@ void logTask(void * prm)
 	while(1) {
 		crtpReceivePacketBlock(CRTP_PORT_LOG, &p);
 		
-		xSemaphoreTake(logLock, portMAX_DELAY);
+		//xSemaphoreTake(logLock, portMAX_DELAY);
+		rt_mutex_take(logLock, RT_WAITING_FOREVER);
 		if (p.channel==TOC_CH)
 		  logTOCProcess(p.data[0]);
 		if (p.channel==CONTROL_CH)
 		  logControlProcess();
-		xSemaphoreGive(logLock);
+		//xSemaphoreGive(logLock);
+		rt_mutex_release(logLock);
 	}
 }
 
@@ -311,11 +307,13 @@ static int logCreateBlock(unsigned char id, struct ops_setting * settings, int l
     return ENOMEM;
   
   logBlocks[i].id = id;
-  logBlocks[i].timer = xTimerCreate( (const signed char *)"logTimer", M2T(1000), 
-                                     pdRT_TRUE, &logBlocks[i], logBlockTimed );
-  logBlocks[i].ops = NULL;
+  //logBlocks[i].timer = xTimerCreate( (const signed char *)"logTimer", M2T(1000), 
+  //                                   pdRT_TRUE, &logBlocks[i], logBlockTimed );
+  logBlocks[i].timer = rt_timer_create("logTimer", logBlockTimed, &logBlocks[i], M2T(1000), RT_TIMER_FLAG_PERIODIC | RT_TIMER_FLAG_SOFT_TIMER);
+
+  logBlocks[i].ops = RT_NULL;
   
-  if (logBlocks[i].timer == NULL)
+  if (logBlocks[i].timer == RT_NULL)
   {
 	logBlocks[i].id = BLOCK_ID_FREE;
 	return ENOMEM;
@@ -421,8 +419,10 @@ static int logDeleteBlock(int id)
   }
   
   if (logBlocks[i].timer != 0) {
-    xTimerStop(logBlocks[i].timer, portMAX_DELAY);
-    xTimerDelete(logBlocks[i].timer, portMAX_DELAY);
+    //xTimerStop(logBlocks[i].timer, portMAX_DELAY);
+	  rt_timer_stop(logBlocks[i].timer);
+    //xTimerDelete(logBlocks[i].timer, portMAX_DELAY);
+	  rt_timer_delete(logBlocks[i].timer);
     logBlocks[i].timer = 0;
   }
   
@@ -446,8 +446,10 @@ static int logStartBlock(int id, unsigned int period)
   
   if (period>0)
   {
-    xTimerChangePeriod(logBlocks[i].timer, M2T(period), 100);
-    xTimerStart(logBlocks[i].timer, 100);
+    //xTimerChangePeriod(logBlocks[i].timer, M2T(period), 100);
+	  logBlocks[i].timer->init_tick = M2T(period);
+    //xTimerStart(logBlocks[i].timer, 100);
+	rt_timer_start(logBlocks[i].timer);
   } else {
     // single-shoot run
     workerSchedule(logRunBlock, &logBlocks[i]);
@@ -468,15 +470,16 @@ static int logStopBlock(int id)
     return ENOENT;
   }
   
-  xTimerStop(logBlocks[i].timer, portMAX_DELAY);
-  
+  //xTimerStop(logBlocks[i].timer, portMAX_DELAY);
+  rt_timer_stop(logBlocks[i].timer);
+
   return 0;
 }
 
 /* This function is called by the timer subsystem */
-void logBlockTimed(xTimerHandle timer)
+void logBlockTimed(void* parameter)
 {
-  workerSchedule(logRunBlock, pvTimerGetTimerID(timer));
+	workerSchedule(logRunBlock, parameter);
 }
 
 /* This function is usually called by the worker subsystem */
@@ -487,9 +490,11 @@ void logRunBlock(void * arg)
   static CRTPPacket pk;
   unsigned int timestamp;
   
-  xSemaphoreTake(logLock, portMAX_DELAY);
+  //xSemaphoreTake(logLock, portMAX_DELAY);
+  rt_mutex_take(logLock, RT_WAITING_FOREVER);
 
-  timestamp = ((long long)xTaskGetTickCount())/portTICK_RATE_MS;
+  //timestamp = ((long long)xTaskGetTickCount())/portTICK_RATE_MS;
+  timestamp = rt_tick_get() / RT_TICK_PER_SECOND;
   
   pk.header = CRTP_HEADER(CRTP_PORT_LOG, LOG_CH);
   pk.size = 4;
@@ -556,8 +561,8 @@ void logRunBlock(void * arg)
     ops = ops->next;
   }
   
-  xSemaphoreGive(logLock);
-
+  //xSemaphoreGive(logLock);
+  rt_mutex_release(logLock);
   // Check if the connection is still up, oherwise disable
   // all the logging and flush all the CRTP queues.
   if (!crtpIsConnected())
