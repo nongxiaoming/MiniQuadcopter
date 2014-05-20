@@ -26,10 +26,6 @@
 #include <string.h>
 #include <math.h>
 
-/*FreeRtos includes*/
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include "crtp.h"
 #include "info.h"
 #include "version.h"
@@ -65,8 +61,13 @@ void infoTask(void *param);
 
 void infoInit()
 {
-  xTaskCreate(infoTask, (const signed char * const)"Info",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
+	rt_thread_t info_thread;
+  //xTaskCreate(infoTask, (const signed char * const)"Info",
+    //          configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
+	info_thread = rt_thread_create("info", infoTask, RT_NULL, 512, 12, 5);
+	if (info_thread != RT_NULL)
+		rt_thread_startup(info_thread);
+
   crtpInitTaskQueue(crtpInfo);
 }
 
@@ -78,7 +79,7 @@ void infoTask(void *param)
 
   while (RT_TRUE)
   {
-    if (crtpReceivePacketWait(crtpInfo, &p, 1000) == pdRT_TRUE)
+    if (crtpReceivePacketWait(crtpInfo, &p, 1000) == RT_EOK)
     {
       InfoNbr infoNbr = CRTP_GET_NBR(p.port);
 

@@ -69,7 +69,7 @@ static rt_bool_t isInit = RT_FALSE;
 void paramInit(void)
 {
   int i;
-
+  rt_thread_t param_thread;
   if(isInit)
     return;
 
@@ -85,9 +85,11 @@ void paramInit(void)
   
   
   //Start the param task
-	xTaskCreate(paramTask, (const signed char * const)"PARAM",
-				    configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
-  
+	//xTaskCreate(paramTask, (const signed char * const)"PARAM",
+	//			    configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
+  param_thread = rt_thread_create("param", paramTask, RT_NULL, 512, 10, 5);
+  if (param_thread != RT_NULL)
+	  rt_thread_startup(param_thread);
   //TODO: Handle stored parameters!
   
   isInit = RT_TRUE;

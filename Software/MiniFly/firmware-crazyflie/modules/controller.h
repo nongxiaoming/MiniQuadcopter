@@ -26,12 +26,11 @@
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
 
-#include <stdbool.h>
 #include "commander.h"
 
 
 void controllerInit(void);
-bool controllerTest(void);
+rt_bool_t controllerTest(void);
 
 /**
  * Make the controller run an update of the attitude PID. The output is

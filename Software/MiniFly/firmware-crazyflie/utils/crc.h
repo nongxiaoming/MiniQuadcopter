@@ -33,9 +33,6 @@
 
 #include <stdint.h>
 
-#define RT_FALSE	0
-#define RT_TRUE	!RT_FALSE
-
 /**
  * Select the CRC standard from the list that follows.
  */

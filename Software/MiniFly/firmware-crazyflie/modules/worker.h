@@ -26,7 +26,7 @@
 #ifndef __WORKER_H
 #define __WORKER_H
 
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 
 void workerInit();
 

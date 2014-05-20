@@ -25,12 +25,7 @@
  */
 #define DEBUG_MODULE "SYS"
 
-#include <stdrt_bool_t.h>
-
-/* FreeRtos includes */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
+#include <rtthread.h>
 
 #include "debug.h"
 #include "version.h"
@@ -43,7 +38,6 @@
 #include "system.h"
 #include "configblock.h"
 #include "worker.h"
-#include "freeRTOSdebug.h"
 #include "uart.h"
 #include "comm.h"
 #include "stabilizer.h"
@@ -152,7 +146,7 @@ void systemTask(void *arg)
       while(1)
       {
         ledseqRun(LED_RED, seq_testPassed); //Red passed == not passed!
-        vTaskDelay(M2T(2000));
+		rt_thread_delay(M2T(2000));
       }
     }
     else
@@ -166,7 +160,7 @@ void systemTask(void *arg)
   
   //Should never reach this point!
   while(1)
-    vTaskDelay(portMAX_DELAY);
+    rt_thread_delay(100);
 }
 
 

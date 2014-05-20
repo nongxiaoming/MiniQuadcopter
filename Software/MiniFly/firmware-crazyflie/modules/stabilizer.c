@@ -24,11 +24,7 @@
  *
  */
 #include "stm32f10x_conf.h"
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include "math.h"
-
 #include "system.h"
 #include "pm.h"
 #include "stabilizer.h"
@@ -125,10 +121,10 @@ int16_t  actuatorRoll;
 int16_t  actuatorPitch;
 int16_t  actuatorYaw;
 
-uint32_t motorPowerM4;
-uint32_t motorPowerM2;
-uint32_t motorPowerM1;
-uint32_t motorPowerM3;
+rt_uint32_t motorPowerM4;
+rt_uint32_t motorPowerM2;
+rt_uint32_t motorPowerM1;
+rt_uint32_t motorPowerM3;
 
 static rt_bool_t isInit;
 
@@ -174,16 +170,16 @@ rt_bool_t stabilizerTest(void)
 
 static void stabilizerTask(void* param)
 {
-  uint32_t attitudeCounter = 0;
-  uint32_t altHoldCounter = 0;
-  uint32_t lastWakeTime;
+  rt_uint32_t attitudeCounter = 0;
+  rt_uint32_t altHoldCounter = 0;
+  rt_uint32_t lastWakeTime;
 
   vTaskSetApplicationTaskTag(0, (void*)TASK_STABILIZER_ID_NBR);
 
   //Wait for the system to be fully started to start stabilization loop
   systemWaitStart();
 
-  lastWakeTime = xTaskGetTickCount ();
+  lastWakeTime = rt_tick_get();
 
   while(1)
   {

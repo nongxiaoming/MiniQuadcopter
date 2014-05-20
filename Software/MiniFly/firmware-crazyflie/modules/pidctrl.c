@@ -24,10 +24,6 @@
  * pidctrl.c - Used to receive/answer requests from client and to receive updated PID values from client
  */
  
-/* FreeRtos includes */
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include "crtp.h"
 #include "pidctrl.h"
 #include "pid.h"
