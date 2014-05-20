@@ -26,10 +26,6 @@
 #include <string.h>
 #include <errno.h>
 
-/* FreeRtos includes */
-#include "FreeRTOS.h"
-#include "task.h"
-
 #include "config.h"
 #include "crtp.h"
 #include "param.h"
