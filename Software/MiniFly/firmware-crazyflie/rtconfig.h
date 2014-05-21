@@ -56,9 +56,6 @@
 /* Using Small MM */
 #define RT_USING_SMALL_MEM
 
-// <rt_bool_t name="RT_USING_COMPONENTS_INIT" description="Using RT-Thread components initialization" default="RT_TRUE" />
-#define RT_USING_COMPONENTS_INIT
-
 /* SECTION: Device System */
 /* Using Device System */
 #define RT_USING_DEVICE
@@ -80,6 +77,7 @@
 /* Using symbol table */
 #define FINSH_USING_SYMTAB
 #define FINSH_USING_DESCRIPTION
+#define RT_USING_NEWLIB
 
 // <rt_bool_t name="RT_USING_CMSIS_OS" description="Using CMSIS OS API" default="RT_TRUE" />
 // #define RT_USING_CMSIS_OS
@@ -87,5 +85,6 @@
 #define RT_USING_RTT_CMSIS
 // <rt_bool_t name="RT_USING_BSP_CMSIS" description="Using CMSIS in BSP" default="RT_TRUE" />
 // #define RT_USING_BSP_CMSIS
-
+#define M2T(x) (x*1000/RT_TICK_PER_SECOND)
+#define F2T(x) (RT_TICK_PER_SECOND/x)
 #endif
