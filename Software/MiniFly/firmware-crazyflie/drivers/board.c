@@ -41,6 +41,7 @@ void NVIC_Configuration(void)
     /* Set the Vector Table base location at 0x08000000 */
     NVIC_SetVectorTable(NVIC_VectTab_FLASH, 0x0);
 #endif
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 }
 
 /**
@@ -65,12 +66,12 @@ void rt_hw_board_init(void)
 {
     /* NVIC Configuration */
     NVIC_Configuration();
-	  nvicInit();
-  initUsecTimer();
+ 
     /* Configure the SysTick */
     SysTick_Config( SystemCoreClock / RT_TICK_PER_SECOND );
 
     rt_hw_usart_init();
+	initUsecTimer();
     rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
 
 }
