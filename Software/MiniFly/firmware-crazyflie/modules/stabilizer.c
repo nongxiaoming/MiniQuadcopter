@@ -23,7 +23,7 @@
  *
  *
  */
-#include "stm32f10x_conf.h"
+#include "board.h"
 #include "math.h"
 #include "system.h"
 #include "pm.h"
@@ -138,6 +138,7 @@ static float deadband(float value, const float threshold);
 
 void stabilizerInit(void)
 {
+	rt_thread_t stab_thread;
   if(isInit)
     return;
 
@@ -150,9 +151,13 @@ void stabilizerInit(void)
   pitchRateDesired = 0;
   yawRateDesired = 0;
 
-  xTaskCreate(stabilizerTask, (const signed char * const)"STABILIZER",
-              2*configMINIMAL_STACK_SIZE, NULL, /*Piority*/2, NULL);
-
+  //xTaskCreate(stabilizerTask, (const signed char * const)"STABILIZER",
+   //           2*configMINIMAL_STACK_SIZE, NULL, /*Piority*/2, NULL);
+  stab_thread=rt_thread_create("stabi",stabilizerTask,RT_NULL,1024,10,10);
+  if(stab_thread!=RT_NULL)
+  {
+	  rt_thread_startup(stab_thread);
+  }
   isInit = RT_TRUE;
 }
 
@@ -174,7 +179,7 @@ static void stabilizerTask(void* param)
   rt_uint32_t altHoldCounter = 0;
   rt_uint32_t lastWakeTime;
 
-  vTaskSetApplicationTaskTag(0, (void*)TASK_STABILIZER_ID_NBR);
+  //vTaskSetApplicationTaskTag(0, (void*)TASK_STABILIZER_ID_NBR);
 
   //Wait for the system to be fully started to start stabilization loop
   systemWaitStart();
@@ -183,7 +188,7 @@ static void stabilizerTask(void* param)
 
   while(1)
   {
-    vTaskDelayUntil(&lastWakeTime, F2T(IMU_UPDATE_FREQ)); // 500Hz
+	  rt_thread_delay(F2T(IMU_UPDATE_FREQ)); // 500Hz
 
     // Magnetometer not yet used more then for logging.
     imu9Read(&gyro, &acc, &mag);

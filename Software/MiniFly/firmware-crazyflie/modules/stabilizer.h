@@ -26,7 +26,7 @@
 #ifndef STABALIZER_H_
 #define STABALIZER_H_
 
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 
 void stabilizerInit(void);
 
