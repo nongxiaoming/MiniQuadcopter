@@ -65,7 +65,8 @@ void rt_hw_board_init(void)
 {
     /* NVIC Configuration */
     NVIC_Configuration();
-
+	  nvicInit();
+  initUsecTimer();
     /* Configure the SysTick */
     SysTick_Config( SystemCoreClock / RT_TICK_PER_SECOND );
 

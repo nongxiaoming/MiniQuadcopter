@@ -54,7 +54,8 @@ static void led_thread_entry(void* parameter)
 
 void rt_init_thread_entry(void* parameter)
 {
-
+	 //Launch the system task that will initialize and start everything
+  systemLaunch();
 #ifdef  RT_USING_FINSH
     finsh_set_device(RT_CONSOLE_DEVICE_NAME);
 #endif  /* RT_USING_FINSH */
