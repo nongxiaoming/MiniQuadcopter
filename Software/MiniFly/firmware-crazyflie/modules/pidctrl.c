@@ -23,7 +23,7 @@
  *
  * pidctrl.c - Used to receive/answer requests from client and to receive updated PID values from client
  */
- 
+#include <rtthread.h>
 #include "crtp.h"
 #include "pidctrl.h"
 #include "pid.h"
@@ -36,8 +36,14 @@ void pidCrtlTask(void *param);
 
 void pidCtrlInit()
 {
-  xTaskCreate(pidCrtlTask, (const signed char * const)"PIDCrtl",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
+  rt_thread_t pidctrl_thread;
+  //xTaskCreate(pidCrtlTask, (const signed char * const)"PIDCrtl",
+   //           configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
+  pidctrl_thread=rt_thread_create("pidctrl",pidCrtlTask,RT_NULL,512,12,5);
+  if(pidctrl_thread!=RT_NULL)
+  {
+   rt_thread_startup(pidctrl_thread);
+  }
   crtpInitTaskQueue(6);
 }
 
@@ -52,24 +58,24 @@ void pidCrtlTask(void *param)
   extern PidObject pidYaw;
   struct pidValues
   {
-    uint16_t rateKpRP;
-    uint16_t rateKiRP;
-    uint16_t rateKdRP;
-    uint16_t attKpRP;
-    uint16_t attKiRP;
-    uint16_t attKdRP;
-    uint16_t rateKpY;
-    uint16_t rateKiY;
-    uint16_t rateKdY;
-    uint16_t attKpY;
-    uint16_t attKiY;
-    uint16_t attKdY;
+    rt_uint16_t rateKpRP;
+    rt_uint16_t rateKiRP;
+    rt_uint16_t rateKdRP;
+    rt_uint16_t attKpRP;
+    rt_uint16_t attKiRP;
+    rt_uint16_t attKdRP;
+    rt_uint16_t rateKpY;
+    rt_uint16_t rateKiY;
+    rt_uint16_t rateKdY;
+    rt_uint16_t attKpY;
+    rt_uint16_t attKiY;
+    rt_uint16_t attKdY;
   }  __attribute__((packed));
   struct pidValues *pPid;
 
   while (RT_TRUE)
   {
-    if (crtpReceivePacketBlock(6, &p) == pdRT_TRUE)
+    if (crtpReceivePacketBlock(6, &p) == RT_EOK)
     {
       PIDCrtlNbr pidNbr = p.channel;
       
