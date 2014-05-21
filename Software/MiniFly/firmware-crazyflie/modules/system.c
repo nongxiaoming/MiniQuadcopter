@@ -51,16 +51,22 @@ static rt_bool_t canFly;
 static rt_bool_t isInit;
 
 /* System wide synchronisation */
-xSemaphoreHandle canStartMutex;
-
+//xSemaphoreHandle canStartMutex;
+ rt_mutex_t canStartMutex;
 /* Private functions */
 static void systemTask(void *arg);
 
 /* Public functions */
 void systemLaunch(void)
 {
-  xTaskCreate(systemTask, (const signed char * const)"SYSTEM",
-              2*configMINIMAL_STACK_SIZE, NULL, /*Piority*/2, NULL);
+ rt_thread_t system_thread;
+ // xTaskCreate(systemTask, (const signed char * const)"SYSTEM",
+    //          2*configMINIMAL_STACK_SIZE, NULL, /*Piority*/2, NULL);
+ system_thread=rt_thread_create("system",systemTask,RT_NULL,1024,12,5);
+ if(system_thread!=RT_NULL)
+ {
+	 rt_thread_startup(system_thread);
+ }
 
 }
 
@@ -70,8 +76,9 @@ void systemInit(void)
   if(isInit)
     return;
 
-  canStartMutex = xSemaphoreCreateMutex();
-  xSemaphoreTake(canStartMutex, portMAX_DELAY);
+  canStartMutex = rt_mutex_create("Start",RT_IPC_FLAG_FIFO);
+ // xSemaphoreTake(canStartMutex, portMAX_DELAY);
+  rt_mutex_take(canStartMutex, RT_WAITING_FOREVER);
 
   configblockInit();
   workerInit();
@@ -167,7 +174,8 @@ void systemTask(void *arg)
 /* Global system variables */
 void systemStart()
 {
-  xSemaphoreGive(canStartMutex);
+  //xSemaphoreGive(canStartMutex);
+  rt_mutex_release(canStartMutex);
 }
 
 void systemWaitStart(void)
@@ -175,10 +183,12 @@ void systemWaitStart(void)
   //This permits to guarantee that the system task is initialized before other
   //tasks waits for the start event.
   while(!isInit)
-    vTaskDelay(2);
+	  rt_thread_delay(2);
 
-  xSemaphoreTake(canStartMutex, portMAX_DELAY);
-  xSemaphoreGive(canStartMutex);
+  //xSemaphoreTake(canStartMutex, portMAX_DELAY);
+  rt_mutex_take(canStartMutex, RT_WAITING_FOREVER);
+  //xSemaphoreGive(canStartMutex);
+  rt_mutex_release(canStartMutex);
 }
 
 void systemSetCanFly(rt_bool_t val)

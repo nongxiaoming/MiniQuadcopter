@@ -25,7 +25,7 @@
 
 #ifndef SENSORFUSION6_H_
 #define SENSORFUSION6_H_
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 
 void sensfusion6Init(void);
 rt_bool_t sensfusion6Test(void);

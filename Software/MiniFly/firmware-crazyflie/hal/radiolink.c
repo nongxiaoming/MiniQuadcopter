@@ -165,10 +165,10 @@ static void radiolinkTask(void * arg)
     }
 
     //Push the data to send (Loop until the TX Fifo is full or there is no more data to send)
-    while( (uxQueueMessagesWaiting(txQueue) > 0) && !(nrfRead1Reg(REG_FIFO_STATUS)&0x20) )
+	while( (rt_mq_recv(txQueue, &pk, sizeof(RadioPacket), 5)==RT_EOK) && !(nrfRead1Reg(REG_FIFO_STATUS)&0x20) )
     {
       //xQueueReceive(txQueue, &pk, 0);
-		rt_mq_recv(txQueue, &pk, sizeof(RadioPacket), RT_WAITING_FOREVER);
+		//rt_mq_recv(txQueue, &pk, sizeof(RadioPacket), RT_WAITING_FOREVER);
       pk.raw.size++;
 
       nrfWriteAck(0, (char*) pk.raw.data, pk.raw.size);

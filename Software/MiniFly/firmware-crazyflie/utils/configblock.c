@@ -24,8 +24,7 @@
  * configblock.c - Simple static implementation of the config block
  */
 
-#include <stdint.h>
-#include <stdrt_bool_t.h>
+#include <rtthread.h>
 #include <unistd.h>
 
 #include "configblock.h"

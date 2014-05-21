@@ -62,8 +62,8 @@ void commanderInit(void)
   crtpInit();
   crtpRegisterPortCB(CRTP_PORT_COMMANDER, commanderCrtpCB);
 
-  lastUpdate = rt_();
-  isInactive = RT_TRUE; rt_tick_get();
+  lastUpdate = rt_tick_get();
+  isInactive = RT_TRUE; 
   isInit = RT_TRUE;
 }
 
@@ -107,7 +107,7 @@ void commanderWatchdog(void)
 
 static void commanderWatchdogReset(void)
 {
-  lastUpdate = xTaskGetTickCount();
+	lastUpdate = rt_tick_get();
 }
 
 rt_uint32_t commanderGetInactivityTime(void)

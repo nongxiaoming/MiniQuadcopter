@@ -33,7 +33,7 @@
 #include "config.h"
 
 #include "crtp.h"
-#include "info.h"
+//#include "info.h"
 #include "cfassert.h"
 
 static rt_bool_t isInit;

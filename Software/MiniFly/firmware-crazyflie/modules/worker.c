@@ -26,11 +26,6 @@
 #include "worker.h"
 
 #include <errno.h>
-
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
-
 #include "console.h"
 
 #define WORKER_QUEUE_LENGTH 5
@@ -40,19 +35,19 @@ struct worker_work {
   void* arg;
 };
 
-static xQueueHandle workerQueue;
+static rt_mq_t workerQueue;
 
 void workerInit()
 {
   if (workerQueue)
     return;
 
-  workerQueue = xQueueCreate(WORKER_QUEUE_LENGTH, sizeof(struct worker_work));
+  workerQueue = rt_mq_create("work_mq",sizeof(struct worker_work),WORKER_QUEUE_LENGTH,RT_IPC_FLAG_FIFO);
 }
 
 rt_bool_t workerTest()
 {
-  return (workerQueue != NULL);
+  return (workerQueue != RT_NULL);
 }
 
 void workerLoop()
@@ -64,8 +59,8 @@ void workerLoop()
 
   while (1)
   {
-    xQueueReceive(workerQueue, &work, portMAX_DELAY);
-    
+    //xQueueReceive(workerQueue, &work, portMAX_DELAY);
+	  rt_mq_recv(workerQueue,&work,sizeof(struct worker_work),RT_WAITING_FOREVER);
     if (work.function)
       work.function(work.arg);
   }
@@ -80,7 +75,7 @@ int workerSchedule(void (*function)(void*), void *arg)
   
   work.function = function;
   work.arg = arg;
-  if (xQueueSend(workerQueue, &work, 0) == pdRT_FALSE)
+  if (rt_mq_send(workerQueue,&work,sizeof(struct worker_work)) != RT_EOK)
     return ENOMEM;
 
   return 0; 

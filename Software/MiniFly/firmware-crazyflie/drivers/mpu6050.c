@@ -103,7 +103,7 @@ rt_bool_t mpu6050SelfTest()
   for (scrap = 0; scrap < 20; scrap++)
   {
     mpu6050GetMotion6(&axi16, &ayi16, &azi16, &gxi16, &gyi16, &gzi16);
-    vTaskDelay(M2T(2));
+    rt_thread_delay(M2T(2));
   }
   // First measurement
   gxf = gxi16 * gRange;
@@ -122,7 +122,7 @@ rt_bool_t mpu6050SelfTest()
   mpu6050SetAccelZSelfTest(RT_TRUE);
 
   // Wait for self test to take effect
-  vTaskDelay(M2T(MPU6050_SELF_TEST_DELAY_MS));
+  rt_thread_delay(M2T(MPU6050_SELF_TEST_DELAY_MS));
   // Take second measurement
   mpu6050GetMotion6(&axi16, &ayi16, &azi16, &gxi16, &gyi16, &gzi16);
   gxfTst = gxi16 * gRange;
