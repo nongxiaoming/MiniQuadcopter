@@ -78,7 +78,7 @@ typedef struct
   float iLimit;       //< integral limit
   float iLimitLow;    //< integral limit
   float dt;           //< delta-time dt
-} PidObject;
+} pid_t;
 
 /**
  * PID object initialization.
@@ -89,7 +89,7 @@ typedef struct
  * @param[in] ki        The integral gain
  * @param[in] kd        The derivative gain
  */
-void pidInit(PidObject* pid, const float desired, const float kp,
+void pidInit(pid_t* pid, const float desired, const float kp,
              const float ki, const float kd, const float dt);
 
 /**
@@ -98,7 +98,7 @@ void pidInit(PidObject* pid, const float desired, const float kp,
  * @param[in] pid   A pointer to the pid object.
  * @param[in] limit Pid integral swing limit.
  */
-void pidSetIntegralLimit(PidObject* pid, const float limit);
+void pidSetIntegralLimit(pid_t* pid, const float limit);
 
 /**
  * Reset the PID error values
@@ -106,7 +106,7 @@ void pidSetIntegralLimit(PidObject* pid, const float limit);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] limit Pid integral swing limit.
  */
-void pidReset(PidObject* pid);
+void pidReset(pid_t* pid);
 
 /**
  * Update the PID parameters.
@@ -117,7 +117,7 @@ void pidReset(PidObject* pid);
  *                        Set to RT_FALSE if pidSetError() has been used.
  * @return PID algorithm output
  */
-float pidUpdate(PidObject* pid, const float measured, const rt_bool_t updateError);
+float pidUpdate(pid_t* pid, const float measured, const rt_bool_t updateError);
 
 /**
  * Set a new set point for the PID to track.
@@ -125,19 +125,19 @@ float pidUpdate(PidObject* pid, const float measured, const rt_bool_t updateErro
  * @param[in] pid   A pointer to the pid object.
  * @param[in] angle The new set point
  */
-void pidSetDesired(PidObject* pid, const float desired);
+void pidSetDesired(pid_t* pid, const float desired);
 
 /**
  * Set a new set point for the PID to track.
  * @return The set point
  */
-float pidGetDesired(PidObject* pid);
+float pidGetDesired(pid_t* pid);
 
 /**
  * Find out if PID is active
  * @return RT_TRUE if active, RT_FALSE otherwise
  */
-rt_bool_t pidIsActive(PidObject* pid);
+rt_bool_t pidIsActive(pid_t* pid);
 
 /**
  * Set a new error. Use if a special error calculation is needed.
@@ -145,7 +145,7 @@ rt_bool_t pidIsActive(PidObject* pid);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] error The new error
  */
-void pidSetError(PidObject* pid, const float error);
+void pidSetError(pid_t* pid, const float error);
 
 /**
  * Set a new proportional gain for the PID.
@@ -153,7 +153,7 @@ void pidSetError(PidObject* pid, const float error);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] kp    The new proportional gain
  */
-void pidSetKp(PidObject* pid, const float kp);
+void pidSetKp(pid_t* pid, const float kp);
 
 /**
  * Set a new integral gain for the PID.
@@ -161,7 +161,7 @@ void pidSetKp(PidObject* pid, const float kp);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] ki    The new integral gain
  */
-void pidSetKi(PidObject* pid, const float ki);
+void pidSetKi(pid_t* pid, const float ki);
 
 /**
  * Set a new derivative gain for the PID.
@@ -169,7 +169,7 @@ void pidSetKi(PidObject* pid, const float ki);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] kd    The derivative gain
  */
-void pidSetKd(PidObject* pid, const float kd);
+void pidSetKd(pid_t* pid, const float kd);
 
 /**
  * Set a new dt gain for the PID. Defaults to IMU_UPDATE_DT upon construction
@@ -177,5 +177,5 @@ void pidSetKd(PidObject* pid, const float kd);
  * @param[in] pid   A pointer to the pid object.
  * @param[in] dt    Delta time
  */
-void pidSetDt(PidObject* pid, const float dt);
+void pidSetDt(pid_t* pid, const float dt);
 #endif /* PID_H_ */

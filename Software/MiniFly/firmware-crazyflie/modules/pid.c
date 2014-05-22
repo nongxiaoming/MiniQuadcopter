@@ -31,7 +31,7 @@
 #include "led.h"
 #include "motors.h"
 
-void pidInit(PidObject* pid, const float desired, const float kp,
+void pidInit(pid_t* pid, const float desired, const float kp,
              const float ki, const float kd, const float dt)
 {
   pid->error     = 0;
@@ -47,7 +47,7 @@ void pidInit(PidObject* pid, const float desired, const float kp,
   pid->dt        = dt;
 }
 
-float pidUpdate(PidObject* pid, const float measured, const rt_bool_t updateError)
+float pidUpdate(pid_t* pid, const float measured, const rt_bool_t updateError)
 {
     float output;
 
@@ -79,16 +79,16 @@ float pidUpdate(PidObject* pid, const float measured, const rt_bool_t updateErro
     return output;
 }
 
-void pidSetIntegralLimit(PidObject* pid, const float limit) {
+void pidSetIntegralLimit(pid_t* pid, const float limit) {
     pid->iLimit = limit;
 }
 
 
-void pidSetIntegralLimitLow(PidObject* pid, const float limitLow) {
+void pidSetIntegralLimitLow(pid_t* pid, const float limitLow) {
     pid->iLimitLow = limitLow;
 }
 
-void pidReset(PidObject* pid)
+void pidReset(pid_t* pid)
 {
   pid->error     = 0;
   pid->prevError = 0;
@@ -96,22 +96,22 @@ void pidReset(PidObject* pid)
   pid->deriv     = 0;
 }
 
-void pidSetError(PidObject* pid, const float error)
+void pidSetError(pid_t* pid, const float error)
 {
   pid->error = error;
 }
 
-void pidSetDesired(PidObject* pid, const float desired)
+void pidSetDesired(pid_t* pid, const float desired)
 {
   pid->desired = desired;
 }
 
-float pidGetDesired(PidObject* pid)
+float pidGetDesired(pid_t* pid)
 {
   return pid->desired;
 }
 
-rt_bool_t pidIsActive(PidObject* pid)
+rt_bool_t pidIsActive(pid_t* pid)
 {
   rt_bool_t isActive = RT_TRUE;
 
@@ -123,20 +123,20 @@ rt_bool_t pidIsActive(PidObject* pid)
   return isActive;
 }
 
-void pidSetKp(PidObject* pid, const float kp)
+void pidSetKp(pid_t* pid, const float kp)
 {
   pid->kp = kp;
 }
 
-void pidSetKi(PidObject* pid, const float ki)
+void pidSetKi(pid_t* pid, const float ki)
 {
   pid->ki = ki;
 }
 
-void pidSetKd(PidObject* pid, const float kd)
+void pidSetKd(pid_t* pid, const float kd)
 {
   pid->kd = kd;
 }
-void pidSetDt(PidObject* pid, const float dt) {
+void pidSetDt(pid_t* pid, const float dt) {
     pid->dt = dt;
 }

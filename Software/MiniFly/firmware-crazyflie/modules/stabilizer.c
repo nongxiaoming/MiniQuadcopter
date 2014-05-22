@@ -77,7 +77,7 @@ static float aslRaw;  // raw asl
 static float aslLong; // long term asl
 
 // Altitude hold variables
-static PidObject altHoldPID; // Used for altitute hold mode. I gets reset when the bat status changes
+static pid_t altHoldPID; // Used for altitute hold mode. I gets reset when the bat status changes
 rt_bool_t altHold = RT_FALSE;          // Currently in altitude hold mode
 rt_bool_t setAltHold = RT_FALSE;      // Hover mode has just been activated
 static float accWZ     = 0.0;
