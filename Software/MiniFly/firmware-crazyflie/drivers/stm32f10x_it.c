@@ -28,7 +28,6 @@
 #include "exti.h"
 #include "adc.h"
 #include "led.h"
-#include "uart.h"
 #include "i2croutines.h"
 #include "i2cdev.h"
 
@@ -149,11 +148,6 @@ void  DMA1_Channel7_IRQHandler(void)
 void  EXTI9_5_IRQHandler(void)
 {
 	extiInterruptHandler();
-}
-
-void  USART3_IRQHandler(void)
-{
-	uartIsr();
 }
 
 void  TIM1_UP_IRQHandler(void)

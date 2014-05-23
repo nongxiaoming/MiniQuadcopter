@@ -33,8 +33,6 @@
 #include "board.h"
 
 // TA: Maybe not so good to bring in these dependencies...
-#include "debug.h"
-#include "eprintf.h"
 
 #include "hmc5883l.h"
 #include "i2cdev.h"
