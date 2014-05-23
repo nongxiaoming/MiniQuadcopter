@@ -87,4 +87,5 @@
 // #define RT_USING_BSP_CMSIS
 #define M2T(x) (x*1000/RT_TICK_PER_SECOND)
 #define F2T(x) (RT_TICK_PER_SECOND/x)
+#define DEBUG(...)
 #endif

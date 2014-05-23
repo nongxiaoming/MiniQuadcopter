@@ -27,7 +27,6 @@
  THE SOFTWARE.
  ===============================================
  */
-#define DEBUG_MODULE "HMC5883L"
 
 #include <rtthread.h>
 #include "board.h"
@@ -140,7 +139,7 @@ rt_bool_t hmc5883lSelfTest()
       hmc5883lEvaluateSelfTest(-HMC5883L_ST_Y_MAX, -HMC5883L_ST_Y_MIN, myn, "neg Y") &&
       hmc5883lEvaluateSelfTest(-HMC5883L_ST_Z_MAX, -HMC5883L_ST_Z_MIN, mzn, "neg Z"))
   {
-    DEBUG_PRINT("Self test [OK].\n");
+    DEBUG("Self test [OK].\n");
   }
   else
   {
@@ -168,7 +167,7 @@ rt_bool_t hmc5883lEvaluateSelfTest(int16_t min, int16_t max, int16_t value, char
 {
   if (value < min || value > max)
   {
-    DEBUG_PRINT("Self test %s [FAIL]. low: %d, high: %d, measured: %d\n",
+    DEBUG("Self test %s [FAIL]. low: %d, high: %d, measured: %d\n",
                 string, min, max, value);
     return RT_FALSE;
   }

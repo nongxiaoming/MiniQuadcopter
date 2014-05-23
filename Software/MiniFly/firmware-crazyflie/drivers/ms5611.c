@@ -27,15 +27,11 @@
  * Datasheet at http://www.meas-spec.com/downloads/MS5611-01BA03.pdf
  *
  */
-#define DEBUG_MODULE "MS5611"
-
 #include <rtthread.h>
 #include "board.h"
 
 #include "ms5611.h"
 #include "i2cdev.h"
-#include "debug.h"
-#include "eprintf.h"
 
 #include "math.h"
 
@@ -115,7 +111,7 @@ rt_bool_t ms5611SelfTest(void)
   if (ms5611EvaluateSelfTest(MS5611_ST_PRESS_MIN, MS5611_ST_PRESS_MAX, pressure, "pressure") &&
       ms5611EvaluateSelfTest(MS5611_ST_TEMP_MIN, MS5611_ST_TEMP_MAX, temperature, "temperature"))
   {
-    DEBUG_PRINT("Self test [OK].\n");
+    DEBUG("Self test [OK].\n");
   }
   else
   {
@@ -129,7 +125,7 @@ rt_bool_t ms5611EvaluateSelfTest(float min, float max, float value, char* string
 {
   if (value < min || value > max)
   {
-    DEBUG_PRINT("Self test %s [FAIL]. low: %0.2f, high: %0.2f, measured: %0.2f\n",
+    DEBUG("Self test %s [FAIL]. low: %0.2f, high: %0.2f, measured: %0.2f\n",
                 string, min, max, value);
     return RT_FALSE;
   }

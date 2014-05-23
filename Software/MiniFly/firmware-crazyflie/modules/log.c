@@ -38,13 +38,11 @@
 #include "crc.h"
 #include "worker.h"
 #include "fp16.h"
-
 #include "console.h"
-#include "cfassert.h"
 
 #if 0
-#define DEBUG(fmt, ...) DEBUG_PRINT("D/log " fmt, ## __VA_ARGS__)
-#define ERROR(fmt, ...) DEBUG_PRINT("E/log " fmt, ## __VA_ARGS__)
+#define DEBUG(fmt, ...) rt_kprintf("D/log " fmt, ## __VA_ARGS__)
+#define ERROR(fmt, ...) rt_kprintf("E/log " fmt, ## __VA_ARGS__)
 #else
 #define DEBUG(...)
 #define ERROR(...)

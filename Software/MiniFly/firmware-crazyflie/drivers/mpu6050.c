@@ -27,16 +27,10 @@
  THE SOFTWARE.
  ===============================================
  */
-#define DEBUG_MODULE "MPU6050"
 
 #include <rtthread.h>
 #include "board.h"
-
-// TA: Maybe not so good to bring in these dependencies...
-#include "debug.h"
-#include "eprintf.h"
 #include "i2cdev.h"
-
 #include "mpu6050.h"
 
 static uint8_t devAddr;
@@ -156,7 +150,7 @@ rt_bool_t mpu6050SelfTest()
       mpu6050EvaluateSelfTest(MPU6050_ST_ACCEL_LOW, MPU6050_ST_ACCEL_HIGH, ayfDiff, "acc Y") &&
       mpu6050EvaluateSelfTest(MPU6050_ST_ACCEL_LOW, MPU6050_ST_ACCEL_HIGH, azfDiff, "acc Z"))
   {
-    DEBUG_PRINT("Self test [OK].\n");
+    DEBUG("Self test [OK].\n");
   }
   else
   {
@@ -177,7 +171,7 @@ rt_bool_t mpu6050EvaluateSelfTest(float low, float high, float value, char* stri
 {
   if (value < low || value > high)
   {
-    DEBUG_PRINT("Self test %s [FAIL]. low: %0.2f, high: %0.2f, measured: %0.2f\n",
+    DEBUG("Self test %s [FAIL]. low: %0.2f, high: %0.2f, measured: %0.2f\n",
                 string, low, high, value);
     return RT_FALSE;
   }

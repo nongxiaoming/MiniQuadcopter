@@ -30,7 +30,7 @@
 #include "crtp.h"
 
 void eskylinkInit();
-bool eskylinkTest();
+rt_bool_t eskylinkTest();
 struct crtpLinkOperations * eskylinkGetLink();
 void eskylinkReInit(void);
 

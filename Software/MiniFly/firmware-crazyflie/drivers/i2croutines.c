@@ -23,8 +23,6 @@
 #include "board.h"
 
 #include "i2croutines.h"
-
-
 #include "i2cdev.h"
 #include "nvicconf.h"
 
@@ -38,9 +36,9 @@ extern uint8_t* Buffer_Tx1;
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 DMA_InitTypeDef I2CDMA_InitStructure;
-volatile uint32_t I2CDirection = I2C_DIRECTION_TX;
-volatile uint32_t NumbOfBytes1;
-volatile uint32_t NumbOfBytes2;
+volatile rt_uint32_t I2CDirection = I2C_DIRECTION_TX;
+volatile rt_uint32_t NumbOfBytes1;
+volatile rt_uint32_t NumbOfBytes2;
 volatile uint8_t Address;
 volatile uint8_t Tx_Idx1 = 0, Rx_Idx1 = 0;
 volatile uint8_t Tx_Idx2 = 0, Rx_Idx2 = 0;
@@ -56,12 +54,12 @@ volatile uint8_t Tx_Idx2 = 0, Rx_Idx2 = 0;
  * @retval : None.
  */
 ErrorStatus I2C_Master_BufferRead(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
-    uint32_t NumByteToRead, I2C_ProgrammingModel Mode, uint8_t SlaveAddress,
-    uint32_t timeoutMs)
+    rt_uint32_t NumByteToRead, I2C_ProgrammingModel Mode, uint8_t SlaveAddress,
+    rt_uint32_t timeoutMs)
 
 {
-  volatile uint32_t temp = 0;
-  volatile uint32_t Timeout = 0;
+  volatile rt_uint32_t temp = 0;
+  volatile rt_uint32_t Timeout = 0;
   rt_uint32_t e;
   /* Enable I2C errors interrupts (used in all modes: Polling, DMA and Interrupts */
   I2Cx->CR2 |= I2C_IT_ERR;
@@ -176,12 +174,12 @@ ErrorStatus I2C_Master_BufferRead(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
  * @retval : None.
  */
 ErrorStatus I2C_Master_BufferWrite(I2C_TypeDef* I2Cx, uint8_t* pBuffer,
-    uint32_t NumByteToWrite, I2C_ProgrammingModel Mode, uint8_t SlaveAddress,
-    uint32_t timeoutMs)
+    rt_uint32_t NumByteToWrite, I2C_ProgrammingModel Mode, uint8_t SlaveAddress,
+    rt_uint32_t timeoutMs)
 {
 
-  volatile uint32_t temp = 0;
-  volatile uint32_t Timeout = 0;
+  volatile rt_uint32_t temp = 0;
+  volatile rt_uint32_t Timeout = 0;
   rt_uint32_t e;
   /* Enable Error IT (used in all modes: DMA, Polling and Interrupts */
   I2Cx->CR2 |= I2C_IT_ERR;
@@ -438,8 +436,8 @@ void I2C_LowLevel_Init(I2C_TypeDef* I2Cx)
  * @param  None.
  * @retval None.
  */
-void I2C_DMAConfig(I2C_TypeDef* I2Cx, uint8_t* pBuffer, uint32_t BufferSize,
-    uint32_t Direction)
+void I2C_DMAConfig(I2C_TypeDef* I2Cx, uint8_t* pBuffer, rt_uint32_t BufferSize,
+    rt_uint32_t Direction)
 {
   /* Initialize the DMA with the new parameters */
   if (Direction == I2C_DIRECTION_TX)
@@ -499,8 +497,8 @@ void I2C_DMAConfig(I2C_TypeDef* I2Cx, uint8_t* pBuffer, uint32_t BufferSize,
 void i2cInterruptHandlerI2c1(void)
 {
 
-  volatile uint32_t SR1Register = 0;
-  volatile uint32_t SR2Register = 0;
+  volatile rt_uint32_t SR1Register = 0;
+  volatile rt_uint32_t SR2Register = 0;
 
   /* Read the I2C1 SR1 and SR2 status registers */
   SR1Register = I2C1->SR1;
@@ -618,7 +616,7 @@ void i2cInterruptHandlerI2c1(void)
 void i2cErrorInterruptHandlerI2c1(void)
 {
 
-  volatile uint32_t SR1Register = 0;
+  volatile rt_uint32_t SR1Register = 0;
 
   /* Read the I2C1 status register */
   SR1Register = I2C1->SR1;

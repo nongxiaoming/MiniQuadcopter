@@ -30,16 +30,10 @@
  */
 
 #include "nrf24l01.h"
-
 #include <string.h>
-
-#include "cfassert.h"
-
 #include <rtthread.h>
 #include "board.h"
-
 #include "exti.h"
-
 #include "nRF24L01reg.h"
 
 /* Defines for the SPI and GPIO pins used to drive the SPI Flash */
@@ -242,7 +236,7 @@ unsigned char nrfWriteAck(unsigned int pipe, char *buffer, int len)
   unsigned char status;
   int i;
 
-  ASSERT(pipe<6);
+  RT_ASSERT(pipe<6);
 
   RADIO_EN_CS();
 
@@ -317,7 +311,7 @@ void nrfSetAddress(unsigned int pipe, char* address)
 {
   int len = 5;
 
-  ASSERT(pipe<6);
+  RT_ASSERT(pipe<6);
 
   if (pipe > 1)
     len = 1;

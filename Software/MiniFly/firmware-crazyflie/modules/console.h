@@ -27,15 +27,14 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
-#include <stdbool.h>
-#include "eprintf.h"
+#include <rtthread.h>
 
 /**
  * Initialize the console
  */
 void consoleInit(void);
 
-bool consoleTest(void);
+rt_bool_t consoleTest(void);
 
 /**
  * Put a character to the console buffer
@@ -64,6 +63,6 @@ void consoleFlush(void);
  * @param FMT String format
  * @patam ... Parameters to print
  */
-#define consolePrintf(FMT, ...) eprintf(consolePutchar, FMT, ## __VA_ARGS__)
+//#define consolePrintf(FMT, ...) rt_kprintf(consolePutchar, FMT, ## __VA_ARGS__)
 
 #endif /*CONSOLE_H_*/

@@ -24,23 +24,19 @@
  *
  * imu.c - inertial measurement unit
  */
-#define DEBUG_MODULE "IMU"
 
 #include <math.h>
 
 #include <rtthread.h>
 #include "board.h"
 
-#include "debug.h"
 #include "configblock.h"
-#include "cfassert.h"
 #include "imu.h"
 #include "i2cdev.h"
 #include "mpu6050.h"
 #include "hmc5883l.h"
 #include "ms5611.h"
 #include "ledseq.h"
-#include "uart.h"
 #include "param.h"
 #include "log.h"
 
@@ -139,11 +135,11 @@ void imu6Init(void)
   mpu6050Init(I2C1);
   if (mpu6050TestConnection() == RT_TRUE)
   {
-    DEBUG_PRINT("MPU6050 I2C connection [OK].\n");
+    DEBUG("MPU6050 I2C connection [OK].\n");
   }
   else
   {
-    DEBUG_PRINT("MPU6050 I2C connection [FAIL].\n");
+    DEBUG("MPU6050 I2C connection [FAIL].\n");
   }
 
   mpu6050Reset();
@@ -184,11 +180,11 @@ void imu6Init(void)
   if (hmc5883lTestConnection() == RT_TRUE)
   {
     isHmc5883lPresent = RT_TRUE;
-    DEBUG_PRINT("HMC5883 I2C connection [OK].\n");
+    DEBUG("HMC5883 I2C connection [OK].\n");
   }
   else
   {
-    DEBUG_PRINT("HMC5883L I2C connection [FAIL].\n");
+    DEBUG("HMC5883L I2C connection [FAIL].\n");
   }
 #endif
 
@@ -196,11 +192,11 @@ void imu6Init(void)
   if (ms5611Init(I2C1) == RT_TRUE)
   {
     isMs5611Present = RT_TRUE;
-    DEBUG_PRINT("MS5611 I2C connection [OK].\n");
+    DEBUG("MS5611 I2C connection [OK].\n");
   }
   else
   {
-    DEBUG_PRINT("MS5611 I2C connection [FAIL].\n");
+    DEBUG("MS5611 I2C connection [FAIL].\n");
   }
 #endif
 
@@ -223,14 +219,14 @@ rt_bool_t imu6Test(void)
 
   if (!isInit)
   {
-    DEBUG_PRINT("Uninitialized");
+    DEBUG("Uninitialized");
     testStatus = RT_FALSE;
   }
   // Test for CF 10-DOF variant with none responding sensor
   if((isHmc5883lPresent && !isMs5611Present) ||
      (!isHmc5883lPresent && isMs5611Present))
   {
-    DEBUG_PRINT("HMC5883L or MS5611 is not responding");
+    DEBUG("HMC5883L or MS5611 is not responding");
     testStatus = RT_FALSE;
   }
   if (testStatus)

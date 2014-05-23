@@ -33,7 +33,6 @@
 #include "param.h"
 #include "log.h"
 #include "eskylink.h"
-#include "uart.h"
 
 static rt_bool_t isInit;
 
