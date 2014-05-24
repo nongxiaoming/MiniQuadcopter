@@ -37,9 +37,9 @@
 //Hardware configuration
 #define LED_GPIO_PERIF   RCC_APB2Periph_GPIOB
 #define LED_GPIO_PORT    GPIOB
-#define LED_GPIO_GREEN   GPIO_Pin_5
+#define LED_GPIO_GREEN   GPIO_Pin_4
 #define LED_POL_GREEN    LED_POL_NEG
-#define LED_GPIO_RED     GPIO_Pin_4
+#define LED_GPIO_RED     GPIO_Pin_3
 #define LED_POL_RED      LED_POL_NEG
 
 #define LED_NUM 2
