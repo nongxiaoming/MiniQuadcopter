@@ -32,7 +32,6 @@
 #include <rtthread.h>
 #include "board.h"
 #include "adc.h"
-#include "pm.h"
 #include "nvicconf.h"
 #include "imu.h"
 
@@ -41,12 +40,13 @@
 #include "acc.h"
 #endif
 
-// PORT A
-#define GPIO_VBAT        GPIO_Pin_3
+// PORT B
+#define GPIO_VBAT_PORT       GPIOB
+#define GPIO_VBAT_PIN        GPIO_Pin_1
 
 // CHANNELS
 #define NBR_OF_ADC_CHANNELS   1
-#define CH_VBAT               ADC_Channel_3
+#define CH_VBAT               ADC_Channel_9
 
 #define CH_VREF               ADC_Channel_17
 #define CH_TEMP               ADC_Channel_16
@@ -275,7 +275,8 @@ void adcTask(void *param)
    // xQueueReceive(adcQueue, &adcRawValues, portMAX_DELAY);
 	  rt_mq_recv(adc_mq, &adcRawValues,sizeof(AdcGroup*), 50);
     adcDecimate(adcRawValues, &adcValues);  // 10% CPU
-    pmBatteryUpdate(&adcValues);
+    //pmBatteryUpdate(&adcValues);
+	DEBUG("Battery:%d\n", adcValues[0]);
 
 #ifdef ADC_OUTPUT_RAW_DATA
     uartSendDataDma(sizeof(AdcGroup)*ADC_MEAN_SIZE, (uint8_t*)adcRawValues);

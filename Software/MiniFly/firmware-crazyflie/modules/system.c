@@ -31,7 +31,6 @@
 #include "param.h"
 #include "log.h"
 #include "ledseq.h"
-#include "pm.h"
 
 #include "system.h"
 #include "configblock.h"
@@ -81,7 +80,6 @@ void systemInit(void)
   workerInit();
   adcInit();
   ledseqInit();
-  pmInit();
     
   isInit = RT_TRUE;
 }
@@ -92,7 +90,6 @@ rt_bool_t systemTest()
   
   pass &= adcTest();
   pass &= ledseqTest();
-  pass &= pmTest();
   pass &= workerTest();
   
   return pass;

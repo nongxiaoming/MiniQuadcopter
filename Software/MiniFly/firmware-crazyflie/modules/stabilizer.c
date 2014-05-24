@@ -26,7 +26,6 @@
 #include "board.h"
 #include "math.h"
 #include "system.h"
-#include "pm.h"
 #include "stabilizer.h"
 #include "commander.h"
 #include "controller.h"
@@ -293,10 +292,10 @@ static void stabilizerAltHoldUpdate(void)
   vSpeedAcc = vSpeed;
 
   // Reset Integral gain of PID controller if being charged
-  if (!pmIsDischarging())
-  {
-    altHoldPID.integ = 0.0;
-  }
+  //if (!pmIsDischarging())
+  //{
+  //  altHoldPID.integ = 0.0;
+  //}
 
   // Altitude hold mode just activated, set target altitude as current altitude. Reuse previous integral term as a starting point
   if (setAltHold)

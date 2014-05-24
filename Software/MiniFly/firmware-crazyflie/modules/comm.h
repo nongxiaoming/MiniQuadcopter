@@ -28,6 +28,6 @@
 #define __COMM_H__
 
 void commInit(void);
-bool commTest(void);
+rt_bool_t commTest(void);
 
 #endif //__COMM_H__
