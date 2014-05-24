@@ -25,7 +25,6 @@
 #include "stm32f10x_it.h"
 #include <board.h>
 #include <rtthread.h>
-#include "exti.h"
 #include "adc.h"
 #include "led.h"
 #include "i2croutines.h"

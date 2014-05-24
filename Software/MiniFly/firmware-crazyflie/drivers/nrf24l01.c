@@ -33,7 +33,7 @@
 #include <string.h>
 #include <rtthread.h>
 #include "board.h"
-#include "exti.h"
+#include "nvicconf.h"
 #include "nRF24L01reg.h"
 
 /* Defines for the SPI and GPIO pins used to drive the SPI Flash */
@@ -52,6 +52,7 @@
 #define RADIO_GPIO_IRQ_SRC_PORT   GPIO_PortSourceGPIOA
 #define RADIO_GPIO_IRQ_SRC        GPIO_PinSource1
 #define RADIO_GPIO_IRQ_LINE       EXTI_Line1
+#define RADIO_GPIO_IRQ_CHANNEL    EXTI1_IRQn
 
 #define RADIO_SPI                 SPI1
 #define RADIO_SPI_CLK             RCC_APB2Periph_SPI1
@@ -339,12 +340,10 @@ void nrfInit(void)
   SPI_InitTypeDef  SPI_InitStructure;
   EXTI_InitTypeDef EXTI_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
+  NVIC_InitTypeDef NVIC_InitStructure;
 
   if (isInit)
     return;
-
-  /* Enable the EXTI interrupt router */
-  extiInit();
 
   /* Enable SPI and GPIO clocks */
   RCC_APB2PeriphClockCmd(RADIO_GPIO_SPI_CLK | RADIO_GPIO_CS_PERIF | 
@@ -380,6 +379,12 @@ void nrfInit(void)
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
+  /* Enable the EXTI interrupt router */
+  NVIC_InitStructure.NVIC_IRQChannel = RADIO_GPIO_IRQ_CHANNEL;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = NVIC_RADIO_PRI;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
 
   /* disable the chip select */
   RADIO_DIS_CS();
@@ -413,5 +418,5 @@ void nrfInit(void)
 rt_bool_t nrfTest(void)
 {
   //TODO implement real tests!
-  return isInit & extiTest();
+  return isInit;
 }
