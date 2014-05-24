@@ -47,7 +47,7 @@ void mpu6050Init(I2C_TypeDef *i2cPort)
     return;
 
   I2Cx = i2cPort;
-  devAddr = MPU6050_ADDRESS_AD0_HIGH;
+  devAddr = MPU6050_ADDRESS_AD0_LOW;
 
   isInit = RT_TRUE;
 }
@@ -70,7 +70,7 @@ rt_bool_t mpu6050Test(void)
  */
 rt_bool_t mpu6050TestConnection()
 {
-  return mpu6050GetDeviceID() == 0b110100;
+	return mpu6050GetDeviceID() == 0x34;
 }
 
 /** Do a MPU6050 self test.
