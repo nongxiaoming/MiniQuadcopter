@@ -40,8 +40,8 @@
 #include "param.h"
 #include "log.h"
 
-#define IMU_ENABLE_MAG_HMC5883
-#define IMU_ENABLE_PRESSURE_MS5611
+//#define IMU_ENABLE_MAG_HMC5883
+//#define IMU_ENABLE_PRESSURE_MS5611
 //#define IMU_MPU6050_DLPF_256HZ
 
 #define IMU_GYRO_FS_CFG       MPU6050_GYRO_FS_2000
