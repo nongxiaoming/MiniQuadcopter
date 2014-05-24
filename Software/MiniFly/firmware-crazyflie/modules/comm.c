@@ -32,7 +32,6 @@
 #include "crtpservice.h"
 #include "param.h"
 #include "log.h"
-#include "eskylink.h"
 
 static rt_bool_t isInit;
 
