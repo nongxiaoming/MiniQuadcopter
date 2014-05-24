@@ -145,9 +145,10 @@ void  DMA1_Channel7_IRQHandler(void)
 }
 
 
-void  EXTI9_5_IRQHandler(void)
+void  EXTI1_IRQHandler(void)
 {
-	extiInterruptHandler();
+	nrfIsr();
+	EXTI_ClearITPendingBit(EXTI_Line1);
 }
 
 void  TIM1_UP_IRQHandler(void)
