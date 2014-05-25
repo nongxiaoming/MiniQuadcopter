@@ -19,8 +19,9 @@
 
 #include <board.h>
 #include <rtthread.h>
-
-
+#ifdef  RT_USING_FINSH
+#include <finsh.h>
+#endif
 #include "drv_led.h"
 
 ALIGN(RT_ALIGN_SIZE)
@@ -55,8 +56,10 @@ static void led_thread_entry(void* parameter)
 void rt_init_thread_entry(void* parameter)
 {
 	 //Launch the system task that will initialize and start everything
-  systemLaunch();
+     //systemLaunch();
 #ifdef  RT_USING_FINSH
+    /* initialize finsh */
+	finsh_system_init();
     finsh_set_device(RT_CONSOLE_DEVICE_NAME);
 #endif  /* RT_USING_FINSH */
 
