@@ -33,9 +33,9 @@
 
 
 // HW defines
-#define MOTOR1_TIM_PERIF     RCC_APB1Periph_TIM5
-#define MOTOR1_TIM           TIM5
-#define MOTOR1_TIM_DBG       DBGMCU_TIM5_STOP
+#define MOTOR1_TIM_PERIF     RCC_APB1Periph_TIM2
+#define MOTOR1_TIM           TIM2
+#define MOTOR1_TIM_DBG       DBGMCU_TIM2_STOP
 //#define MOTOR1_TIM_REMAP     GPIO_PartialRemap_TIM2
 
 #define MOTOR2_TIM_PERIF     RCC_APB1Periph_TIM4
@@ -45,17 +45,17 @@
 #define MOTOR3_TIM_PERIF     RCC_APB1Periph_TIM3
 #define MOTOR3_TIM           TIM3
 #define MOTOR3_TIM_DBG       DBGMCU_TIM3_STOP
-#define MOTOR3_TIM_REMAP     GPIO_PartialRemap_TIM3
+#define MOTOR3_TIM_REMAP     GPIO_FullRemap_TIM3
 
 #define MOTOR4_TIM_PERIF     RCC_APB1Periph_TIM3
 #define MOTOR4_TIM           TIM3
 #define MOTOR4_TIM_DBG       DBGMCU_TIM3_STOP
-#define MOTOR4_TIM_REMAP     GPIO_PartialRemap_TIM3
+#define MOTOR4_TIM_REMAP      GPIO_FullRemap_TIM3
 
 
 #define MOTOR1_GPIO_PERIF          RCC_APB2Periph_GPIOA
 #define MOTOR1_GPIO_PORT           GPIOA
-#define MOTOR1_GPIO_PIN            GPIO_Pin_3 // T5_CH4
+#define MOTOR1_GPIO_PIN            GPIO_Pin_3 // T2_CH4
 #define MOTOR2_GPIO_PERIF          RCC_APB2Periph_GPIOB
 #define MOTOR2_GPIO_PORT           GPIOB
 #define MOTOR2_GPIO_PIN            GPIO_Pin_9 // T4_CH4
