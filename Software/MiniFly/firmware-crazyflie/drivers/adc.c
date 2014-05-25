@@ -276,7 +276,7 @@ void adcTask(void *param)
 	  rt_mq_recv(adc_mq, &adcRawValues,sizeof(AdcGroup*), 50);
     adcDecimate(adcRawValues, &adcValues);  // 10% CPU
     //pmBatteryUpdate(&adcValues);
-	DEBUG("Battery:%d\n", adcValues[0]);
+	//DEBUG("Battery:%d\n", adcValues[0]);
 
 #ifdef ADC_OUTPUT_RAW_DATA
     uartSendDataDma(sizeof(AdcGroup)*ADC_MEAN_SIZE, (uint8_t*)adcRawValues);
