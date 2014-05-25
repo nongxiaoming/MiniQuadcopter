@@ -122,6 +122,7 @@ static rt_bool_t isInit;
 
 void imu6Init(void)
 {
+	uint8_t mpu6050_id=0;
   if(isInit)
     return;
 
@@ -150,8 +151,8 @@ void imu6Init(void)
   mpu6050SetTempSensorEnabled(RT_TRUE);
   // Disable interrupts
   mpu6050SetIntEnabled(RT_FALSE);
-  // Connect the HMC5883L to the main I2C bus
-  mpu6050SetI2CBypassEnabled(RT_TRUE);
+  // Not Connect the HMC5883L to the main I2C bus
+  mpu6050SetI2CBypassEnabled(RT_FALSE);
   // Set x-axis gyro as clock source
   mpu6050SetClockSource(MPU6050_CLOCK_PLL_XGYRO);
   // Set gyro full scale range
@@ -212,7 +213,10 @@ void imu6Init(void)
 
   isInit = RT_TRUE;
 }
-
+#ifdef RT_USING_FINSH
+#include <finsh.h>
+FINSH_FUNCTION_EXPORT(imu6Init,imu6 init);
+#endif
 rt_bool_t imu6Test(void)
 {
   rt_bool_t testStatus = RT_TRUE;
@@ -263,7 +267,7 @@ void imu6Read(Axis3f* gyroOut, Axis3f* accOut)
     imuFindBiasValue(&gyroBias);
     if (gyroBias.isBiasValueFound)
     {
-      ledseqRun(LED_RED, seq_calibrated);
+      //ledseqRun(LED_RED, seq_calibrated);
 //      uartPrintf("Gyro bias: %i, %i, %i\n",
 //                  gyroBias.bias.x, gyroBias.bias.y, gyroBias.bias.z);
     }

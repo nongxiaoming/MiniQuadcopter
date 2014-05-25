@@ -76,7 +76,7 @@ static float aslRaw;  // raw asl
 static float aslLong; // long term asl
 
 // Altitude hold variables
-static pid_t altHoldPID; // Used for altitute hold mode. I gets reset when the bat status changes
+static rt_pid_t altHoldPID; // Used for altitute hold mode. I gets reset when the bat status changes
 rt_bool_t altHold = RT_FALSE;          // Currently in altitude hold mode
 rt_bool_t setAltHold = RT_FALSE;      // Hover mode has just been activated
 static float accWZ     = 0.0;
@@ -159,7 +159,10 @@ void stabilizerInit(void)
   }
   isInit = RT_TRUE;
 }
-
+#ifdef RT_USING_FINSH
+#include "finsh.h"
+FINSH_FUNCTION_EXPORT(stabilizerInit,stabilizer init);
+#endif
 rt_bool_t stabilizerTest(void)
 {
   rt_bool_t pass = RT_TRUE;
@@ -181,22 +184,19 @@ static void stabilizerTask(void* param)
   //vTaskSetApplicationTaskTag(0, (void*)TASK_STABILIZER_ID_NBR);
 
   //Wait for the system to be fully started to start stabilization loop
-  systemWaitStart();
+  //systemWaitStart();
 
   lastWakeTime = rt_tick_get();
 
   while(1)
   {
 	  rt_thread_delay(F2T(IMU_UPDATE_FREQ)); // 500Hz
-
     // Magnetometer not yet used more then for logging.
     imu9Read(&gyro, &acc, &mag);
-
     if (imu6IsCalibrated())
     {
       commanderGetRPY(&eulerRollDesired, &eulerPitchDesired, &eulerYawDesired);
       commanderGetRPYType(&rollType, &pitchType, &yawType);
-
       // 250HZ
       if (++attitudeCounter >= ATTITUDE_UPDATE_RATE_DIVIDER)
       {
@@ -213,7 +213,6 @@ static void stabilizerTask(void* param)
                                      &rollRateDesired, &pitchRateDesired, &yawRateDesired);
         attitudeCounter = 0;
       }
-
       // 100HZ
       if (imuHasBarometer() && (++altHoldCounter >= ALTHOLD_UPDATE_RATE_DIVIDER))
       {
@@ -233,13 +232,12 @@ static void stabilizerTask(void* param)
       {
         yawRateDesired = -eulerYawDesired;
       }
-
       // TODO: Investigate possibility to subtract gyro drift.
       controllerCorrectRatePID(gyro.x, -gyro.y, gyro.z,
                                rollRateDesired, pitchRateDesired, yawRateDesired);
 
       controllerGetActuatorOutput(&actuatorRoll, &actuatorPitch, &actuatorYaw);
-
+	  rt_kprintf("Roll:%d,Pitch:%d,Yaw:%d\n",actuatorRoll,actuatorPitch,actuatorYaw);
       if (!altHold || !imuHasBarometer())
       {
         // Use thrust from controller if not in altitude hold mode

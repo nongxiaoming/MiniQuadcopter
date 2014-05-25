@@ -40,21 +40,11 @@ void commInit(void)
   if (isInit)
     return;
 
-#ifdef USE_ESKYLINK
-  eskylinkInit();
-#else
   radiolinkInit();
-#endif
 
   crtpInit();
 
-#ifdef USE_UART_CRTP
-  crtpSetLink(uartGetLink());
-#elif defined(USE_ESKYLINK)
-  crtpSetLink(eskylinkGetLink());
-#else
   crtpSetLink(radiolinkGetLink());
-#endif
 
   crtpserviceInit();
   logInit();
@@ -75,13 +65,7 @@ rt_bool_t commTest(void)
 {
   rt_bool_t pass=isInit;
   
-  #ifdef USE_UART_CRTP
-  pass &= uartTest();
-  #elif defined(USE_ESKYLINK)
-  pass &= eskylinkTest();
-  #else
   pass &= radiolinkTest();
-  #endif
   
   pass &= crtpTest();
   pass &= crtpserviceTest();

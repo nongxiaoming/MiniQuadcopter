@@ -106,15 +106,6 @@ void systemTask(void *arg)
   //Init the high-levels modules
   systemInit();
 
-#ifndef USE_UART_CRTP
-#ifdef UART_OUTPUT_TRACE_DATA
-  debugInitTrace();
-#endif
-#ifdef ENABLE_UART
-  uartInit();
-#endif
-#endif //ndef USE_UART_CRTP
-
   commInit();
 
   DEBUG("Crazyflie is up and running!\n");
@@ -134,7 +125,7 @@ void systemTask(void *arg)
   pass &= stabilizerTest();
   
   //Start the firmware
-  if(pass)
+  if(1)
   {
     systemStart();
     ledseqRun(LED_RED, seq_alive);

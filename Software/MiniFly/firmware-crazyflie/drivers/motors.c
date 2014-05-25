@@ -173,10 +173,10 @@ void motorsInit()
   TIM_Cmd(MOTOR3_TIM, ENABLE);
   TIM_Cmd(MOTOR4_TIM, ENABLE);
   //Enable the timer PWM outputs
-  TIM_CtrlPWMOutputs(MOTOR1_TIM, ENABLE);
-  TIM_CtrlPWMOutputs(MOTOR2_TIM, ENABLE);
-  TIM_CtrlPWMOutputs(MOTOR3_TIM, ENABLE);
-  TIM_CtrlPWMOutputs(MOTOR4_TIM, ENABLE);
+  //TIM_CtrlPWMOutputs(MOTOR1_TIM, ENABLE);
+  //TIM_CtrlPWMOutputs(MOTOR2_TIM, ENABLE);
+  //TIM_CtrlPWMOutputs(MOTOR3_TIM, ENABLE);
+  //TIM_CtrlPWMOutputs(MOTOR4_TIM, ENABLE);
   // Halt timer during debug halt.
   DBGMCU_Config(MOTOR1_TIM_DBG, ENABLE);
   DBGMCU_Config(MOTOR2_TIM_DBG, ENABLE);

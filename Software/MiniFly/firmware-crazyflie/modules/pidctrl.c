@@ -50,12 +50,12 @@ void pidCtrlInit()
 void pidCrtlTask(void *param)
 {
   CRTPPacket p;
-  extern pid_t pidRollRate;
-  extern pid_t pidPitchRate;
-  extern pid_t pidYawRate;
-  extern pid_t pidRoll;
-  extern pid_t pidPitch;
-  extern pid_t pidYaw;
+  extern rt_pid_t pidRollRate;
+  extern rt_pid_t pidPitchRate;
+  extern rt_pid_t pidYawRate;
+  extern rt_pid_t pidRoll;
+  extern rt_pid_t pidPitch;
+  extern rt_pid_t pidYaw;
   struct pidValues
   {
     rt_uint16_t rateKpRP;
