@@ -427,98 +427,98 @@ THE SOFTWARE.
 void mpu6050Init(I2C_TypeDef *i2cPort);
 rt_bool_t mpu6050Test(void);
 
-rt_bool_t mpu6050TestConnection();
+rt_bool_t mpu6050TestConnection(void);
 rt_bool_t mpu6050EvaluateSelfTest(float low, float high, float value, char* string);
-rt_bool_t mpu6050SelfTest();
+rt_bool_t mpu6050SelfTest(void);
 
 
 // AUX_VDDIO register
-uint8_t mpu6050GetAuxVDDIOLevel();
+uint8_t mpu6050GetAuxVDDIOLevel(void);
 void mpu6050SetAuxVDDIOLevel(uint8_t level);
 
 // SMPLRT_DIV register
-uint8_t mpu6050GetRate();
+uint8_t mpu6050GetRate(void);
 void mpu6050SetRate(uint8_t rate);
 
 // CONFIG register
-uint8_t mpu6050GetExternalFrameSync();
+uint8_t mpu6050GetExternalFrameSync(void);
 void mpu6050SetExternalFrameSync(uint8_t sync);
-uint8_t mpu6050GetDLPFMode();
+uint8_t mpu6050GetDLPFMode(void);
 void mpu6050SetDLPFMode(uint8_t bandwidth);
 
 // GYRO_CONFIG register
 void mpu6050SetGyroXSelfTest(rt_bool_t enabled);
 void mpu6050SetGyroYSelfTest(rt_bool_t enabled);
 void mpu6050SetGyroZSelfTest(rt_bool_t enabled);
-uint8_t mpu6050GetFullScaleGyroRangeId();
-float mpu6050GetFullScaleGyroDPL();
+uint8_t mpu6050GetFullScaleGyroRangeId(void);
+float mpu6050GetFullScaleGyroDPL(void);
 void mpu6050SetFullScaleGyroRange(uint8_t range);
 
 // ACCEL_CONFIG register
-rt_bool_t mpu6050GetAccelXSelfTest();
+rt_bool_t mpu6050GetAccelXSelfTest(void);
 void mpu6050SetAccelXSelfTest(rt_bool_t enabled);
-rt_bool_t mpu6050GetAccelYSelfTest();
+rt_bool_t mpu6050GetAccelYSelfTest(void);
 void mpu6050SetAccelYSelfTest(rt_bool_t enabled);
-rt_bool_t mpu6050GetAccelZSelfTest();
+rt_bool_t mpu6050GetAccelZSelfTest(void);
 void mpu6050SetAccelZSelfTest(rt_bool_t enabled);
-uint8_t mpu6050GetFullScaleAccelRangeId();
+uint8_t mpu6050GetFullScaleAccelRangeId(void);
 void mpu6050SetFullScaleAccelRange(uint8_t range);
-float mpu6050GetFullScaleAccelGPL();
-uint8_t mpu6050GetDHPFMode();
+float mpu6050GetFullScaleAccelGPL(void);
+uint8_t mpu6050GetDHPFMode(void);
 void mpu6050SetDHPFMode(uint8_t mode);
 
 // FF_THR register
-uint8_t mpu6050GetFreefallDetectionThreshold();
+uint8_t mpu6050GetFreefallDetectionThreshold(void);
 void mpu6050SetFreefallDetectionThreshold(uint8_t threshold);
 
 // FF_DUR register
-uint8_t mpu6050GetFreefallDetectionDuration();
+uint8_t mpu6050GetFreefallDetectionDuration(void);
 void mpu6050SetFreefallDetectionDuration(uint8_t duration);
 
 // MOT_THR register
-uint8_t mpu6050GetMotionDetectionThreshold();
+uint8_t mpu6050GetMotionDetectionThreshold(void);
 void mpu6050SetMotionDetectionThreshold(uint8_t threshold);
 
 // MOT_DUR register
-uint8_t mpu6050GetMotionDetectionDuration();
+uint8_t mpu6050GetMotionDetectionDuration(void);
 void mpu6050SetMotionDetectionDuration(uint8_t duration);
 
 // ZRMOT_THR register
-uint8_t mpu6050GetZeroMotionDetectionThreshold();
+uint8_t mpu6050GetZeroMotionDetectionThreshold(void);
 void mpu6050SetZeroMotionDetectionThreshold(uint8_t threshold);
 
 // ZRMOT_DUR register
-uint8_t mpu6050GetZeroMotionDetectionDuration();
+uint8_t mpu6050GetZeroMotionDetectionDuration(void);
 void mpu6050SetZeroMotionDetectionDuration(uint8_t duration);
 
 // FIFO_EN register
-rt_bool_t mpu6050GetTempFIFOEnabled();
+rt_bool_t mpu6050GetTempFIFOEnabled(void);
 void mpu6050SetTempFIFOEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetXGyroFIFOEnabled();
+rt_bool_t mpu6050GetXGyroFIFOEnabled(void);
 void mpu6050SetXGyroFIFOEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetYGyroFIFOEnabled();
+rt_bool_t mpu6050GetYGyroFIFOEnabled(void);
 void mpu6050SetYGyroFIFOEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetZGyroFIFOEnabled();
+rt_bool_t mpu6050GetZGyroFIFOEnabled(void);
 void mpu6050SetZGyroFIFOEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetAccelFIFOEnabled();
+rt_bool_t mpu6050GetAccelFIFOEnabled(void);
 void mpu6050SetAccelFIFOEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetSlave2FIFOEnabled();
+rt_bool_t mpu6050GetSlave2FIFOEnabled(void);
 void mpu6050SetSlave2FIFOEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetSlave1FIFOEnabled();
+rt_bool_t mpu6050GetSlave1FIFOEnabled(void);
 void mpu6050SetSlave1FIFOEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetSlave0FIFOEnabled();
+rt_bool_t mpu6050GetSlave0FIFOEnabled(void);
 void mpu6050SetSlave0FIFOEnabled(rt_bool_t enabled);
 
 // I2C_MST_CTRL register
-rt_bool_t mpu6050GetMultiMasterEnabled();
+rt_bool_t mpu6050GetMultiMasterEnabled(void);
 void mpu6050SetMultiMasterEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetWaitForExternalSensorEnabled();
+rt_bool_t mpu6050GetWaitForExternalSensorEnabled(void);
 void mpu6050SetWaitForExternalSensorEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetSlave3FIFOEnabled();
+rt_bool_t mpu6050GetSlave3FIFOEnabled(void);
 void mpu6050SetSlave3FIFOEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetSlaveReadWriteTransitionEnabled();
+rt_bool_t mpu6050GetSlaveReadWriteTransitionEnabled(void);
 void mpu6050SetSlaveReadWriteTransitionEnabled(rt_bool_t enabled);
-uint8_t mpu6050GetMasterClockSpeed();
+uint8_t mpu6050GetMasterClockSpeed(void);
 void mpu6050SetMasterClockSpeed(uint8_t speed);
 
 // I2C_SLV* registers (Slave 0-3)
@@ -538,30 +538,30 @@ uint8_t mpu6050GetSlaveDataLength(uint8_t num);
 void mpu6050SetSlaveDataLempu6050Seth(uint8_t num, uint8_t length);
 
 // I2C_SLV* registers (Slave 4)
-uint8_t mpu6050GetSlave4Address();
+uint8_t mpu6050GetSlave4Address(void);
 void mpu6050SetSlave4Address(uint8_t address);
-uint8_t mpu6050GetSlave4Register();
+uint8_t mpu6050GetSlave4Register(void);
 void mpu6050SetSlave4Register(uint8_t reg);
 void mpu6050SetSlave4OutputByte(uint8_t data);
-rt_bool_t mpu6050GetSlave4Enabled();
+rt_bool_t mpu6050GetSlave4Enabled(void);
 void mpu6050SetSlave4Enabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetSlave4InterruptEnabled();
+rt_bool_t mpu6050GetSlave4InterruptEnabled(void);
 void mpu6050SetSlave4InterruptEnabled(rt_bool_t enabled);
-rt_bool_t mpu6050GetSlave4WriteMode();
+rt_bool_t mpu6050GetSlave4WriteMode(void);
 void mpu6050SetSlave4WriteMode(rt_bool_t mode);
-uint8_t mpu6050GetSlave4MasterDelay();
+uint8_t mpu6050GetSlave4MasterDelay(void);
 void mpu6050SetSlave4MasterDelay(uint8_t delay);
-uint8_t mpu6050GetSlate4InputByte();
+uint8_t mpu6050GetSlate4InputByte(void);
 
 // I2C_MST_STATUS register
-rt_bool_t mpu6050GetPassthroughStatus();
-rt_bool_t mpu6050GetSlave4IsDone();
-rt_bool_t mpu6050GetLostArbitration();
-rt_bool_t mpu6050GetSlave4Nack();
-rt_bool_t mpu6050GetSlave3Nack();
-rt_bool_t mpu6050GetSlave2Nack();
-rt_bool_t mpu6050GetSlave1Nack();
-rt_bool_t mpu6050GetSlave0Nack();
+rt_bool_t mpu6050GetPassthroughStatus(void);
+rt_bool_t mpu6050GetSlave4IsDone(void);
+rt_bool_t mpu6050GetLostArbitration(void);
+rt_bool_t mpu6050GetSlave4Nack(void);
+rt_bool_t mpu6050GetSlave3Nack(void);
+rt_bool_t mpu6050GetSlave2Nack(void);
+rt_bool_t mpu6050GetSlave1Nack(void);
+rt_bool_t mpu6050GetSlave0Nack(void);
 
 // INT_PIN_CFG register
 rt_bool_t mpu6050GetInterruptMode();
@@ -775,13 +775,13 @@ rt_bool_t mpu6050GetDMPInt1Status();
 rt_bool_t mpu6050GetDMPInt0Status();
 
 // INT_STATUS register (DMP functions)
-rt_bool_t mpu6050GetIntPLLReadyStatus();
-rt_bool_t mpu6050GetIntDMPStatus();
+rt_bool_t mpu6050GetIntPLLReadyStatus(void);
+rt_bool_t mpu6050GetIntDMPStatus(void);
 
 // USER_CTRL register (DMP functions)
-rt_bool_t mpu6050GetDMPEnabled();
+rt_bool_t mpu6050GetDMPEnabled(void);
 void mpu6050SetDMPEnabled(rt_bool_t enabled);
-void mpu6050ResetDMP();
+void mpu6050ResetDMP(void);
 
 // BANK_SEL register
 void mpu6050SetMemoryBank(uint8_t bank, rt_bool_t prefetchEnabled, rt_bool_t userBank);
@@ -790,7 +790,7 @@ void mpu6050SetMemoryBank(uint8_t bank, rt_bool_t prefetchEnabled, rt_bool_t use
 void mpu6050SetMemoryStartAddress(uint8_t address);
 
 // MEM_R_W register
-uint8_t mpu6050ReadMemoryByte();
+uint8_t mpu6050ReadMemoryByte(void);
 void mpu6050WriteMemoryByte(uint8_t data);
 void mpu6050ReadMemoryBlock(uint8_t *data, uint16_t dataSize, uint8_t bank, uint8_t address);
 rt_bool_t mpu6050WriteMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t bank, uint8_t address, rt_bool_t verify);
@@ -800,11 +800,11 @@ rt_bool_t mpu6050WriteDMPConfigurationSet(const uint8_t *data, uint16_t dataSize
 rt_bool_t mpu6050WiteProgDMPConfigurationSet(const uint8_t *data, uint16_t dataSize);
 
 // DMP_CFG_1 register
-uint8_t mpu6050GetDMPConfig1();
+uint8_t mpu6050GetDMPConfig1(void);
 void mpu6050SetDMPConfig1(uint8_t config);
 
 // DMP_CFG_2 register
-uint8_t mpu6050GetDMPConfig2();
+uint8_t mpu6050GetDMPConfig2(void);
 void mpu6050SetDMPConfig2(uint8_t config);
 
 
