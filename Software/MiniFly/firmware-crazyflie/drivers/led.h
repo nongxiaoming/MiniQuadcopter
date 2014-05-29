@@ -46,8 +46,8 @@
 
 typedef enum {LED_RED=0, LED_GREEN} led_t;
 
-void ledInit();
-rt_bool_t ledTest();
+void ledInit(void);
+rt_bool_t ledTest(void);
 
 // Procedures to set the status of the LEDs
 void ledSet(led_t led, rt_bool_t value);

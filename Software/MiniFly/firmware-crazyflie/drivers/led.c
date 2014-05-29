@@ -49,7 +49,7 @@ static int led_polarity[] = {
 };
 
 //Initialize the green led pin as output
-void ledInit()
+void ledInit(void)
 {
   if(isInit)
     return;
