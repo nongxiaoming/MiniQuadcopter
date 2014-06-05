@@ -35,7 +35,7 @@ void nrfInit(void);
 rt_bool_t nrfTest(void);
 
 // Interrupt routine
-void nrfIsr();
+void nrfIsr(void);
 
 /*** Defines ***/
 #define RADIO_RATE_250K 0
@@ -54,18 +54,18 @@ unsigned char nrfWrite1Reg(unsigned char address, char byte);
 void nrfSetInterruptCallback(void (*cb)(void));
 
 // Low level functionality of the nrf chip
-unsigned char nrfNop();
-unsigned char nrfFlushRx();
-unsigned char nrfFlushTx();
+unsigned char nrfNop(void);
+unsigned char nrfFlushRx(void);
+unsigned char nrfFlushTx(void);
 unsigned char nrfRxLength(unsigned int pipe);
-unsigned char nrfActivate();
+unsigned char nrfActivate(void);
 unsigned char nrfWriteAck(unsigned int pipe, char *buffer, int len);
 unsigned char nrfReadRX(char *buffer, int len);
 void nrfSetChannel(unsigned int channel);
 void nrfSetDatarate(int datarate);
 void nrfSetAddress(unsigned int pipe, char* address);
 void nrfSetEnable(rt_bool_t enable);
-unsigned char nrfGetStatus();
+unsigned char nrfGetStatus(void);
 
 
 #endif

@@ -107,7 +107,7 @@ static char spiSendByte(char byte)
   return SPI_I2S_ReceiveData(RADIO_SPI);
 }
 
-static char spiReceiveByte()
+static char spiReceiveByte(void)
 {
   return spiSendByte(DUMMY_BYTE);
 }
@@ -170,7 +170,7 @@ unsigned char nrfRead1Reg(unsigned char address) {
 }
 
 /* Sent the NOP command. Used to get the status byte */
-unsigned char nrfNop()
+unsigned char nrfNop(void)
 {
   unsigned char status;
 
@@ -181,7 +181,7 @@ unsigned char nrfNop()
   return status;
 }
 
-unsigned char nrfFlushRx()
+unsigned char nrfFlushRx(void)
 {
   unsigned char status;
 
@@ -192,7 +192,7 @@ unsigned char nrfFlushRx()
   return status;
 }
 
-unsigned char nrfFlushTx()
+unsigned char nrfFlushTx(void)
 {
   unsigned char status;
 
@@ -216,7 +216,7 @@ unsigned char nrfRxLength(unsigned int pipe)
   return length;
 }
 
-unsigned char nrfActivate()
+unsigned char nrfActivate(void)
 {
   unsigned char status;
   
@@ -270,7 +270,7 @@ unsigned char nrfReadRX(char *buffer, int len)
 
 /* Interrupt service routine, call the interrupt callback
  */
-void nrfIsr()
+void nrfIsr(void)
 {
   if (interruptCb)
     interruptCb();
@@ -329,7 +329,7 @@ void nrfSetEnable(rt_bool_t enable)
   }
 }
 
-unsigned char nrfGetStatus()
+unsigned char nrfGetStatus(void)
 {
   return nrfNop();
 }
