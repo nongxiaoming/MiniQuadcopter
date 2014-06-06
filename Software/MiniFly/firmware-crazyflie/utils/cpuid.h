@@ -28,8 +28,8 @@
 #define __CPUID_H__
 
 //The CPU ID is 12 bytes long
-unsigned char * cpuidGetId();
-int cpuIdGetFlashSize();
+unsigned char * cpuidGetId(void);
+int cpuIdGetFlashSize(void);
 
 #endif /* __CPUID_H__ */
 
