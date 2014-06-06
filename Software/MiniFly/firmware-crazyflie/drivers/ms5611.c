@@ -290,7 +290,7 @@ int32_t ms5611GetConversion(uint8_t command)
 /**
  * Reads factory calibration and store it into object variables.
  */
-rt_bool_t ms5611ReadPROM()
+rt_bool_t ms5611ReadPROM(void)
 {
   uint8_t buffer[MS5611_PROM_REG_SIZE];
   uint16_t* pCalRegU16 = (uint16_t*)&calReg;
@@ -317,7 +317,7 @@ rt_bool_t ms5611ReadPROM()
  * Send a reset command to the device. With the reset command the device
  * populates its internal registers with the values read from the PROM.
  */
-void ms5611Reset()
+void ms5611Reset(void)
 {
   i2cdevWriteByte(I2Cx, devAddr, I2CDEV_NO_MEM_ADDR, MS5611_RESET);
 }
