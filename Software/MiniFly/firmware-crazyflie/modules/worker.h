@@ -28,9 +28,9 @@
 
 #include <rtthread.h>
 
-void workerInit();
+void workerInit(void);
 
-rt_bool_t workerTest();
+rt_bool_t workerTest(void);
 
 /**
  * Light printf implementation
@@ -38,7 +38,7 @@ rt_bool_t workerTest();
  * This function exectute the worker loop and never returns except if the worker
  * module has not been initialized.
  */
-void workerLoop();
+void workerLoop(void);
 
 /**
  * Schedule a function for execution by the worker loop

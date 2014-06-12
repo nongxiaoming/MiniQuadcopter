@@ -37,7 +37,7 @@ struct worker_work {
 
 static rt_mq_t workerQueue;
 
-void workerInit()
+void workerInit(void)
 {
   if (workerQueue)
     return;
@@ -50,7 +50,7 @@ rt_bool_t workerTest()
   return (workerQueue != RT_NULL);
 }
 
-void workerLoop()
+void workerLoop(void)
 {
   struct worker_work work;
 
