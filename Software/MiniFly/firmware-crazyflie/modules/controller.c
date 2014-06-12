@@ -57,7 +57,7 @@ int16_t yawOutput;
 
 static rt_bool_t isInit;
 
-void controllerInit()
+void controllerInit(void)
 {
   if(isInit)
     return;
@@ -80,7 +80,7 @@ void controllerInit()
   isInit = RT_TRUE;
 }
 
-rt_bool_t controllerTest()
+rt_bool_t controllerTest(void)
 {
   return isInit;
 }
