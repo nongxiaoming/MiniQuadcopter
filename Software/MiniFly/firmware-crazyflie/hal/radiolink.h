@@ -29,9 +29,9 @@
 
 #include "crtp.h"
 
-void radiolinkInit();
-rt_bool_t radiolinkTest();
-struct crtpLinkOperations * radiolinkGetLink();
+void radiolinkInit(void);
+rt_bool_t radiolinkTest(void);
+struct crtpLinkOperations * radiolinkGetLink(void);
 void radiolinkReInit(void);
 
 #endif

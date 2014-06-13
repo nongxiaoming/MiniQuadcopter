@@ -213,7 +213,7 @@ static void radiolinkInitNRF24L01P(void)
  * Public functions
  */
 
-void radiolinkInit()
+void radiolinkInit(void)
 {
 	rt_thread_t radio_thread;
   if(isInit)
@@ -246,7 +246,7 @@ void radiolinkInit()
   isInit = RT_TRUE;
 }
 
-rt_bool_t radiolinkTest()
+rt_bool_t radiolinkTest(void)
 {
   return nrfTest();
 }
