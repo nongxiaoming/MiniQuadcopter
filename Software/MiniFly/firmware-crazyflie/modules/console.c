@@ -42,7 +42,7 @@ static void consoleSendMessage(void)
   messageToPrint.size = 0;
 }
 
-void consoleInit()
+void consoleInit(void)
 {
   if (isInit)
     return;
