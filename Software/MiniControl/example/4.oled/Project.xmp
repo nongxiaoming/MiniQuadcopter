@@ -48,6 +48,8 @@
                 <Header RelativePath=".\Hardware\led.h" />
                 <Header RelativePath=".\Hardware\delay.h" />
                 <Header RelativePath=".\Hardware\usart.h" />
+                <Header RelativePath=".\Hardware\drv_ssd1306.h" />
+                <Header RelativePath=".\Hardware\fonts.h" />
             </File>
             <File RelativePath=".\User\stm32f10x_it.c" FileType="1" Output="stm32f10x_it.o" ro="0" bss="0" rw="0">
                 <Header RelativePath=".\User\stm32f10x_it.h" />
@@ -213,13 +215,14 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_wwdg.h" />
                 <Header RelativePath=".\Libraries\Device\inc\misc.h" />
             </File>
+            <File RelativePath=".\Hardware\drv_ssd1306.c" FileType="1" Output="drv_ssd1306.o" ro="0" bss="0" rw="0" />
         </Filter>
         <Filter Name="Startup">
             <File RelativePath=".\Startup\startup_stm32f10x_md.s" FileType="2" Output="startup_stm32f10x_md.o" ro="0" bss="0" rw="0" />
         </Filter>
         <Filter Name="Libraries/Core">
             <File RelativePath=".\Libraries\Core\core_cm3.c" FileType="1" Output="core_cm3.o" ro="0" bss="0" rw="0">
-                <Header RelativePath="d:\Keil\ARM\ARMCC\bin\..\include\stdint.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
             </File>
             <File RelativePath=".\Libraries\Core\system_stm32f10x.c" FileType="1" Output="system_stm32f10x.o" ro="0" bss="0" rw="0">
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
