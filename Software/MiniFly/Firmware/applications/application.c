@@ -32,7 +32,6 @@
 #include <dfs_fs.h>
 #endif
 
-#include "ssd1306.h"
 #include "drv_led.h"
 
 ALIGN(RT_ALIGN_SIZE)
