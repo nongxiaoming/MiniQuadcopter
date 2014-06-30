@@ -1,5 +1,5 @@
 /*
- * File      : usart.c
+ * File      : drv_usart.c
  * This file is part of RT-Thread RTOS
  * COPYRIGHT (C) 2006-2013, RT-Thread Development Team
  *
@@ -13,7 +13,7 @@
  */
 
 #include "stm32f10x.h"
-#include "usart.h"
+#include "drv_usart.h"
 #include "board.h"
 
 #include <rtdevice.h>
