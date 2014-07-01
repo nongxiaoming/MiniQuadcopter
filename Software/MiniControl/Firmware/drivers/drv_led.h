@@ -9,7 +9,7 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2009-01-05     Bernard      the first version
+ * 2014-07-01     xiaonong      the first version
  */
 
 #ifndef __LED_H__
@@ -17,8 +17,12 @@
 
 #include <rtthread.h>
 
-void rt_hw_led_init(void);
-void rt_hw_led_on(rt_uint32_t led);
-void rt_hw_led_off(rt_uint32_t led);
+#define LED_NUM  2
+#define LED0_PIN 10
+#define LED1_PIN 11
+rt_err_t led_hw_init(void);
+
+#define led_hw_on(i) GPIOB->BRR|=0x01<<(LED0_PIN+i)
+#define led_hw_off(i) GPIOB->BSRR|=0x01<<(LED0_PIN+i)
 
 #endif
