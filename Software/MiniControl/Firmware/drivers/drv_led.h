@@ -12,8 +12,8 @@
  * 2014-07-01     xiaonong      the first version
  */
 
-#ifndef __LED_H__
-#define __LED_H__
+#ifndef __DRV_LED_H
+#define __DRV_LED_H
 
 #include <rtthread.h>
 

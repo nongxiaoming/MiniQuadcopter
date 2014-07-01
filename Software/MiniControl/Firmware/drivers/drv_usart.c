@@ -24,15 +24,6 @@
 #define UART1_GPIO_RX		GPIO_Pin_10
 #define UART1_GPIO			GPIOA
 
-///* USART2 */
-//#define UART2_GPIO_TX	    GPIO_Pin_2
-//#define UART2_GPIO_RX	    GPIO_Pin_3
-//#define UART2_GPIO	    	GPIOA
-
-///* USART3_REMAP[1:0] = 00 */
-//#define UART3_GPIO_TX		GPIO_Pin_10
-//#define UART3_GPIO_RX		GPIO_Pin_11
-//#define UART3_GPIO			GPIOB
 
 /* STM32 uart driver */
 struct stm32_uart
@@ -127,75 +118,6 @@ void USART1_IRQHandler(void)
 }
 #endif /* RT_USING_UART1 */
 
-#if defined(RT_USING_UART2)
-/* UART1 device driver structure */
-struct serial_ringbuffer uart2_int_rx;
-struct stm32_uart uart2 =
-{
-    USART2,
-    USART2_IRQn,
-};
-struct rt_serial_device serial2;
-
-void USART2_IRQHandler(void)
-{
-    struct stm32_uart* uart;
-
-    uart = &uart2;
-
-    /* enter interrupt */
-    rt_interrupt_enter();
-    if(USART_GetITStatus(uart->uart_device, USART_IT_RXNE) != RESET)
-    {
-        rt_hw_serial_isr(&serial2);
-        /* clear interrupt */
-        USART_ClearITPendingBit(uart->uart_device, USART_IT_RXNE);
-    }
-    if (USART_GetITStatus(uart->uart_device, USART_IT_TC) != RESET)
-    {
-        /* clear interrupt */
-        USART_ClearITPendingBit(uart->uart_device, USART_IT_TC);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-#endif /* RT_USING_UART2 */
-
-#if defined(RT_USING_UART3)
-/* UART1 device driver structure */
-struct serial_ringbuffer uart3_int_rx;
-struct stm32_uart uart3 =
-{
-    USART3,
-    USART3_IRQn,
-};
-struct rt_serial_device serial3;
-
-void USART3_IRQHandler(void)
-{
-    struct stm32_uart* uart;
-
-    uart = &uart3;
-
-    /* enter interrupt */
-    rt_interrupt_enter();
-    if(USART_GetITStatus(uart->uart_device, USART_IT_RXNE) != RESET)
-    {
-        rt_hw_serial_isr(&serial3);
-        /* clear interrupt */
-        USART_ClearITPendingBit(uart->uart_device, USART_IT_RXNE);
-    }
-    if (USART_GetITStatus(uart->uart_device, USART_IT_TC) != RESET)
-    {
-        /* clear interrupt */
-        USART_ClearITPendingBit(uart->uart_device, USART_IT_TC);
-    }
-
-    /* leave interrupt */
-    rt_interrupt_leave();
-}
-#endif /* RT_USING_UART3 */
 
 static void RCC_Configuration(void)
 {
@@ -206,19 +128,7 @@ static void RCC_Configuration(void)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
 #endif /* RT_USING_UART1 */
 
-#ifdef RT_USING_UART2
-    /* Enable UART GPIO clocks */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    /* Enable UART clock */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2, ENABLE);
-#endif /* RT_USING_UART2 */
 
-#ifdef RT_USING_UART3
-    /* Enable UART GPIO clocks */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-    /* Enable UART clock */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);
-#endif /* RT_USING_UART3 */
 }
 
 static void GPIO_Configuration(void)
@@ -238,27 +148,6 @@ static void GPIO_Configuration(void)
     GPIO_Init(UART1_GPIO, &GPIO_InitStructure);
 #endif /* RT_USING_UART1 */
 
-#ifdef RT_USING_UART2
-    /* Configure USART Rx/tx PIN */
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_InitStructure.GPIO_Pin = UART2_GPIO_RX;
-    GPIO_Init(UART1_GPIO, &GPIO_InitStructure);
-
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStructure.GPIO_Pin = UART2_GPIO_TX;
-    GPIO_Init(UART2_GPIO, &GPIO_InitStructure);
-#endif /* RT_USING_UART2 */
-
-#ifdef RT_USING_UART3
-    /* Configure USART Rx/tx PIN */
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-    GPIO_InitStructure.GPIO_Pin = UART3_GPIO_RX;
-    GPIO_Init(UART3_GPIO, &GPIO_InitStructure);
-
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
-    GPIO_InitStructure.GPIO_Pin = UART3_GPIO_TX;
-    GPIO_Init(UART3_GPIO, &GPIO_InitStructure);
-#endif /* RT_USING_UART3 */
 }
 
 static void NVIC_Configuration(struct stm32_uart* uart)
@@ -276,7 +165,6 @@ static void NVIC_Configuration(struct stm32_uart* uart)
 void rt_hw_usart_init(void)
 {
     struct stm32_uart* uart;
-    struct serial_configure config = RT_SERIAL_CONFIG_DEFAULT;
 
     RCC_Configuration();
     GPIO_Configuration();
@@ -297,36 +185,7 @@ void rt_hw_usart_init(void)
                           uart);
 #endif /* RT_USING_UART1 */
 
-#ifdef RT_USING_UART2
-    uart = &uart2;
 
-    config.baud_rate = BAUD_RATE_115200;
-    serial2.ops    = &stm32_uart_ops;
-    serial2.int_rx = &uart2_int_rx;
-    serial2.config = config;
 
-    NVIC_Configuration(&uart2);
 
-    /* register UART1 device */
-    rt_hw_serial_register(&serial2, "uart2",
-                          RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX,
-                          uart);
-#endif /* RT_USING_UART2 */
-
-#ifdef RT_USING_UART3
-    uart = &uart3;
-
-    config.baud_rate = BAUD_RATE_115200;
-
-    serial3.ops    = &stm32_uart_ops;
-    serial3.int_rx = &uart3_int_rx;
-    serial3.config = config;
-
-    NVIC_Configuration(&uart3);
-
-    /* register UART1 device */
-    rt_hw_serial_register(&serial3, "uart3",
-                          RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX,
-                          uart);
-#endif /* RT_USING_UART3 */
 }
