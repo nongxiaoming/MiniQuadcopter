@@ -8,9 +8,11 @@
 
 int main(void)
 {
- led_hw_init();
+  led_hw_init();
+	USART1_Config();
   while (1)
   {
+	 printf("hello !!\r\n");
 	led_hw_on(LED0);
 	delay_ms(500);
 	led_hw_off(LED0);
