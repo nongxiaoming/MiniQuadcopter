@@ -43,6 +43,7 @@
 //#define IMU_ENABLE_MAG_HMC5883
 //#define IMU_ENABLE_PRESSURE_MS5611
 //#define IMU_MPU6050_DLPF_256HZ
+#define IMU_TAKE_ACCEL_BIAS
 
 #define IMU_GYRO_FS_CFG       MPU6050_GYRO_FS_2000
 #define IMU_DEG_PER_LSB_CFG   MPU6050_DEG_PER_LSB_2000
@@ -265,9 +266,9 @@ void imu6Read(Axis3f* gyroOut, Axis3f* accOut)
     imuFindBiasValue(&gyroBias);
     if (gyroBias.isBiasValueFound)
     {
-      //ledseqRun(LED_RED, seq_calibrated);
-//      uartPrintf("Gyro bias: %i, %i, %i\n",
-//                  gyroBias.bias.x, gyroBias.bias.y, gyroBias.bias.z);
+      ledseqRun(LED_RED, seq_calibrated);
+	  DEBUG("Gyro bias: %i, %i, %i\n",
+                  gyroBias.bias.x, gyroBias.bias.y, gyroBias.bias.z);
     }
   }
 
@@ -282,8 +283,8 @@ void imu6Read(Axis3f* gyroOut, Axis3f* accOut)
     accelBias.bias.y = mean.y;
     accelBias.bias.z = mean.z - IMU_1G_RAW;
     accelBias.isBiasValueFound = RT_TRUE;
-    //uartPrintf("Accel bias: %i, %i, %i\n",
-    //            accelBias.bias.x, accelBias.bias.y, accelBias.bias.z);
+	DEBUG("Accel bias: %i, %i, %i\n",
+                accelBias.bias.x, accelBias.bias.y, accelBias.bias.z);
   }
 #endif
 
