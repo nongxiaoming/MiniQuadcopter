@@ -92,13 +92,6 @@ typedef struct
 void pidInit(rt_pid_t* pid, const float desired, const float kp,
              const float ki, const float kd, const float dt);
 
-/**
- * Set the integral limit for this PID in deg.
- *
- * @param[in] pid   A pointer to the pid object.
- * @param[in] limit Pid integral swing limit.
- */
-void pidSetIntegralLimit(rt_pid_t* pid, const float limit);
 
 /**
  * Reset the PID error values
@@ -119,19 +112,7 @@ void pidReset(rt_pid_t* pid);
  */
 float pidUpdate(rt_pid_t* pid, const float measured, const rt_bool_t updateError);
 
-/**
- * Set a new set point for the PID to track.
- *
- * @param[in] pid   A pointer to the pid object.
- * @param[in] angle The new set point
- */
-void pidSetDesired(rt_pid_t* pid, const float desired);
 
-/**
- * Set a new set point for the PID to track.
- * @return The set point
- */
-float pidGetDesired(rt_pid_t* pid);
 
 /**
  * Find out if PID is active
@@ -139,43 +120,5 @@ float pidGetDesired(rt_pid_t* pid);
  */
 rt_bool_t pidIsActive(rt_pid_t* pid);
 
-/**
- * Set a new error. Use if a special error calculation is needed.
- *
- * @param[in] pid   A pointer to the pid object.
- * @param[in] error The new error
- */
-void pidSetError(rt_pid_t* pid, const float error);
 
-/**
- * Set a new proportional gain for the PID.
- *
- * @param[in] pid   A pointer to the pid object.
- * @param[in] kp    The new proportional gain
- */
-void pidSetKp(rt_pid_t* pid, const float kp);
-
-/**
- * Set a new integral gain for the PID.
- *
- * @param[in] pid   A pointer to the pid object.
- * @param[in] ki    The new integral gain
- */
-void pidSetKi(rt_pid_t* pid, const float ki);
-
-/**
- * Set a new derivative gain for the PID.
- *
- * @param[in] pid   A pointer to the pid object.
- * @param[in] kd    The derivative gain
- */
-void pidSetKd(rt_pid_t* pid, const float kd);
-
-/**
- * Set a new dt gain for the PID. Defaults to IMU_UPDATE_DT upon construction
- *
- * @param[in] pid   A pointer to the pid object.
- * @param[in] dt    Delta time
- */
-void pidSetDt(rt_pid_t* pid, const float dt);
 #endif /* PID_H_ */

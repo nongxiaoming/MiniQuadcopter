@@ -323,12 +323,12 @@ static void stabilizerAltHoldUpdate(void)
   {
     // Update target altitude from joy controller input
     altHoldTarget += altHoldChange / altHoldChange_SENS;
-    pidSetDesired(&altHoldPID, altHoldTarget);
+    altHoldPID.desired = altHoldTarget;
 
     // Compute error (current - target), limit the error
     altHoldErr = constrain(deadband(asl - altHoldTarget, errDeadband),
                            -altHoldErrMax, altHoldErrMax);
-    pidSetError(&altHoldPID, -altHoldErr);
+    altHoldPID.error = -altHoldErr;
 
     // Get control from PID controller, dont update the error (done above)
     // Smooth it and include barometer vspeed

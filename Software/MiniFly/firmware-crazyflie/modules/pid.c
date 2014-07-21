@@ -79,36 +79,12 @@ float pidUpdate(rt_pid_t* pid, const float measured, const rt_bool_t updateError
     return output;
 }
 
-void pidSetIntegralLimit(rt_pid_t* pid, const float limit) {
-    pid->iLimit = limit;
-}
-
-
-void pidSetIntegralLimitLow(rt_pid_t* pid, const float limitLow) {
-    pid->iLimitLow = limitLow;
-}
-
 void pidReset(rt_pid_t* pid)
 {
   pid->error     = 0;
   pid->prevError = 0;
   pid->integ     = 0;
   pid->deriv     = 0;
-}
-
-void pidSetError(rt_pid_t* pid, const float error)
-{
-  pid->error = error;
-}
-
-void pidSetDesired(rt_pid_t* pid, const float desired)
-{
-  pid->desired = desired;
-}
-
-float pidGetDesired(rt_pid_t* pid)
-{
-  return pid->desired;
 }
 
 rt_bool_t pidIsActive(rt_pid_t* pid)
@@ -123,20 +99,3 @@ rt_bool_t pidIsActive(rt_pid_t* pid)
   return isActive;
 }
 
-void pidSetKp(rt_pid_t* pid, const float kp)
-{
-  pid->kp = kp;
-}
-
-void pidSetKi(rt_pid_t* pid, const float ki)
-{
-  pid->ki = ki;
-}
-
-void pidSetKd(rt_pid_t* pid, const float kd)
-{
-  pid->kd = kd;
-}
-void pidSetDt(rt_pid_t* pid, const float dt) {
-    pid->dt = dt;
-}

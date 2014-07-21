@@ -66,16 +66,16 @@ void controllerInit(void)
   pidInit(&pidRollRate, 0, PID_ROLL_RATE_KP, PID_ROLL_RATE_KI, PID_ROLL_RATE_KD, IMU_UPDATE_DT);
   pidInit(&pidPitchRate, 0, PID_PITCH_RATE_KP, PID_PITCH_RATE_KI, PID_PITCH_RATE_KD, IMU_UPDATE_DT);
   pidInit(&pidYawRate, 0, PID_YAW_RATE_KP, PID_YAW_RATE_KI, PID_YAW_RATE_KD, IMU_UPDATE_DT);
-  pidSetIntegralLimit(&pidRollRate, PID_ROLL_RATE_INTEGRATION_LIMIT);
-  pidSetIntegralLimit(&pidPitchRate, PID_PITCH_RATE_INTEGRATION_LIMIT);
-  pidSetIntegralLimit(&pidYawRate, PID_YAW_RATE_INTEGRATION_LIMIT);
+  pidRollRate.iLimit = PID_ROLL_RATE_INTEGRATION_LIMIT;
+  pidPitchRate.iLimit =  PID_PITCH_RATE_INTEGRATION_LIMIT;
+  pidYawRate.iLimit = PID_YAW_RATE_INTEGRATION_LIMIT;
 
   pidInit(&pidRoll, 0, PID_ROLL_KP, PID_ROLL_KI, PID_ROLL_KD, IMU_UPDATE_DT);
   pidInit(&pidPitch, 0, PID_PITCH_KP, PID_PITCH_KI, PID_PITCH_KD, IMU_UPDATE_DT);
   pidInit(&pidYaw, 0, PID_YAW_KP, PID_YAW_KI, PID_YAW_KD, IMU_UPDATE_DT);
-  pidSetIntegralLimit(&pidRoll, PID_ROLL_INTEGRATION_LIMIT);
-  pidSetIntegralLimit(&pidPitch, PID_PITCH_INTEGRATION_LIMIT);
-  pidSetIntegralLimit(&pidYaw, PID_YAW_INTEGRATION_LIMIT);
+  pidRoll.iLimit = PID_ROLL_INTEGRATION_LIMIT;
+  pidPitch.iLimit = PID_PITCH_INTEGRATION_LIMIT;
+  pidYaw.iLimit = PID_YAW_INTEGRATION_LIMIT;
   
   isInit = RT_TRUE;
 }
@@ -89,13 +89,13 @@ void controllerCorrectRatePID(
        float rollRateActual, float pitchRateActual, float yawRateActual,
        float rollRateDesired, float pitchRateDesired, float yawRateDesired)
 {
-  pidSetDesired(&pidRollRate, rollRateDesired);
+  pidRollRate.desired = rollRateDesired;
   TRUNCATE_SINT16(rollOutput, pidUpdate(&pidRollRate, rollRateActual, RT_TRUE));
 
-  pidSetDesired(&pidPitchRate, pitchRateDesired);
+  pidPitchRate.desired = pitchRateDesired;
   TRUNCATE_SINT16(pitchOutput, pidUpdate(&pidPitchRate, pitchRateActual, RT_TRUE));
 
-  pidSetDesired(&pidYawRate, yawRateDesired);
+  pidYawRate.desired = yawRateDesired;
   TRUNCATE_SINT16(yawOutput, pidUpdate(&pidYawRate, yawRateActual, RT_TRUE));
 }
 
@@ -104,11 +104,11 @@ void controllerCorrectAttitudePID(
        float eulerRollDesired, float eulerPitchDesired, float eulerYawDesired,
        float* rollRateDesired, float* pitchRateDesired, float* yawRateDesired)
 {
-  pidSetDesired(&pidRoll, eulerRollDesired);
+	pidRoll.desired = eulerRollDesired;
   *rollRateDesired = pidUpdate(&pidRoll, eulerRollActual, RT_TRUE);
 
   // Update PID for pitch axis
-  pidSetDesired(&pidPitch, eulerPitchDesired);
+  pidPitch.desired = eulerPitchDesired;
   *pitchRateDesired = pidUpdate(&pidPitch, eulerPitchActual, RT_TRUE);
 
   // Update PID for yaw axis
@@ -118,7 +118,7 @@ void controllerCorrectAttitudePID(
     yawError -= 360.0;
   else if (yawError < -180.0)
     yawError += 360.0;
-  pidSetError(&pidYaw, yawError);
+  pidYaw.error = yawError;
   *yawRateDesired = pidUpdate(&pidYaw, eulerYawActual, RT_FALSE);
 }
 
@@ -157,7 +157,6 @@ PARAM_ADD(PARAM_FLOAT, roll_ki, &pidRollRate.ki)
 PARAM_ADD(PARAM_FLOAT, roll_kd, &pidRollRate.kd)
 PARAM_ADD(PARAM_FLOAT, pitch_kp, &pidPitchRate.kp)
 PARAM_ADD(PARAM_FLOAT, pitch_ki, &pidPitchRate.ki)
-PARAM_ADD(PARAM_FLOAT, pitch_kd, &pidPitchRate.kd)
 PARAM_ADD(PARAM_FLOAT, yaw_kp, &pidYawRate.kp)
 PARAM_ADD(PARAM_FLOAT, yaw_ki, &pidYawRate.ki)
 PARAM_ADD(PARAM_FLOAT, yaw_kd, &pidYawRate.kd)
