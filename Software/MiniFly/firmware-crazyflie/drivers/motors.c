@@ -28,7 +28,9 @@
 
 #include <rtthread.h>
 #include "board.h"
-
+#ifdef RT_USING_FINSH
+#include "finsh.h"
+#endif
 #include "motors.h"
 
 
@@ -202,7 +204,9 @@ rt_bool_t motorsTest(void)
 
   return isInit;
 }
-
+#ifdef RT_USING_FINSH
+FINSH_FUNCTION_EXPORT(motorsTest, motors test);
+#endif
 
 void motorsSetRatio(int id, uint16_t ratio)
 {
