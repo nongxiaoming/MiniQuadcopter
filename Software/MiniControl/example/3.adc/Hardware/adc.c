@@ -1,7 +1,7 @@
 #include "adc.h"
 
 
-__IO uint16_t ADCConvertedValue[6];
+ uint16_t ADCConvertedValue[6];
 //ADC 外设的数据寄存器
 #define ADC1_DR_Address    ((uint32_t)0x4001244C)
 //ADC_DR(ADC规则数据寄存器),偏移量=0x4c  ADC1(0x40012400-0x400127ff)
@@ -28,6 +28,7 @@ void ADC1_DMA_Init(void)
  DMA_InitTypeDef DMA_InitStructure;
    /* 使能DMA1时钟 */
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+	ADC1_GPIO_Configuration();
   /* 复位DMA1 通道1的配置 */
   DMA_DeInit(DMA1_Channel1); 
   //设定从ADC外设的数据寄存器（ADC1_DR_Address）转移到内存（ADCConcertedValue）
