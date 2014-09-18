@@ -23,8 +23,8 @@ rt_err_t led_hw_init(void)
 		 {
       return RT_EOK;
      }
-   // enable the clock of GPIOA and GPIOB.
-    RCC->APB2RSTR |= RCC_APB2ENR_IOPAEN|RCC_APB2ENR_IOPBEN;
+    // enable the clock of  GPIOB.
+    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
 
     // clear the PB10,PB11 GPIO config. 
 	  GPIOB->CRH&=~(0xff<<3);

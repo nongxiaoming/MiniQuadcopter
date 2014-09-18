@@ -8,8 +8,8 @@
 #define LED0_PIN 10
 #define LED1_PIN 11
 
-#define led_hw_on(led) GPIOB->BRR|=0x01<<(LED0_PIN+led)
-#define led_hw_off(led) GPIOB->BSRR|=0x01<<(LED0_PIN+led)
+#define led_hw_on(led) GPIOB->BRR=0x01<<(LED0_PIN+led)
+#define led_hw_off(led) GPIOB->BSRR=0x01<<(LED0_PIN+led)
 
 
 
