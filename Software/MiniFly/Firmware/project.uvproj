@@ -436,11 +436,6 @@
               <FilePath>drivers\drv_led.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>drivers\usart.c</FilePath>
-            </File>
-            <File>
               <FileName>drv_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>drivers\drv_spi.c</FilePath>
@@ -449,6 +444,11 @@
               <FileName>drv_i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>drivers\drv_i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\drv_usart.c</FilePath>
             </File>
           </Files>
         </Group>

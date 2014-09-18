@@ -7,12 +7,13 @@
 *********************************************************************************************/
 void led_hw_init(void)
 {
-   GPIO_InitTypeDef GPIO_InitStructure;
-   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB,ENABLE);
-   GPIO_InitStructure.GPIO_Pin=GPIO_Pin_10|GPIO_Pin_11;
-   GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;
-   GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;
-   GPIO_Init(GPIOB,&GPIO_InitStructure);
-   /*¹Ø±ÕLED*/
-   GPIO_SetBits(GPIOB,GPIO_Pin_10|GPIO_Pin_11);
+      // enable the clock of GPIOA and GPIOB.
+    RCC->APB2RSTR |= RCC_APB2ENR_IOPAEN|RCC_APB2ENR_IOPBEN;
+
+    // clear the PB10,PB11 GPIO config. 
+	  GPIOB->CRH&=~(0xff<<3);
+	  //set the PB10,PB11 as output
+    GPIOB->CRH |= GPIO_CRH_MODE10| GPIO_CRH_MODE11;
+    //turn off the led0,led1
+	  GPIOB->ODR |= GPIO_ODR_ODR10|GPIO_ODR_ODR11;
 }
