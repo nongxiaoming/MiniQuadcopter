@@ -184,6 +184,10 @@ void motorsInit()
   //TIM_CtrlPWMOutputs(MOTOR2_TIM, ENABLE);
   //TIM_CtrlPWMOutputs(MOTOR3_TIM, ENABLE);
   //TIM_CtrlPWMOutputs(MOTOR4_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR1_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR2_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR3_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR4_TIM, ENABLE);
   // Halt timer during debug halt.
   DBGMCU_Config(MOTOR1_TIM_DBG, ENABLE);
   DBGMCU_Config(MOTOR2_TIM_DBG, ENABLE);
