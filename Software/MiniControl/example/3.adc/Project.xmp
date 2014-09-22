@@ -17,7 +17,7 @@
             <File RelativePath=".\User\main.c" FileType="1" Output="main.o" ro="0" bss="0" rw="0">
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -44,16 +44,17 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_usart.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_wwdg.h" />
                 <Header RelativePath=".\Libraries\Device\inc\misc.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdio.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdio.h" />
                 <Header RelativePath=".\Hardware\led.h" />
                 <Header RelativePath=".\Hardware\delay.h" />
                 <Header RelativePath=".\Hardware\usart.h" />
+                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdio.h" />
             </File>
             <File RelativePath=".\User\stm32f10x_it.c" FileType="1" Output="stm32f10x_it.o" ro="0" bss="0" rw="0">
                 <Header RelativePath=".\User\stm32f10x_it.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -90,7 +91,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_bkp.h" />
@@ -120,7 +121,7 @@
                 <Header RelativePath=".\Hardware\led.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -152,7 +153,7 @@
                 <Header RelativePath=".\Hardware\usart.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -185,7 +186,7 @@
                 <Header RelativePath=".\Hardware\adc.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -219,12 +220,12 @@
         </Filter>
         <Filter Name="Libraries/Core">
             <File RelativePath=".\Libraries\Core\core_cm3.c" FileType="1" Output="core_cm3.o" ro="0" bss="0" rw="0">
-                <Header RelativePath="d:\Keil\ARM\ARMCC\bin\..\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
             </File>
             <File RelativePath=".\Libraries\Core\system_stm32f10x.c" FileType="1" Output="system_stm32f10x.o" ro="0" bss="0" rw="0">
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -258,7 +259,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\misc.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -290,7 +291,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -322,7 +323,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_bkp.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -354,7 +355,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_can.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -386,7 +387,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_cec.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -418,7 +419,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_crc.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -450,7 +451,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_dac.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -482,7 +483,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -514,7 +515,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_dma.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -546,7 +547,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_exti.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -578,7 +579,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_flash.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -610,7 +611,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_fsmc.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -642,7 +643,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_gpio.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -674,7 +675,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_i2c.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -706,7 +707,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_iwdg.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -738,7 +739,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_pwr.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -770,7 +771,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_rcc.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -802,7 +803,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_rtc.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -834,7 +835,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_sdio.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -866,7 +867,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_spi.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -898,7 +899,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_tim.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -930,7 +931,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_usart.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
@@ -962,7 +963,7 @@
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_wwdg.h" />
                 <Header RelativePath=".\Libraries\Core\stm32f10x.h" />
                 <Header RelativePath=".\Libraries\Core\core_cm3.h" />
-                <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdint.h" />
+                <Header RelativePath="d:\Keil\ARM\RV31\INC\stdint.h" />
                 <Header RelativePath=".\Libraries\Core\system_stm32f10x.h" />
                 <Header RelativePath=".\User\stm32f10x_conf.h" />
                 <Header RelativePath=".\Libraries\Device\inc\stm32f10x_adc.h" />
