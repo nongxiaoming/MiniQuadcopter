@@ -95,13 +95,24 @@ void motorsInit()
   TIM_OCInitTypeDef  TIM_OCInitStructure;
 
   //Enable gpio and the timer
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO 
+  RCC_APB2PeriphClockCmd( RCC_APB2Periph_AFIO 
 	                    | MOTOR1_GPIO_PERIF
 						| MOTOR2_GPIO_PERIF 
 						| MOTOR3_GPIO_PERIF 
 						| MOTOR4_GPIO_PERIF, ENABLE);
 
-  RCC_APB1PeriphClockCmd(MOTOR1_TIM_PERIF | MOTOR2_TIM_PERIF | MOTOR3_TIM_PERIF | MOTOR4_TIM_PERIF, ENABLE);
+  RCC_APB1PeriphClockCmd( MOTOR1_TIM_PERIF 
+	                    | MOTOR2_TIM_PERIF 
+	                    | MOTOR3_TIM_PERIF
+	                    | MOTOR4_TIM_PERIF, ENABLE);
+
+  GPIO_AFIODeInit();  
+  //Remap MOTO3 TIM
+  GPIO_PinRemapConfig(MOTOR3_TIM_REMAP, ENABLE);
+
+  //Remap MOTO4 TIM
+  GPIO_PinRemapConfig(MOTOR4_TIM_REMAP, ENABLE);
+
   // Configure the GPIO for the MOTO1 output
   GPIO_InitStructure.GPIO_Pin = MOTOR1_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -119,12 +130,6 @@ void motorsInit()
   // Configure the GPIO for the MOTO2 output
   GPIO_InitStructure.GPIO_Pin = MOTOR4_GPIO_PIN;
   GPIO_Init(MOTOR4_GPIO_PORT, &GPIO_InitStructure);
-
-  //Remap MOTO3 TIM
-  GPIO_PinRemapConfig(MOTOR3_TIM_REMAP , ENABLE);
-
-  //Remap MOTO4 TIM
-  GPIO_PinRemapConfig(MOTOR4_TIM_REMAP, ENABLE);
 
   //Timer configuration
   TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
