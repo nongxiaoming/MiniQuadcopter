@@ -125,7 +125,7 @@ rt_uint32_t motorPowerM2;
 rt_uint32_t motorPowerM1;
 rt_uint32_t motorPowerM3;
 
-static rt_bool_t isInit;
+static rt_bool_t isInit = RT_FALSE;
 
 static void stabilizerAltHoldUpdate(void);
 static void distributePower(const uint16_t thrust, const int16_t roll,
