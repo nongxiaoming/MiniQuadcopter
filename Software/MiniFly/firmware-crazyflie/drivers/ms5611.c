@@ -303,7 +303,7 @@ rt_bool_t ms5611ReadPROM(void)
     status = i2cdevWriteByte(I2Cx, devAddr, I2CDEV_NO_MEM_ADDR,
                              MS5611_PROM_BASE_ADDR + (i * MS5611_PROM_REG_SIZE));
     // Read conversion
-    if (status)
+    if (status==RT_TRUE)
     {
       status = i2cdevRead(I2Cx, devAddr, I2CDEV_NO_MEM_ADDR, MS5611_PROM_REG_SIZE, buffer);
       pCalRegU16[i] = ((uint16_t)buffer[0] << 8) | buffer[1];
@@ -321,9 +321,6 @@ void ms5611Reset(void)
 {
   i2cdevWriteByte(I2Cx, devAddr, I2CDEV_NO_MEM_ADDR, MS5611_RESET);
 }
-
-
-
 
 /**
  * Gets pressure, temperature and above sea level altitude estimate (asl).
