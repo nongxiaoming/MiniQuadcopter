@@ -222,16 +222,16 @@ void motorsSetRatio(int id, uint16_t ratio)
   switch(id)
   {
     case MOTOR_M1:
-      TIM_SetCompare4(MOTOR1_TIM, C_16_TO_BITS(ratio));
+      MOTOR1_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M2:
-      TIM_SetCompare4(MOTOR2_TIM, C_16_TO_BITS(ratio));
+      MOTOR2_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M3:
-      TIM_SetCompare4(MOTOR3_TIM, C_16_TO_BITS(ratio));
+     MOTOR3_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M4:
-      TIM_SetCompare3(MOTOR4_TIM, C_16_TO_BITS(ratio));
+     MOTOR4_TIM->CCR3=C_16_TO_BITS(ratio);
       break;
   }
 }
@@ -241,13 +241,13 @@ int motorsGetRatio(int id)
   switch(id)
   {
     case MOTOR_M1:
-      return C_BITS_TO_16(TIM_GetCapture4(MOTOR1_TIM));
+      return C_BITS_TO_16(MOTOR1_TIM->CCR4);
     case MOTOR_M2:
-      return C_BITS_TO_16(TIM_GetCapture4(MOTOR2_TIM));
+		return C_BITS_TO_16(MOTOR2_TIM->CCR4);
     case MOTOR_M3:
-      return C_BITS_TO_16(TIM_GetCapture4(MOTOR3_TIM));
+		return C_BITS_TO_16(MOTOR3_TIM->CCR4);
     case MOTOR_M4:
-      return C_BITS_TO_16(TIM_GetCapture3(MOTOR4_TIM));
+		return C_BITS_TO_16(MOTOR4_TIM->CCR3);
   }
 
   return -1;
