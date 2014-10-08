@@ -348,7 +348,10 @@ void nrfInit(void)
   /* Enable SPI and GPIO clocks */
   RCC_APB2PeriphClockCmd(RADIO_SPI_CLK|RADIO_GPIO_SPI_CLK | RADIO_GPIO_CS_PERIF |
                          RADIO_GPIO_CE_PERIF | RADIO_GPIO_IRQ_PERIF, ENABLE);
-
+  /* Disable PWR Backup */
+  PWR_BackupAccessCmd(DISABLE);
+  /* Turn off the LSE Clock */
+  RCC_LSEConfig(RCC_LSE_OFF);
 
   /* Configure SPI pins: SCK, MISO and MOSI */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_SCK |  RADIO_GPIO_SPI_MOSI;
@@ -360,11 +363,6 @@ void nrfInit(void)
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_MISO;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
-
-  /* Configure I/O for the Chip select */
-  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_Init(RADIO_GPIO_CS_PORT, &GPIO_InitStructure);
 
   /* Configure the interruption (EXTI Source) */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_IRQ;
@@ -386,12 +384,17 @@ void nrfInit(void)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
+  /* Configure I/O for the Chip select */
+  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(RADIO_GPIO_CS_PORT, &GPIO_InitStructure);
+
   /* disable the chip select */
   RADIO_DIS_CS();
 
   /* Configure I/O for the Chip Enable */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CE;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(RADIO_GPIO_CE_PORT, &GPIO_InitStructure);
 
   /* disable the chip enable */
