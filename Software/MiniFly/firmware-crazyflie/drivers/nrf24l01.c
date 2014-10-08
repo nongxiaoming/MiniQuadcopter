@@ -319,7 +319,7 @@ void nrfSetAddress(unsigned int pipe, char* address)
 
 void nrfSetEnable(rt_bool_t enable)
 {
-  if (enable)
+  if (enable==RT_TRUE)
   {
     RADIO_EN_CE();
   } 
