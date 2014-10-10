@@ -86,8 +86,8 @@
 #define ACTIVATE_DATA   0x73
 
 /* Private variables */
-static rt_bool_t isInit;
-static void (*interruptCb)(void) = NULL;
+static rt_bool_t isInit = RT_FALSE;
+static void (*interruptCb)(void) = RT_NULL;
 
 /***********************
  * SPI private methods *
@@ -342,7 +342,7 @@ void nrfInit(void)
   GPIO_InitTypeDef GPIO_InitStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
 
-  if (isInit)
+  if (isInit==RT_TRUE)
     return;
 
   /* Enable SPI and GPIO clocks */
