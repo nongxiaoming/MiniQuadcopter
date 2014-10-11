@@ -53,7 +53,7 @@ typedef struct
 
 static uint8_t devAddr;
 static I2C_TypeDef *I2Cx;
-static rt_bool_t isInit;
+static rt_bool_t isInit = RT_TRUE;
 
 static CalReg   calReg;
 static rt_uint32_t lastPresConv;
@@ -64,9 +64,9 @@ static uint8_t readState=0;
 static rt_uint32_t lastConv=0;
 static int32_t tempDeltaT;
 
-rt_bool_t ms5611Init(I2C_TypeDef *i2cPort)
+rt_bool_t ms5611_hw_init(I2C_TypeDef *i2cPort)
 {
-  if (isInit)
+  if (isInit == RT_TRUE)
     return RT_TRUE;
 
   I2Cx = i2cPort;
