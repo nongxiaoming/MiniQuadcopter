@@ -34,7 +34,7 @@
 #include "ledseq.h"
 
 
-static rt_bool_t isInit;
+static rt_bool_t isInit=RT_FALSE;
 
 #define RADIO_CONNECTED_TIMEOUT   M2T(2000)
 
@@ -216,7 +216,7 @@ static void radiolinkInitNRF24L01P(void)
 void radiolinkInit(void)
 {
 	rt_thread_t radio_thread;
-  if(isInit)
+  if(isInit==RT_TRUE)
     return;
 
   nrfInit();
@@ -258,7 +258,7 @@ struct crtpLinkOperations * radiolinkGetLink()
 
 void radiolinkReInit(void)
 {
-  if (!isInit)
+  if (isInit==RT_FALSE)
     return;
 
   radiolinkInitNRF24L01P();
