@@ -51,7 +51,7 @@
 #define CH_VREF               ADC_Channel_17
 #define CH_TEMP               ADC_Channel_16
 
-static rt_bool_t isInit;
+static rt_bool_t isInit=RT_FALSE;
 volatile AdcGroup adcValues[ADC_MEAN_SIZE * 2];
 
 rt_mq_t   adc_mq;
@@ -116,7 +116,7 @@ static void adcDecimate(AdcGroup* oversampled, AdcGroup* decimated)
 void adcInit(void)
 {
 	rt_thread_t adc_thread;
-  if(isInit)
+  if(isInit==RT_TRUE)
     return;
 
   ADC_InitTypeDef ADC_InitStructure;
