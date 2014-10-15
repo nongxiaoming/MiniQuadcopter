@@ -91,7 +91,7 @@ static int sendPacket(CRTPPacket * pk)
 
 static int receivePacket(CRTPPacket * pk)
 {
-  if (!state.enabled)
+  if (RT_FALSE==state.enabled)
     return ENETDOWN;
 
   rt_mq_recv(rxQueue, pk, sizeof(CRTPPacket), RT_WAITING_FOREVER);
