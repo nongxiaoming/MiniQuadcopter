@@ -43,7 +43,7 @@ struct CommanderCrtpValues
 } __attribute__((packed));
 
 static struct CommanderCrtpValues targetVal[2];
-static rt_bool_t isInit;
+static rt_bool_t isInit = RT_FALSE;
 static int side=0;
 static rt_uint32_t lastUpdate;
 static rt_bool_t isInactive;
@@ -55,7 +55,7 @@ static void commanderWatchdogReset(void);
 
 void commanderInit(void)
 {
-  if(isInit)
+  if(isInit==RT_TRUE)
     return;
 
 
