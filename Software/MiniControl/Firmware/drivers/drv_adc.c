@@ -1,4 +1,4 @@
-#include "adc.h"
+#include "drv_adc.h"
 
 
  uint16_t ADCConvertedValue[6];
