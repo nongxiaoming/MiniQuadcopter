@@ -138,7 +138,7 @@ static float deadband(float value, const float threshold);
 void stabilizerInit(void)
 {
 	rt_thread_t stab_thread;
-  if(isInit)
+  if(isInit==RT_TRUE)
     return;
 
   motorsInit();
