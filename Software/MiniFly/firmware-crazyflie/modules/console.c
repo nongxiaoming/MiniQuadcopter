@@ -31,7 +31,7 @@
 CRTPPacket messageToPrint;
 rt_mutex_t synch = RT_NULL;
 
-static rt_bool_t isInit;
+static rt_bool_t isInit = RT_FALSE;
 
 /**
  * Send the data to the client
@@ -44,7 +44,7 @@ static void consoleSendMessage(void)
 
 void consoleInit(void)
 {
-  if (isInit)
+  if (isInit==RT_TRUE)
     return;
 
   messageToPrint.size = 0;
