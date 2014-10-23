@@ -13,12 +13,12 @@ endif
 
 target = @$(if $(QUIET), ,echo $($1_COMMAND$(VERBOSE)) ); @$($1_COMMAND)
 
-VTMPL_COMMAND=$(PYTHON2) scripts/versionTemplate.py $< $@
+#VTMPL_COMMAND=$(PYTHON2) scripts/versionTemplate.py $< $@
 #$(BIN)/$(lastword $(subst /, ,$@))
-VTMPL_COMMAND_SILENT="  VTMPL $@"
-%.c: %.vtpl
-	@$(if $(QUIET), ,echo $(VTMPL_COMMAND$(VERBOSE)) )
-	@$(VTMPL_COMMAND)
+#VTMPL_COMMAND_SILENT="  VTMPL $@"
+#%.c: %.vtpl
+#	@$(if $(QUIET), ,echo $(VTMPL_COMMAND$(VERBOSE)) )
+#	@$(VTMPL_COMMAND)
 
 CC_COMMAND=$(CC) $(CFLAGS) -c $< -o $(BIN)/$@
 CC_COMMAND_SILENT="  CC    $@"
