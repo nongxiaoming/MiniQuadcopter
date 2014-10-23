@@ -26,8 +26,7 @@
 #ifndef UART_H_
 #define UART_H_
 
-#include <stdbool.h>
-
+#include "stm32f10x.h"
 #include "crtp.h"
 #include "eprintf.h"
 

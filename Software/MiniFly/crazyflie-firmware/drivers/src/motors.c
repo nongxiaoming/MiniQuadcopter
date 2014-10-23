@@ -26,12 +26,10 @@
  * This code mainly interfacing the PWM peripheral lib of ST.
  */
 
-#include <stdbool.h>
-
 #include "motors.h"
 
 // ST lib includes
-#include "stm32f10x_conf.h"
+#include "stm32f10x.h"
 
 //FreeRTOS includes
 #include "FreeRTOS.h"
@@ -64,14 +62,14 @@
 #endif
 
 const int MOTORS[] = { MOTOR_M1, MOTOR_M2, MOTOR_M3, MOTOR_M4 };
-static bool isInit = false;
+static bool isInit = FALSE;
 
 /* Public functions */
 
 //Initialization. Will set all motors ratio to 0%
 void motorsInit()
 {
-  if (isInit)
+  if (isInit==TRUE)
     return;
 
   //Init structures
@@ -135,7 +133,7 @@ void motorsInit()
   DBGMCU_Config(MOTORS_GPIO_TIM_M1_2_DBG, ENABLE);
   DBGMCU_Config(MOTORS_GPIO_TIM_M3_4_DBG, ENABLE);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool motorsTest(void)

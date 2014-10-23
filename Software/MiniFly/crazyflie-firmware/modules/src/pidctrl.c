@@ -71,7 +71,7 @@ void pidCrtlTask(void *param)
   }  __attribute__((packed));
   struct pidValues *pPid;
 
-  while (TRUE)
+  while (1)
   {
     if (crtpReceivePacketBlock(6, &p) == pdTRUE)
     {

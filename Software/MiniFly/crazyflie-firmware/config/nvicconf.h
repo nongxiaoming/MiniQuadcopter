@@ -33,6 +33,8 @@
 #ifndef NVIC_CONF_H_
 #define NVIC_CONF_H_
 
+#include "stm32f10x.h"
+
 #define NVIC_NO_GROUPS  NVIC_PriorityGroup_0
 
 #define NVIC_I2C_PRI          5

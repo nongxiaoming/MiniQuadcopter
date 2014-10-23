@@ -23,9 +23,7 @@
  *
  *
  */
-#include <stdbool.h>
- 
-#include "stm32f10x_conf.h"
+
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -59,11 +57,11 @@ int16_t rollOutput;
 int16_t pitchOutput;
 int16_t yawOutput;
 
-static bool isInit;
+static bool isInit=FALSE;
 
 void controllerInit()
 {
-  if(isInit)
+  if(isInit==TRUE)
     return;
   
   //TODO: get parameters from configuration manager instead
@@ -81,7 +79,7 @@ void controllerInit()
   pidSetIntegralLimit(&pidPitch, PID_PITCH_INTEGRATION_LIMIT);
   pidSetIntegralLimit(&pidYaw, PID_YAW_INTEGRATION_LIMIT);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool controllerTest()

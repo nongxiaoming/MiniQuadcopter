@@ -34,7 +34,6 @@
 #define __MOTORS_H__
 
 #include <stdint.h>
-#include <stdbool.h>
 #include "config.h"
 
 /******** Defines ********/

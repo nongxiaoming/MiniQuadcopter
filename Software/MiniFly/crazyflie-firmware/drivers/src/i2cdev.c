@@ -26,9 +26,8 @@
  */
 
 #include <stdint.h>
-#include <stdbool.h>
 
-#include "i2cdev.h"
+
 
 #include "nvicconf.h"
 
@@ -39,9 +38,8 @@
 #include "led.h"
 #include "ledseq.h"
 
-#include "stm32f10x.h"
-
 #include "i2croutines.h"
+#include "i2cdev.h"
 
 #define I2C_TIMEOUT 5
 #define I2CDEV_CLK_TS (1000000 / 100000)
@@ -180,15 +178,20 @@ bool i2cdevRead(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,
 
   if (memAddress != I2CDEV_NO_MEM_ADDR)
   {
-    status = I2C_Master_BufferWrite(I2Cx, &memAddress,  1, INTERRUPT, devAddress << 1, I2C_TIMEOUT);
+    if(ERROR != I2C_Master_BufferWrite(I2Cx, &memAddress,  1, INTERRUPT, devAddress << 1, I2C_TIMEOUT))
+		status = TRUE;
+	else
+		status = FALSE;
   }
   if (status)
   {
     //TODO: Fix DMA transfer if more then 3 bytes
-    status = I2C_Master_BufferRead(I2Cx, (uint8_t*)data,  len, INTERRUPT, devAddress << 1, I2C_TIMEOUT);
+    if(ERROR != I2C_Master_BufferRead(I2Cx, (uint8_t*)data,  len, INTERRUPT, devAddress << 1, I2C_TIMEOUT))
+		status = TRUE;
+	else
+		status = FALSE;
   }
-
-  return status;
+   return status;
 }
 
 bool i2cdevWriteByte(I2C_TypeDef *I2Cx, uint8_t devAddress, uint8_t memAddress,

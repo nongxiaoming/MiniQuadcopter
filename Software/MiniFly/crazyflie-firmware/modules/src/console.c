@@ -24,8 +24,6 @@
  * console.c - Used to send console data to client
  */
 
-#include <stdbool.h>
-
 /*FreeRtos includes*/
 #include "FreeRTOS.h"
 #include "task.h"
@@ -36,7 +34,7 @@
 CRTPPacket messageToPrint;
 xSemaphoreHandle synch = NULL;
 
-static bool isInit;
+static bool isInit=FALSE;
 
 /**
  * Send the data to the client
@@ -49,14 +47,14 @@ static void consoleSendMessage(void)
 
 void consoleInit()
 {
-  if (isInit)
+  if (isInit==TRUE)
     return;
 
   messageToPrint.size = 0;
   messageToPrint.header = CRTP_HEADER(CRTP_PORT_CONSOLE, 0);
   vSemaphoreCreateBinary(synch);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool consoleTest(void)

@@ -23,10 +23,6 @@
  *
  * exti.c - Unified implementation of the exti interrupts
  */
-#include <stdbool.h>
-
-#include "stm32f10x_conf.h"
-#include "stm32f10x_exti.h"
 
 #include "nvicconf.h"
 #include "nrf24l01.h"
@@ -38,7 +34,7 @@ static bool isInit;
 /* Interruption initialisation */
 void extiInit()
 {
-  if (isInit)
+  if (isInit==TRUE)
     return;
 
   NVIC_InitTypeDef NVIC_InitStructure;
@@ -49,7 +45,7 @@ void extiInit()
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool extiTest(void)

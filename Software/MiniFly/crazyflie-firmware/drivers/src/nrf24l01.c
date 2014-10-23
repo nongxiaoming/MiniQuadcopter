@@ -31,15 +31,9 @@
 
 #include "nrf24l01.h"
 
-#include <stdbool.h>
 #include <string.h>
 
 #include "cfassert.h"
-
-#include "stm32f10x_conf.h"
-#include "stm32f10x_rcc.h"
-#include "stm32f10x_spi.h"
-#include "stm32f10x_exti.h"
 
 #include "exti.h"
 
@@ -97,7 +91,7 @@
 #define ACTIVATE_DATA   0x73
 
 /* Private variables */
-static bool isInit;
+static bool isInit=FALSE;
 static void (*interruptCb)(void) = NULL;
 
 /***********************
@@ -330,7 +324,7 @@ void nrfSetAddress(unsigned int pipe, char* address)
 
 void nrfSetEnable(bool enable)
 {
-  if (enable)
+  if (enable==TRUE)
   {
     RADIO_EN_CE();
   } 
@@ -352,7 +346,7 @@ void nrfInit(void)
   EXTI_InitTypeDef EXTI_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  if (isInit)
+  if (isInit==TRUE)
     return;
 
   /* Enable the EXTI interrupt router */
@@ -429,7 +423,7 @@ void nrfInit(void)
   /* Enable the SPI  */
   SPI_Cmd(RADIO_SPI, ENABLE);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool nrfTest(void)

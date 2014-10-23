@@ -27,8 +27,7 @@
 #ifndef __NRF24L01_H__
 #define __NRF24L01_H__
 
-#include <stdbool.h>
-
+#include "stm32f10x.h"
 #include "nRF24L01reg.h"
 
 // Init and test of the connection to the chip

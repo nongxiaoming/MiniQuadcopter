@@ -27,7 +27,7 @@
 #ifndef CONSOLE_H_
 #define CONSOLE_H_
 
-#include <stdbool.h>
+#include "stm32f10x.h"
 #include "eprintf.h"
 
 /**

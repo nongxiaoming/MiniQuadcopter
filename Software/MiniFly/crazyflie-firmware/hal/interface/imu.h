@@ -26,7 +26,8 @@
  */
 #ifndef IMU_H_
 #define IMU_H_
-#include <stdbool.h>
+
+#include "stm32f10x.h"
 #include "filter.h"
 #include "imu_types.h"
 

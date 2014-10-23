@@ -26,16 +26,11 @@
  * ledseq.c - LED sequence handler
  */
 
-#include <stdbool.h>
-
 #include "ledseq.h"
 
 #include "FreeRTOS.h"
 #include "timers.h"
 #include "semphr.h"
-
-#include <stdbool.h>
-#include "led.h"
 
 /* Led sequence priority */
 static ledseq_t * sequences[] = {
@@ -53,82 +48,82 @@ static ledseq_t * sequences[] = {
 
 /* Led sequences */
 ledseq_t seq_lowbat[] = {
-  { true, LEDSEQ_WAITMS(1000)},
-  {    0, LEDSEQ_LOOP},
+  { TRUE, LEDSEQ_WAITMS(1000)},
+  { FALSE, LEDSEQ_LOOP},
 };
 
 ledseq_t seq_armed[] = {
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(250)},
-  {    0, LEDSEQ_LOOP},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  { FALSE, LEDSEQ_WAITMS(250)},
+  { FALSE, LEDSEQ_LOOP},
 };
 
 ledseq_t seq_calibrated[] = {
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(450)},
-  {    0, LEDSEQ_LOOP},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  {  FALSE, LEDSEQ_WAITMS(450)},
+  {  FALSE, LEDSEQ_LOOP},
 };
 
 ledseq_t seq_alive[] = {
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(1950)},
-  {    0, LEDSEQ_LOOP},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  { FALSE, LEDSEQ_WAITMS(1950)},
+  { FALSE, LEDSEQ_LOOP},
 };
 
 
 //TODO: Change, right now is called so fast it looks like seq_lowbat
 ledseq_t seq_altHold[] = {
-  { true, LEDSEQ_WAITMS(1)},
-  {false, LEDSEQ_WAITMS(50)},
-  {    0, LEDSEQ_STOP},
+  { TRUE, LEDSEQ_WAITMS(1)},
+  { FALSE, LEDSEQ_WAITMS(50)},
+  { FALSE, LEDSEQ_STOP},
 };
 
 ledseq_t seq_linkup[] = {
-  { true, LEDSEQ_WAITMS(1)},
-  {false, LEDSEQ_WAITMS(0)},
-  {    0, LEDSEQ_STOP},
+  { TRUE, LEDSEQ_WAITMS(1)},
+  { FALSE, LEDSEQ_WAITMS(0)},
+  { FALSE, LEDSEQ_STOP},
 };
 
 
 ledseq_t seq_charged[] = {
-  { true, LEDSEQ_WAITMS(1000)},
-  {    0, LEDSEQ_LOOP},
+  { TRUE, LEDSEQ_WAITMS(1000)},
+  { FALSE, LEDSEQ_LOOP},
 };
 
 ledseq_t seq_charging[] = {
-  { true, LEDSEQ_WAITMS(200)},
-  {false, LEDSEQ_WAITMS(800)},
-  {    0, LEDSEQ_LOOP},
+  { TRUE, LEDSEQ_WAITMS(200)},
+  {FALSE, LEDSEQ_WAITMS(800)},
+  {FALSE, LEDSEQ_LOOP},
 };
 
 ledseq_t seq_chargingMax[] = {
-  { true, LEDSEQ_WAITMS(100)},
-  {false, LEDSEQ_WAITMS(400)},
-  {    0, LEDSEQ_LOOP},
+  {TRUE, LEDSEQ_WAITMS(100)},
+  {FALSE, LEDSEQ_WAITMS(400)},
+  {FALSE, LEDSEQ_LOOP},
 };
 
 ledseq_t seq_bootloader[] = {
-  { true, LEDSEQ_WAITMS(500)},
-  {false, LEDSEQ_WAITMS(500)},
-  {    0, LEDSEQ_LOOP},
+  {TRUE, LEDSEQ_WAITMS(500)},
+  {FALSE, LEDSEQ_WAITMS(500)},
+  {FALSE, LEDSEQ_LOOP},
 };
 
 ledseq_t seq_testPassed[] = {
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(50)},
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(50)},
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(50)},
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(50)},
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(50)},
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(50)},
-  { true, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_WAITMS(50)},
-  {false, LEDSEQ_STOP},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  {FALSE, LEDSEQ_WAITMS(50)},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  {FALSE, LEDSEQ_WAITMS(50)},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  {FALSE, LEDSEQ_WAITMS(50)},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  {FALSE, LEDSEQ_WAITMS(50)},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  {FALSE, LEDSEQ_WAITMS(50)},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  {FALSE, LEDSEQ_WAITMS(50)},
+  { TRUE, LEDSEQ_WAITMS(50)},
+  {FALSE, LEDSEQ_WAITMS(50)},
+  {FALSE, LEDSEQ_STOP},
 };
 
 /* Led sequence handling machine implementation */
@@ -148,13 +143,13 @@ static xTimerHandle timer[LED_NUM];
 
 static xSemaphoreHandle ledseqSem;
 
-static bool isInit = false;
+static bool isInit = FALSE;
 
 void ledseqInit()
 {
   int i,j;
   
-  if(isInit)
+  if(isInit==TRUE)
     return;
   
   ledInit();
@@ -172,7 +167,7 @@ void ledseqInit()
 
   vSemaphoreCreateBinary(ledseqSem);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool ledseqTest(void)
@@ -224,9 +219,9 @@ static void runLedseq( xTimerHandle xTimer )
 {
   led_t led = (led_t)pvTimerGetTimerID(xTimer);
   ledseq_t *step;
-  bool leave=false;
+  bool leave=FALSE;
 
-  while(!leave) {
+  while(leave==FALSE) {
     int prio = activeSeq[led];
   
     if (prio == LEDSEQ_STOP)
@@ -252,7 +247,7 @@ static void runLedseq( xTimerHandle xTimer )
           break;
         xTimerChangePeriod(xTimer, M2T(step->action), 0);
         xTimerStart(xTimer, 0);
-        leave=true;
+        leave=TRUE;
         break;
     }
     xSemaphoreGive(ledseqSem);
@@ -276,7 +271,7 @@ static void updateActive(led_t led)
   int prio;
   
   activeSeq[led]=LEDSEQ_STOP;
-  ledSet(led, false);
+  ledSet(led, FALSE);
   
   for(prio=0;prio<SEQ_NUM;prio++)
   {

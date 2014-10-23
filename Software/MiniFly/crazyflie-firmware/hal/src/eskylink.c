@@ -33,7 +33,6 @@
  *  -> http://sourceforge.net/p/arduinorclib/wiki/Esky%20Radio/
  */
 
-#include <stdbool.h>
 #include <errno.h>
 #include <string.h>
 
@@ -119,7 +118,7 @@ static struct crtpLinkOperations eskyOp =
 
 static int eskylinkFetchData(char * packet, int dataLen)
 {
-  nrfSetEnable(false);
+  nrfSetEnable(FALSE);
 
   //Fetch the data
   nrfReadRX(packet, dataLen);
@@ -127,7 +126,7 @@ static int eskylinkFetchData(char * packet, int dataLen)
   //clear the interruptions flags
   nrfWrite1Reg(REG_STATUS, 0x70);
   
-  nrfSetEnable(true);
+  nrfSetEnable(TRUE);
   
   return dataLen;
 }
@@ -232,15 +231,15 @@ static void eskylinkTask(void * arg)
       address[1]=packet[1];
       address[0]=packet[2];
       state.band = packet[3];
-      state.paired = true;
+      state.paired = TRUE;
     }
   }
 
   ledseqRun(LED_GREEN, seq_testPassed);
 
-  nrfSetEnable(false);
+  nrfSetEnable(FALSE);
   eskylinkInitPaired(channel);
-  nrfSetEnable(true);
+  nrfSetEnable(TRUE);
 
   //Paired! handling packets.
   while(1)
@@ -265,9 +264,9 @@ static void eskylinkTask(void * arg)
       {
         channel++;
         if(channel>83) channel=7;
-        nrfSetEnable(false);
+        nrfSetEnable(FALSE);
         nrfSetChannel(channel);
-        nrfSetEnable(true);
+        nrfSetEnable(TRUE);
       }
       else
       {
@@ -276,9 +275,9 @@ static void eskylinkTask(void * arg)
         else
           channel = channel1;
         
-        nrfSetEnable(false);
+        nrfSetEnable(FALSE);
         nrfSetChannel(channel);
-        nrfSetEnable(true);
+        nrfSetEnable(TRUE);
       }
       
     }
@@ -291,7 +290,7 @@ static void eskylinkTask(void * arg)
 
 void eskylinkInit()
 {
-  if(isInit)
+  if(isInit==TRUE)
     return;
 
   nrfInit();
@@ -312,7 +311,7 @@ void eskylinkInit()
   xTaskCreate(eskylinkTask, (const signed char * const)"EskyLink",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
 
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool eskylinkTest()

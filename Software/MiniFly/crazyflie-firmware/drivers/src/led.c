@@ -27,14 +27,13 @@
 
 #include "motors.h"
 
-#include <stdbool.h>
-#include "stm32f10x_conf.h"
+#include "stm32f10x.h"
 
 /*FreeRtos includes*/
 #include "FreeRTOS.h"
 #include "task.h"
 
-static bool isInit=false;
+static bool isInit=FALSE;
 
 static GPIO_TypeDef* led_port[] = {
   [LED_GREEN] = LED_GPIO_PORT, 
@@ -52,7 +51,7 @@ static int led_polarity[] = {
 //Initialize the green led pin as output
 void ledInit()
 {
-  if(isInit)
+  if(isInit==TRUE)
     return;
 
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -74,7 +73,7 @@ void ledInit()
   ledSet(LED_GREEN, 0);
   ledSet(LED_RED, 0);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool ledTest(void)
@@ -90,7 +89,7 @@ void ledSet(led_t led, bool value) {
   if (led_polarity[led]==LED_POL_NEG)
     value = !value;
   
-  if(value)
+  if(value==TRUE)
     GPIO_SetBits(led_port[led], led_pin[led]);
   else
     GPIO_ResetBits(led_port[led], led_pin[led]); 

@@ -25,8 +25,6 @@
  */
 #define DEBUG_MODULE "SYS"
 
-#include <stdbool.h>
-
 /* FreeRtos includes */
 #include "FreeRTOS.h"
 #include "task.h"

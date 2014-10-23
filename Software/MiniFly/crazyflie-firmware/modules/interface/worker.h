@@ -25,8 +25,7 @@
  */
 #ifndef __WORKER_H
 #define __WORKER_H
-
-#include <stdbool.h>
+#include "stm32f10x.h"
 
 void workerInit();
 

@@ -25,7 +25,6 @@
  */
 
 #include <stdint.h>
-#include <stdbool.h>
 #include <unistd.h>
 
 #include "configblock.h"
@@ -50,7 +49,7 @@ struct configblock_s {
 
 static struct configblock_s *configblock;
 
-static bool cb_ok=false;
+static bool cb_ok=FALSE;
 
 static uint8_t calculate_cksum(void* data, size_t len)
 {
@@ -73,7 +72,7 @@ int configblockInit(void)
       calculate_cksum(configblock, sizeof(*configblock)) )
     return -1;
 
-  cb_ok = true;
+  cb_ok = TRUE;
   
   return 0;
 }

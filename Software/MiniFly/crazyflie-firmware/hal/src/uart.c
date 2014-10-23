@@ -49,7 +49,7 @@
 #define CRTP_START_BYTE 0xAA
 #define CCR_ENABLE_SET  ((uint32_t)0x00000001)
 
-static bool isInit = false;
+static bool isInit = FALSE;
 
 xSemaphoreHandle waitUntilSendDone = NULL;
 static uint8_t outBuffer[64];
@@ -151,7 +151,7 @@ void uartInit(void)
   //Enable it
   USART_Cmd(UART_TYPE, ENABLE);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool uartTest(void)

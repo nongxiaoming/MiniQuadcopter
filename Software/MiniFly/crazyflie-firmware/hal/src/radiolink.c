@@ -23,8 +23,6 @@
  *
  * radiolink.c: nRF24L01 implementation of the CRTP link
  */
-
-#include <stdbool.h>
 #include <errno.h>
 
 #include "nrf24l01.h"
@@ -113,9 +111,9 @@ static int reset(void)
 static bool isConnected(void)
 {
   if ((xTaskGetTickCount() - lastPacketTick) > RADIO_CONNECTED_TIMEOUT)
-    return false;
+    return FALSE;
 
-  return true;
+  return TRUE;
 }
 
 static struct crtpLinkOperations radioOp =
@@ -144,7 +142,7 @@ static void radiolinkTask(void * arg)
     xSemaphoreTake(dataRdy, portMAX_DELAY);
     lastPacketTick = xTaskGetTickCount();
     
-    nrfSetEnable(false);
+    nrfSetEnable(FALSE);
     
     //Fetch all the data (Loop until the RX Fifo is NOT empty)
     while( !(nrfRead1Reg(REG_FIFO_STATUS)&0x01) )
@@ -178,7 +176,7 @@ static void radiolinkTask(void * arg)
     nrfWrite1Reg(REG_STATUS, 0x70);
     
     //Re-enable the radio
-    nrfSetEnable(true);
+    nrfSetEnable(TRUE);
   }
 }
 
@@ -215,7 +213,7 @@ static void radiolinkInitNRF24L01P(void)
 
 void radiolinkInit()
 {
-  if(isInit)
+  if(isInit==TRUE)
     return;
 
   nrfInit();
@@ -237,7 +235,7 @@ void radiolinkInit()
   xTaskCreate(radiolinkTask, (const signed char * const)"RadioLink",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/1, NULL);
 
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool radiolinkTest()
@@ -252,7 +250,7 @@ struct crtpLinkOperations * radiolinkGetLink()
 
 void radiolinkReInit(void)
 {
-  if (!isInit)
+  if (isInit==FALSE)
     return;
 
   radiolinkInitNRF24L01P();

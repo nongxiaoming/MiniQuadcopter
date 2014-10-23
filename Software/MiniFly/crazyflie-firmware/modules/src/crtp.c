@@ -24,7 +24,6 @@
  * crtp.c - CrazyRealtimeTransferProtocol stack
  */
 
-#include <stdbool.h>
 #include <errno.h>
 
 /*FreeRtos includes*/
@@ -79,7 +78,7 @@ void crtpInit(void)
   xTaskCreate(crtpRxTask, (const signed char * const)"CRTP-Rx",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/2, NULL);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool crtpTest(void)
@@ -122,7 +121,7 @@ void crtpTxTask(void *param)
 {
   CRTPPacket p;
 
-  while (TRUE)
+  while (1)
   {
     if (xQueueReceive(tmpQueue, &p, portMAX_DELAY) == pdTRUE)
     {
@@ -136,7 +135,7 @@ void crtpRxTask(void *param)
   CRTPPacket p;
   static unsigned int droppedPacket=0;
 
-  while (TRUE)
+  while (1)
   {
     if (!link->receivePacket(&p))
     {
@@ -190,7 +189,7 @@ bool crtpIsConnected(void)
 {
   if (link->isConnected)
     return link->isConnected();
-  return true;
+  return TRUE;
 }
 
 void crtpPacketReveived(CRTPPacket *p)
@@ -204,14 +203,14 @@ void crtpPacketReveived(CRTPPacket *p)
 void crtpSetLink(struct crtpLinkOperations * lk)
 {
   if(link)
-    link->setEnable(false);
+    link->setEnable(FALSE);
 
   if (lk)
     link = lk;
   else
     link = &nopLink;
 
-  link->setEnable(true);
+  link->setEnable(TRUE);
 }
 
 static int nopFunc(void)

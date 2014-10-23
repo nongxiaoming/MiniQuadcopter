@@ -26,8 +26,7 @@
 
 #ifndef __LOG_H__
 #define __LOG_H__
-
-#include <stdbool.h>
+#include "stm32f10x.h"
 #include <stdint.h>
 
 /* Public functions */

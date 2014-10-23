@@ -26,7 +26,7 @@
 
 #ifndef __EXTI_H__
 #define __EXTI_H__
-#include <stdbool.h>
+#include "stm32f10x.h"
 
 void extiInit();
 bool extiTest();

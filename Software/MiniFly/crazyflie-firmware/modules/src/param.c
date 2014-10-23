@@ -68,7 +68,7 @@ static int paramsLen;
 static uint32_t paramsCrc;
 static int paramsCount = 0;
 
-static bool isInit = false;
+static bool isInit = FALSE;
 
 void paramInit(void)
 {
@@ -94,7 +94,7 @@ void paramInit(void)
   
   //TODO: Handle stored parameters!
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool paramTest(void)

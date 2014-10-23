@@ -23,8 +23,6 @@
  *
  *
  */
-#include "stm32f10x_conf.h"
-
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -45,7 +43,7 @@ struct CommanderCrtpValues
 } __attribute__((packed));
 
 static struct CommanderCrtpValues targetVal[2];
-static bool isInit;
+static bool isInit=FALSE;
 static int side=0;
 static uint32_t lastUpdate;
 static bool isInactive;
@@ -57,7 +55,7 @@ static void commanderWatchdogReset(void);
 
 void commanderInit(void)
 {
-  if(isInit)
+  if(isInit==TRUE)
     return;
 
 

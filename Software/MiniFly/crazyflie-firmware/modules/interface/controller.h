@@ -26,7 +26,6 @@
 #ifndef CONTROLLER_H_
 #define CONTROLLER_H_
 
-#include <stdbool.h>
 #include "commander.h"
 
 

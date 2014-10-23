@@ -26,7 +26,7 @@
 #ifndef COMMANDER_H_
 #define COMMANDER_H_
 #include <stdint.h>
-#include <stdbool.h>
+#include "stm32f10x.h"
 
 #define COMMANDER_WDT_TIMEOUT_STABALIZE  M2T(500)
 #define COMMANDER_WDT_TIMEOUT_SHUTDOWN   M2T(2000)

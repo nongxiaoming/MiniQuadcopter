@@ -24,8 +24,6 @@
  * comm.c - High level communication module
  */
 
-#include <stdbool.h>
-
 #include "config.h"
 
 #include "radiolink.h"

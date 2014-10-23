@@ -54,7 +54,7 @@
 #define CH_VREF               ADC_Channel_17
 #define CH_TEMP               ADC_Channel_16
 
-static bool isInit;
+static bool isInit=FALSE;
 volatile AdcGroup adcValues[ADC_MEAN_SIZE * 2];
 
 xQueueHandle      adcQueue;
@@ -119,7 +119,7 @@ static void adcDecimate(AdcGroup* oversampled, AdcGroup* decimated)
 void adcInit(void)
 {
 
-  if(isInit)
+  if(isInit==TRUE)
     return;
 
   ADC_InitTypeDef ADC_InitStructure;
@@ -212,7 +212,7 @@ void adcInit(void)
   xTaskCreate(adcTask, (const signed char * const)"ADC",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
 
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool adcTest(void)

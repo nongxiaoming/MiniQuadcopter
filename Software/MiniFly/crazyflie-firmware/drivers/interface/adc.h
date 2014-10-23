@@ -26,7 +26,6 @@
 #ifndef ADC_H_
 #define ADC_H_
 
-#include <stdbool.h>
 #include <stdint.h>
 #include "FreeRTOS.h"
 #include "semphr.h"
