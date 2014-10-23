@@ -17,7 +17,7 @@ int main(void)
 	delay_ms(500);
 	led_hw_off(LED0);
 	delay_ms(500);
-    led_hw_on(LED1);
+  led_hw_on(LED1);
 	delay_ms(500);
 	led_hw_off(LED1);
 	delay_ms(500);

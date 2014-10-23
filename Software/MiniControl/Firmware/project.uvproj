@@ -30,6 +30,7 @@
           <SLE66AMisc></SLE66AMisc>
           <SLE66LinkerMisc></SLE66LinkerMisc>
           <SFDFile>SFD\ST\STM32F1xx\STM32F103xx.sfrSVD=SFD\ST\STM32F1xx\STM32F103xx.sfr</SFDFile>
+          <bCustSvd>0</bCustSvd>
           <UseEnv>0</UseEnv>
           <BinPath></BinPath>
           <IncludePath></IncludePath>
@@ -97,6 +98,7 @@
           <StopOnExitCode>3</StopOnExitCode>
           <CustomArgument></CustomArgument>
           <IncludeLibraryModules></IncludeLibraryModules>
+          <ComprImg>1</ComprImg>
         </CommonProperty>
         <DllOption>
           <SimDllName>SARMCM3.DLL</SimDllName>
@@ -126,6 +128,7 @@
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+            <RestoreSysVw>1</RestoreSysVw>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -137,9 +140,11 @@
             <RestoreFunctions>0</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
             <RestoreTracepoints>0</RestoreTracepoints>
+            <RestoreSysVw>1</RestoreSysVw>
+            <UsePdscDebugDescription>0</UsePdscDebugDescription>
           </Target>
           <RunDebugAfterBuild>0</RunDebugAfterBuild>
-          <TargetSelection>1</TargetSelection>
+          <TargetSelection>7</TargetSelection>
           <SimDlls>
             <CpuDll></CpuDll>
             <CpuDllArguments></CpuDllArguments>
@@ -153,7 +158,7 @@
             <PeripheralDll></PeripheralDll>
             <PeripheralDllArguments></PeripheralDllArguments>
             <InitializationFile></InitializationFile>
-            <Driver>BIN\UL2CM3.DLL</Driver>
+            <Driver>Segger\JL2CM3.dll</Driver>
           </TargetDlls>
         </DebugOption>
         <Utilities>
@@ -169,6 +174,10 @@
           <Flash2>BIN\UL2CM3.DLL</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
+          <pFcarmOut></pFcarmOut>
+          <pFcarmGrp></pFcarmGrp>
+          <pFcArmRoot></pFcArmRoot>
+          <FcArmLst>0</FcArmLst>
         </Utilities>
         <TargetArmAds>
           <ArmAdsMisc>
@@ -347,11 +356,13 @@
             <wLevel>0</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
+            <uC99>0</uC99>
+            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define>STM32F10X_MD, USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\rt-thread\components\CMSIS\Include;..\..\rt-thread\components\drivers\include;..\..\rt-thread\components\init;..\..\rt-thread\include;..\..\rt-thread\libcpu\arm\common;..\..\rt-thread\libcpu\arm\cortex-m3;applications;drivers;libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;libraries\STM32F10x_StdPeriph_Driver\inc</IncludePath>
+              <IncludePath>.;..\..\rt-thread\include;..\..\rt-thread\libcpu\arm\common;..\..\rt-thread\libcpu\arm\cortex-m3;applications;drivers;libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;libraries\STM32F10x_StdPeriph_Driver\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -363,6 +374,7 @@
             <SwStkChk>0</SwStkChk>
             <NoWarn>0</NoWarn>
             <uSurpInc>0</uSurpInc>
+            <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
               <Define></Define>
@@ -379,10 +391,11 @@
             <useFile>0</useFile>
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
+            <pXoBase></pXoBase>
             <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>--keep __rt_init*</Misc>
+            <Misc></Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>
@@ -423,19 +436,9 @@
               <FilePath>drivers\drv_led.c</FilePath>
             </File>
             <File>
-              <FileName>drv_usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>drivers\drv_usart.c</FilePath>
-            </File>
-            <File>
               <FileName>drv_ssd1306.c</FileName>
               <FileType>1</FileType>
               <FilePath>drivers\drv_ssd1306.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>drivers\drv_spi.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -448,9 +451,24 @@
               <FilePath>libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\system_stm32f10x.c</FilePath>
             </File>
             <File>
+              <FileName>stm32f10x_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_crc.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f10x_rcc.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_wwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_wwdg.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_pwr.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_pwr.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_exti.c</FileName>
@@ -473,9 +491,29 @@
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_adc.c</FilePath>
             </File>
             <File>
+              <FileName>stm32f10x_dac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_dac.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_fsmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_fsmc.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32f10x_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_iwdg.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_spi.c</FileName>
@@ -486,6 +524,11 @@
               <FileName>stm32f10x_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_sdio.c</FilePath>
             </File>
             <File>
               <FileName>stm32f10x_gpio.c</FileName>
@@ -508,6 +551,16 @@
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_dma.c</FilePath>
             </File>
             <File>
+              <FileName>stm32f10x_can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_can.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f10x_cec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\stm32f10x_cec.c</FilePath>
+            </File>
+            <File>
               <FileName>misc.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32F10x_StdPeriph_Driver\src\misc.c</FilePath>
@@ -516,11 +569,6 @@
               <FileName>startup_stm32f10x_md.s</FileName>
               <FileType>2</FileType>
               <FilePath>libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x\startup\arm\startup_stm32f10x_md.s</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f10x_pwr.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\libraries\stm32f10x_stdperiph_driver\src\stm32f10x_pwr.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -531,11 +579,6 @@
               <FileName>clock.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\rt-thread\src\clock.c</FilePath>
-            </File>
-            <File>
-              <FileName>device.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\rt-thread\src\device.c</FilePath>
             </File>
             <File>
               <FileName>idle.c</FileName>

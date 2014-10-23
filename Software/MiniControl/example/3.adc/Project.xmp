@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="Windows-1252" ?>
-<TKStudioProject Name="Project" ProjectGUID="{3529A7CF-C722-4719-8692-732AB5D81485}" BuildTool="15" ToolVer="5.1" Version="3.00" Author="YinHandong[Òüº®¶¬]">
+<TKStudioProject Name="Project" ProjectGUID="{3529A7CF-C722-4719-8692-732AB5D81485}" BuildTool="15" ToolVer="default" Version="3.00" Author="YinHandong[Òüº®¶¬]">
     <Configurations>
-        <Configuration Name="Output" OP="0" XROM="0,0,0,0#0,0,0,0#0,0,0,0" XRAM="0,0,0,0#0,0,0,0#0,0,0,0" OldName="Output" OutBig="0" McLib="0" CLK="8.000000" Cross="0" IROM="1,0x08000000,0x00020000,1#0,0,0,0" IRAM="1,0x20000000,0x00005000,0#0,0,0,0" OldCPU="STM32F103RB" cfgModify="0" OPTDBG="1,-1,1,0,1,1,()" DEVICE="STM32F103RB" VENDOR="STMicroelectronics" FAMINY="3" SIMCLK="8.000000">
+        <Configuration Name="Output" OP="0" XROM="0,0,0,0#0,0,0,0#0,0,0,0" XRAM="0,0,0,0#0,0,0,0#0,0,0,0" OldName="Output" OutBig="0" McLib="0" CLK="8.000000" Cross="0" IROM="1,0x08000000,0x00020000,1#0,0,0,0" IRAM="1,0x20000000,0x00005000,0#0,0,0,0" OldCPU="STM32F103RB" cfgModify="0" OPTDBG="0,-1,1,0,0,0,(D:\Program Files (x86)\SEGGER\JLink_V490e\JLinkRDI.dll)" DEVICE="STM32F103RB" VENDOR="STMicroelectronics" FAMINY="3" SIMCLK="8.000000">
             <MDK_Output OutName="1,.\Output\Project" OutType="1" OutBatch="0" OutHex="2" OutList="1,.\Listing" Debug="1" Browse="0" />
             <MDK_User BfC="0,()#0,()" BfB="0,()#0,()" AfB="0,()#0,()" Beep="1" SDebug="0" />
             <MDK_CParam Def="STM32F10X_MD USE_STDPERIPH_DRIVER" uDef="" Inc=".\User;.\Startup;.\Libraries\Core;.\Libraries\Device\inc;.\Hardware" Misc='-I&quot;D:\Keil\ARM\ARMCC\include&quot;' Opt="0,0" Code="0,0,0,0,0,0" Language="0,0,0,0" List="1" />
             <MDK_AsmParam Def="" uDef="" Inc="" Misc="" Code="0,0,0,0,0,0" Language="0" List="1,1" />
             <MDK_Linker Misc='--libpath &quot;D:\Keil\ARM\ARMCC\lib&quot;' UseDef="1" Code="0,0,0,1,()" Sct=".\Output\Project.sct" List="1,1,1,1,1,1,1,1,1" first="" Rom="0x08000000" Ram="0x20000000" />
-            <MDK_Debug DbgType="0" sfSIM="0,1,(),()" hwSIM="1,1,1,()" Drv="(),()" SrvOpt="" />
+            <MDK_Debug DbgType="1" sfSIM="0,1,(),()" hwSIM="0,0,1,()" Drv="(RDI 1),(D:\Program Files &lt;x86&gt;\SEGGER\JLink_V490e\JLinkRDI.dll)" SrvOpt="" />
             <DeviceProperties Item0='CPU=IRAM(0x20000000-0x20004FFF) IROM(0x8000000-0x801FFFF) CLOCK(8000000) CPUTYPE(&quot;Cortex-M3&quot;)' Item1='FLDLL=UL2CM3(-O14 -S0 -C0 -N00(&quot;ARM Cortex-M3&quot;) -D00(1BA00477) -L00(4) -FO7 -FD20000000 -FC800 -FN1 -FF0STM32F10x_128 -FS08000000 -FL020000)' Item2='MON=SARMCM3.DLL TARMSTM.DLL(&quot;-pSTM32F10x&quot;)' Item3='REGFILE=stm32f10x_lib.h(&quot;ST\STM32F10x&quot;)' Item4='SFILE=&quot;STARTUP\ST\startup_stm32f10x_md.s&quot; (&quot;STM32 Medium Density Line Startup Code&quot;)' Item5='SIM=SARMCM3.DLL  DARMSTM.DLL(&quot;-pSTM32F103RB&quot;)' />
             <DeviceDescription Description="ARM 32-bit Cortex-M3 Microcontroller, 72MHz, 128kB Flash, 20kB SRAM,&#x0D;&#x0A;PLL, Embedded Internal RC 8MHz and 32kHz, Real-Time Clock,&#x0D;&#x0A;Nested Interrupt Controller, Power Saving Modes, JTAG and SWD,&#x0D;&#x0A;3 Synch. 16-bit Timers with Input Capture, Output Compare and PWM,&#x0D;&#x0A;16-bit 6-ch Advanced Timer, 2 16-bit Watchdog Timers, SysTick Timer,&#x0D;&#x0A;2 SPI, 2 I2C, 3 USART, USB 2.0 Full Speed Interface, CAN 2.0B Active,&#x0D;&#x0A;2 12-bit 16-ch A/D Converter,  Fast I/O Ports" />
         </Configuration>
@@ -49,6 +49,7 @@
                 <Header RelativePath=".\Hardware\delay.h" />
                 <Header RelativePath=".\Hardware\usart.h" />
                 <Header RelativePath="D:\Keil\ARM\ARMCC\include\stdio.h" />
+                <Header RelativePath=".\Hardware\adc.h" />
             </File>
             <File RelativePath=".\User\stm32f10x_it.c" FileType="1" Output="stm32f10x_it.o" ro="0" bss="0" rw="0">
                 <Header RelativePath=".\User\stm32f10x_it.h" />
