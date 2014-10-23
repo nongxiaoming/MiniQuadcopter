@@ -115,7 +115,7 @@ ifeq ($(USE_ESKYLINK), 1)
 endif
 
 CFLAGS += -DBOARD_REV_$(REV)
-
+CFLAGS += -DUSE_STDPERIPH_DRIVER
 CFLAGS += $(PROCESSOR) $(INCLUDES) $(STFLAGS) -Wall -fno-strict-aliasing $(C_PROFILE)
 # Compiler flags to generate dependency files:
 CFLAGS += -MD -MP -MF $(BIN)/dep/$(@).d -MQ $(@)
