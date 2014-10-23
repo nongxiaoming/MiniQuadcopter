@@ -117,7 +117,7 @@ static void imuAccIIRLPFilter(Axis3i16* in, Axis3i16* out,
 static void imuAccAlignToGravity(Axis3i16* in, Axis3i16* out);
 
 
-static rt_bool_t isInit;
+static rt_bool_t isInit = RT_FALSE;
 
 void imu6Init(void)
 {
@@ -220,7 +220,7 @@ rt_bool_t imu6Test(void)
 {
   rt_bool_t testStatus = RT_TRUE;
 
-  if (!isInit)
+  if (isInit == RT_FALSE)
   {
     DEBUG("Uninitialized");
     testStatus = RT_FALSE;

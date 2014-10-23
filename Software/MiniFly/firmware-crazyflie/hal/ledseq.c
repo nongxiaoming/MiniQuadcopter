@@ -147,7 +147,7 @@ void ledseqInit()
 {
   int i,j;
   
-  if(isInit)
+  if(isInit==RT_TRUE)
     return;
   
   ledInit();

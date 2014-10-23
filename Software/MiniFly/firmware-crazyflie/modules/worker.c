@@ -35,11 +35,11 @@ struct worker_work {
   void* arg;
 };
 
-static rt_mq_t workerQueue;
+static rt_mq_t workerQueue = RT_NULL;
 
 void workerInit(void)
 {
-  if (workerQueue)
+  if (workerQueue != RT_NULL)
     return;
 
   workerQueue = rt_mq_create("work_mq",sizeof(struct worker_work),WORKER_QUEUE_LENGTH,RT_IPC_FLAG_FIFO);
@@ -47,7 +47,14 @@ void workerInit(void)
 
 rt_bool_t workerTest()
 {
-  return (workerQueue != RT_NULL);
+	if (workerQueue != RT_NULL)
+	{
+		return RT_TRUE;
+	}	
+	else
+	{
+		return RT_FALSE;
+	}
 }
 
 void workerLoop(void)

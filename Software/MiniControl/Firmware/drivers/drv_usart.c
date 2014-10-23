@@ -32,15 +32,14 @@ struct stm32_uart
     IRQn_Type irq;
 };
 
-static rt_err_t stm32_configure(struct rt_serial_device *serial, struct serial_configure *cfg)
+static rt_err_t stm32_configure(struct stm32_uart *serial, rt_uint32_t baudrate)
 {
     struct stm32_uart* uart;
     USART_InitTypeDef USART_InitStructure;
 
     RT_ASSERT(serial != RT_NULL);
-    RT_ASSERT(cfg != RT_NULL);
 
-    USART_InitStructure.USART_BaudRate = cfg->baud_rate;
+    USART_InitStructure.USART_BaudRate = baudrate;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_Parity = USART_Parity_No;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
@@ -56,11 +55,8 @@ static rt_err_t stm32_configure(struct rt_serial_device *serial, struct serial_c
 }
 
 
-static int stm32_putc(struct rt_serial_device *serial, char c)
+static int stm32_putc(struct stm32_uart* uart, char c)
 {
-    struct stm32_uart* uart;
-
-    RT_ASSERT(serial != RT_NULL);
 
     while (!(uart->uart_device->SR & USART_FLAG_TXE));
     uart->uart_device->DR = c;
@@ -68,10 +64,9 @@ static int stm32_putc(struct rt_serial_device *serial, char c)
     return 1;
 }
 
-static int stm32_getc(struct rt_serial_device *serial)
+static int stm32_getc(struct stm32_uart* uart)
 {
     int ch;
-    struct stm32_uart* uart;
 
     ch = -1;
     if (uart->uart_device->SR & USART_FLAG_RXNE)
@@ -85,13 +80,13 @@ static int stm32_getc(struct rt_serial_device *serial)
 
 #if defined(RT_USING_UART1)
 /* UART1 device driver structure */
-struct serial_ringbuffer uart1_int_rx;
+
 struct stm32_uart uart1 =
 {
     USART1,
     USART1_IRQn,
 };
-struct rt_serial_device serial1;
+
 
 void USART1_IRQHandler(void)
 {
@@ -103,7 +98,7 @@ void USART1_IRQHandler(void)
     rt_interrupt_enter();
     if(USART_GetITStatus(uart->uart_device, USART_IT_RXNE) != RESET)
     {
-        rt_hw_serial_isr(&serial1);
+ 
         /* clear interrupt */
         USART_ClearITPendingBit(uart->uart_device, USART_IT_RXNE);
     }
@@ -164,25 +159,14 @@ static void NVIC_Configuration(struct stm32_uart* uart)
 
 void rt_hw_usart_init(void)
 {
-    struct stm32_uart* uart;
-
+ 
     RCC_Configuration();
     GPIO_Configuration();
 
 #ifdef RT_USING_UART1
-    uart = &uart1;
-    config.baud_rate = BAUD_RATE_115200;
 
-    serial1.ops    = &stm32_uart_ops;
-    serial1.int_rx = &uart1_int_rx;
-    serial1.config = config;
 
     NVIC_Configuration(&uart1);
-
-    /* register UART1 device */
-    rt_hw_serial_register(&serial1, "uart1",
-                          RT_DEVICE_FLAG_RDWR | RT_DEVICE_FLAG_INT_RX | RT_DEVICE_FLAG_STREAM,
-                          uart);
 #endif /* RT_USING_UART1 */
 
 

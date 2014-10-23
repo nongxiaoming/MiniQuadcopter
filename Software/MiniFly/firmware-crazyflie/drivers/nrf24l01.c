@@ -86,13 +86,13 @@
 #define ACTIVATE_DATA   0x73
 
 /* Private variables */
-static rt_bool_t isInit;
-static void (*interruptCb)(void) = NULL;
+static rt_bool_t isInit = RT_FALSE;
+static void (*interruptCb)(void) = RT_NULL;
 
 /***********************
  * SPI private methods *
  ***********************/
-static char spiSendByte(char byte)
+static char NRF24L01_SendByte(char byte)
 {
   /* Loop while DR register in not emplty */
   while (SPI_I2S_GetFlagStatus(RADIO_SPI, SPI_I2S_FLAG_TXE) == RESET);
@@ -109,7 +109,7 @@ static char spiSendByte(char byte)
 
 static char spiReceiveByte(void)
 {
-  return spiSendByte(DUMMY_BYTE);
+	return NRF24L01_SendByte(DUMMY_BYTE);
 }
 
 /****************************************************************
@@ -125,7 +125,7 @@ unsigned char nrfReadReg(unsigned char address, char *buffer, int len)
   RADIO_EN_CS();
 
   /* Send the read command with the address */
-  status = spiSendByte( CMD_R_REG | (address&0x1F) );
+  status = spi_send_byte(CMD_R_REG | (address & 0x1F));
   /* Read LEN bytes */
   for(i=0; i<len; i++)
     buffer[i]=spiReceiveByte();
@@ -144,7 +144,7 @@ unsigned char nrfWriteReg(unsigned char address, char *buffer, int len)
   RADIO_EN_CS();
 
   /* Send the write command with the address */
-  status = spiSendByte( CMD_W_REG | (address&0x1F) );
+  status = NRF24L01_SendByte(CMD_W_REG | (address & 0x1F));
   /* Write LEN bytes */
   for(i=0; i<len; i++)
     spiSendByte(buffer[i]);
@@ -175,7 +175,7 @@ unsigned char nrfNop(void)
   unsigned char status;
 
   RADIO_EN_CS();
-  status = spiSendByte(CMD_NOP);
+  status = NRF24L01_SendByte(CMD_NOP);
   RADIO_DIS_CS();
 
   return status;
@@ -186,7 +186,7 @@ unsigned char nrfFlushRx(void)
   unsigned char status;
 
   RADIO_EN_CS();
-  status = spiSendByte(CMD_FLUSH_RX);
+  status = NRF24L01_SendByte(CMD_FLUSH_RX);
   RADIO_DIS_CS();
 
   return status;
@@ -197,7 +197,7 @@ unsigned char nrfFlushTx(void)
   unsigned char status;
 
   RADIO_EN_CS();
-  status = spiSendByte(CMD_FLUSH_TX);
+  status = NRF24L01_SendByte(CMD_FLUSH_TX);
   RADIO_DIS_CS();
 
   return status;
@@ -221,7 +221,7 @@ unsigned char nrfActivate(void)
   unsigned char status;
   
   RADIO_EN_CS();
-  status = spiSendByte(CMD_ACTIVATE);
+  status = NRF24L01_SendByte(CMD_ACTIVATE);
   spiSendByte(ACTIVATE_DATA);
   RADIO_DIS_CS();
 
@@ -239,10 +239,10 @@ unsigned char nrfWriteAck(unsigned int pipe, char *buffer, int len)
   RADIO_EN_CS();
 
   /* Send the read command with the address */
-  status = spiSendByte(CMD_W_ACK_PAYLOAD(pipe));
+  status = NRF24L01_SendByte(CMD_W_ACK_PAYLOAD(pipe));
   /* Read LEN bytes */
   for(i=0; i<len; i++)
-    spiSendByte(buffer[i]);
+	  NRF24L01_SendByte(buffer[i]);
 
   RADIO_DIS_CS();
 
@@ -258,7 +258,7 @@ unsigned char nrfReadRX(char *buffer, int len)
   RADIO_EN_CS();
 
   /* Send the read command with the address */
-  status = spiSendByte(CMD_R_RX_PAYLOAD);
+  status = NRF24L01_SendByte(CMD_R_RX_PAYLOAD);
   /* Read LEN bytes */
   for(i=0; i<len; i++)
     buffer[i]=spiReceiveByte();
@@ -319,7 +319,7 @@ void nrfSetAddress(unsigned int pipe, char* address)
 
 void nrfSetEnable(rt_bool_t enable)
 {
-  if (enable)
+  if (enable==RT_TRUE)
   {
     RADIO_EN_CE();
   } 
@@ -342,13 +342,16 @@ void nrfInit(void)
   GPIO_InitTypeDef GPIO_InitStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
 
-  if (isInit)
+  if (isInit==RT_TRUE)
     return;
 
   /* Enable SPI and GPIO clocks */
   RCC_APB2PeriphClockCmd(RADIO_SPI_CLK|RADIO_GPIO_SPI_CLK | RADIO_GPIO_CS_PERIF |
                          RADIO_GPIO_CE_PERIF | RADIO_GPIO_IRQ_PERIF, ENABLE);
-
+  /* Disable PWR Backup */
+  PWR_BackupAccessCmd(DISABLE);
+  /* Turn off the LSE Clock */
+  RCC_LSEConfig(RCC_LSE_OFF);
 
   /* Configure SPI pins: SCK, MISO and MOSI */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_SCK |  RADIO_GPIO_SPI_MOSI;
@@ -360,11 +363,6 @@ void nrfInit(void)
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_MISO;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
-
-  /* Configure I/O for the Chip select */
-  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_Init(RADIO_GPIO_CS_PORT, &GPIO_InitStructure);
 
   /* Configure the interruption (EXTI Source) */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_IRQ;
@@ -386,12 +384,17 @@ void nrfInit(void)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
+  /* Configure I/O for the Chip select */
+  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(RADIO_GPIO_CS_PORT, &GPIO_InitStructure);
+
   /* disable the chip select */
   RADIO_DIS_CS();
 
   /* Configure I/O for the Chip Enable */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CE;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(RADIO_GPIO_CE_PORT, &GPIO_InitStructure);
 
   /* disable the chip enable */

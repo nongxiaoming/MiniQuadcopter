@@ -33,11 +33,11 @@
 #include "param.h"
 #include "log.h"
 
-static rt_bool_t isInit;
+static rt_bool_t isInit=RT_FALSE;
 
 void commInit(void)
 {
-  if (isInit)
+  if (isInit==RT_TRUE)
     return;
 
   radiolinkInit();

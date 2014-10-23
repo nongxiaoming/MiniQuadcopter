@@ -56,33 +56,5 @@
 /* Using Small MM */
 #define RT_USING_SMALL_MEM
 
-/* SECTION: Device System */
-/* Using Device System */
-//#define RT_USING_DEVICE
-// <bool name="RT_USING_DEVICE_IPC" description="Using device communication" default="true" />
-//#define RT_USING_DEVICE_IPC
-// <bool name="RT_USING_SERIAL" description="Using Serial" default="true" />
-//#define RT_USING_SERIAL
-//#define RT_USING_SPI
-//#define RT_USING_I2C
-/* SECTION: Console options */
-#define RT_USING_CONSOLE
-/* the buffer size of console*/
-#define RT_CONSOLEBUF_SIZE	        128
-// <string name="RT_CONSOLE_DEVICE_NAME" description="The device name for console" default="uart1" />
-#define RT_CONSOLE_DEVICE_NAME	    "uart1"
-
-/* SECTION: finsh, a C-Express shell */
-//#define RT_USING_FINSH
-/* Using symbol table */
-#define FINSH_USING_SYMTAB
-#define FINSH_USING_DESCRIPTION
-
-// <bool name="RT_USING_CMSIS_OS" description="Using CMSIS OS API" default="true" />
-// #define RT_USING_CMSIS_OS
-// <bool name="RT_USING_RTT_CMSIS" description="Using CMSIS in RTT" default="true" />
-//#define RT_USING_RTT_CMSIS
-// <bool name="RT_USING_BSP_CMSIS" description="Using CMSIS in BSP" default="true" />
-// #define RT_USING_BSP_CMSIS
 
 #endif

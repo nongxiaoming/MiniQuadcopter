@@ -95,13 +95,24 @@ void motorsInit()
   TIM_OCInitTypeDef  TIM_OCInitStructure;
 
   //Enable gpio and the timer
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO 
+  RCC_APB2PeriphClockCmd( RCC_APB2Periph_AFIO 
 	                    | MOTOR1_GPIO_PERIF
 						| MOTOR2_GPIO_PERIF 
 						| MOTOR3_GPIO_PERIF 
 						| MOTOR4_GPIO_PERIF, ENABLE);
 
-  RCC_APB1PeriphClockCmd(MOTOR1_TIM_PERIF | MOTOR2_TIM_PERIF | MOTOR3_TIM_PERIF | MOTOR4_TIM_PERIF, ENABLE);
+  RCC_APB1PeriphClockCmd( MOTOR1_TIM_PERIF 
+	                    | MOTOR2_TIM_PERIF 
+	                    | MOTOR3_TIM_PERIF
+	                    | MOTOR4_TIM_PERIF, ENABLE);
+
+  GPIO_AFIODeInit();  
+  //Remap MOTO3 TIM
+  GPIO_PinRemapConfig(MOTOR3_TIM_REMAP, ENABLE);
+
+  //Remap MOTO4 TIM
+  GPIO_PinRemapConfig(MOTOR4_TIM_REMAP, ENABLE);
+
   // Configure the GPIO for the MOTO1 output
   GPIO_InitStructure.GPIO_Pin = MOTOR1_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
@@ -119,12 +130,6 @@ void motorsInit()
   // Configure the GPIO for the MOTO2 output
   GPIO_InitStructure.GPIO_Pin = MOTOR4_GPIO_PIN;
   GPIO_Init(MOTOR4_GPIO_PORT, &GPIO_InitStructure);
-
-  //Remap MOTO3 TIM
-  GPIO_PinRemapConfig(MOTOR3_TIM_REMAP , ENABLE);
-
-  //Remap MOTO4 TIM
-  GPIO_PinRemapConfig(MOTOR4_TIM_REMAP, ENABLE);
 
   //Timer configuration
   TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
@@ -179,6 +184,10 @@ void motorsInit()
   //TIM_CtrlPWMOutputs(MOTOR2_TIM, ENABLE);
   //TIM_CtrlPWMOutputs(MOTOR3_TIM, ENABLE);
   //TIM_CtrlPWMOutputs(MOTOR4_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR1_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR2_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR3_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR4_TIM, ENABLE);
   // Halt timer during debug halt.
   DBGMCU_Config(MOTOR1_TIM_DBG, ENABLE);
   DBGMCU_Config(MOTOR2_TIM_DBG, ENABLE);
@@ -213,16 +222,16 @@ void motorsSetRatio(int id, uint16_t ratio)
   switch(id)
   {
     case MOTOR_M1:
-      TIM_SetCompare4(MOTOR1_TIM, C_16_TO_BITS(ratio));
+      MOTOR1_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M2:
-      TIM_SetCompare4(MOTOR2_TIM, C_16_TO_BITS(ratio));
+      MOTOR2_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M3:
-      TIM_SetCompare4(MOTOR3_TIM, C_16_TO_BITS(ratio));
+     MOTOR3_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M4:
-      TIM_SetCompare3(MOTOR4_TIM, C_16_TO_BITS(ratio));
+     MOTOR4_TIM->CCR3=C_16_TO_BITS(ratio);
       break;
   }
 }
@@ -232,13 +241,13 @@ int motorsGetRatio(int id)
   switch(id)
   {
     case MOTOR_M1:
-      return C_BITS_TO_16(TIM_GetCapture4(MOTOR1_TIM));
+      return C_BITS_TO_16(MOTOR1_TIM->CCR4);
     case MOTOR_M2:
-      return C_BITS_TO_16(TIM_GetCapture4(MOTOR2_TIM));
+		return C_BITS_TO_16(MOTOR2_TIM->CCR4);
     case MOTOR_M3:
-      return C_BITS_TO_16(TIM_GetCapture4(MOTOR3_TIM));
+		return C_BITS_TO_16(MOTOR3_TIM->CCR4);
     case MOTOR_M4:
-      return C_BITS_TO_16(TIM_GetCapture3(MOTOR4_TIM));
+		return C_BITS_TO_16(MOTOR4_TIM->CCR3);
   }
 
   return -1;

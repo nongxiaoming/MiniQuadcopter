@@ -53,7 +53,7 @@ typedef struct
 
 static uint8_t devAddr;
 static I2C_TypeDef *I2Cx;
-static rt_bool_t isInit;
+static rt_bool_t isInit = RT_FALSE;
 
 static CalReg   calReg;
 static rt_uint32_t lastPresConv;
@@ -64,9 +64,9 @@ static uint8_t readState=0;
 static rt_uint32_t lastConv=0;
 static int32_t tempDeltaT;
 
-rt_bool_t ms5611Init(I2C_TypeDef *i2cPort)
+rt_bool_t ms5611_hw_init(I2C_TypeDef *i2cPort)
 {
-  if (isInit)
+  if (isInit == RT_TRUE)
     return RT_TRUE;
 
   I2Cx = i2cPort;
@@ -303,7 +303,7 @@ rt_bool_t ms5611ReadPROM(void)
     status = i2cdevWriteByte(I2Cx, devAddr, I2CDEV_NO_MEM_ADDR,
                              MS5611_PROM_BASE_ADDR + (i * MS5611_PROM_REG_SIZE));
     // Read conversion
-    if (status)
+    if (status==RT_TRUE)
     {
       status = i2cdevRead(I2Cx, devAddr, I2CDEV_NO_MEM_ADDR, MS5611_PROM_REG_SIZE, buffer);
       pCalRegU16[i] = ((uint16_t)buffer[0] << 8) | buffer[1];
@@ -321,9 +321,6 @@ void ms5611Reset(void)
 {
   i2cdevWriteByte(I2Cx, devAddr, I2CDEV_NO_MEM_ADDR, MS5611_RESET);
 }
-
-
-
 
 /**
  * Gets pressure, temperature and above sea level altitude estimate (asl).
