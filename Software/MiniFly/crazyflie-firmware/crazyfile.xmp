@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252" ?>
 <TKStudioProject Name="crazyfile" ProjectGUID="{FE70CAA6-55A7-4ff5-8289-4C7532A89F7F}" BuildTool="10" ToolVer="gcc4.8.3" Version="3.00" Author="YinHandong[Òüº®¶¬]">
     <Configurations>
-        <Configuration Name="bin" MakeFile="0,()" CLK="8.000000" OS="0" Mode="1,0,0" XROM="0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0" XRAM="0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0" OldCPU="STM32F103CB" IROM="1,0x08000000,0x00020000,1#0,0xffffffff,0x00000000,0" IRAM="1,0x20000000,0x00005000,1#0,0xffffffff,0x00000000,0" OPTDBG="1,103704316,1,1,1,1,()" DEVICE="STM32F103CB" VENDOR="STMicroelectronics" FAMINY="3" SIMCLK="8.000000" cModify="0" linkModify="0">
+        <Configuration Name="bin" MakeFile="0,()" CLK="8.000000" OS="0" Mode="1,0,0" XROM="0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0" XRAM="0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0" OldCPU="STM32F103CB" IROM="1,0x08000000,0x00020000,1#0,0xffffffff,0x00000000,0" IRAM="1,0x20000000,0x00005000,1#0,0xffffffff,0x00000000,0" OPTDBG="1,82667260,1,1,1,1,()" DEVICE="STM32F103CB" VENDOR="STMicroelectronics" FAMINY="3" SIMCLK="8.000000" cModify="0" linkModify="0">
             <GNU_Output OutName=".\bin\crazyfile" OutType="0" DBGInfo="1" Bath="0" OutFormat="0" />
             <GNU_List Path=".\bin" Asm="0,1,1,1,1,1,1,1" CLan="0" Link="0,1,1" />
             <GNU_User BfC="0,&lt;&gt;#0,&lt;&gt;" BfB="0,&lt;&gt;#0,&lt;&gt;" AfB="0,&lt;&gt;#0,&lt;&gt;" Beep="1" SDebug="0" />
@@ -538,60 +538,6 @@
             </File>
         </Filter>
         <Filter Name="hal">
-            <File RelativePath=".\hal\src\eskylink.c" FileType="1" Output="eskylink.o">
-                <Header RelativePath="config\FreeRTOSConfig.h" />
-                <Header RelativePath="config\stm32f10x_conf.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\_ansi.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\errno.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\machine\_default_types.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\machine\_types.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\machine\ieeefp.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\newlib.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\stdint.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\string.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\_types.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\config.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\errno.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\features.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\lock.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\reent.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\string.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include-fixed\sys\cdefs.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include\stddef.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include\stdint.h" />
-                <Header RelativePath="drivers\interface\led.h" />
-                <Header RelativePath="drivers\interface\nRF24L01reg.h" />
-                <Header RelativePath="drivers\interface\nrf24l01.h" />
-                <Header RelativePath="hal\interface\ledseq.h" />
-                <Header RelativePath="lib\CMSIS\Core\CM3\core_cm3.h" />
-                <Header RelativePath="lib\CMSIS\Core\CM3\stm32f10x.h" />
-                <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
-                <Header RelativePath="lib\FreeRTOS\include\FreeRTOS.h" />
-                <Header RelativePath="lib\FreeRTOS\include\list.h" />
-                <Header RelativePath="lib\FreeRTOS\include\mpu_wrappers.h" />
-                <Header RelativePath="lib\FreeRTOS\include\portable.h" />
-                <Header RelativePath="lib\FreeRTOS\include\projdefs.h" />
-                <Header RelativePath="lib\FreeRTOS\include\queue.h" />
-                <Header RelativePath="lib\FreeRTOS\include\semphr.h" />
-                <Header RelativePath="lib\FreeRTOS\include\task.h" />
-                <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_flash.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_gpio.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_i2c.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_iwdg.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_pwr.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_rcc.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_spi.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_tim.h" />
-                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h" />
-                <Header RelativePath="modules\interface\crtp.h" />
-                <Header RelativePath="utils\interface\configblock.h" />
-            </File>
             <File RelativePath=".\hal\src\freeRTOSdebug.c" FileType="1" Output="freeRTOSdebug.o">
                 <Header RelativePath="config\FreeRTOSConfig.h" />
                 <Header RelativePath="config\config.h" />
@@ -1412,7 +1358,6 @@
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\features.h" />
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\lock.h" />
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\reent.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include\stdbool.h" />
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include\stddef.h" />
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include\stdint.h" />
                 <Header RelativePath="hal\interface\imu.h" />
@@ -1454,7 +1399,6 @@
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\features.h" />
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\lock.h" />
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\arm-none-eabi\include\sys\reent.h" />
-                <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include\stdbool.h" />
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include\stddef.h" />
                 <Header RelativePath="d:\mentorgraphics\sourcery_codebench_lite_for_arm_eabi\lib\gcc\arm-none-eabi\4.8.3\include\stdint.h" />
                 <Header RelativePath="drivers\interface\adc.h" />

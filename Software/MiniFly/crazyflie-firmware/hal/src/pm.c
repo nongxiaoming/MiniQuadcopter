@@ -375,7 +375,7 @@ void pmTask(void *param)
           ledseqStop(LED_GREEN, seq_charging);
           ledseqStop(LED_GREEN, seq_chargingMax);
           ledseqRun(LED_GREEN, seq_charged);
-          systemSetCanFly(false);
+          systemSetCanFly(FALSE);
           break;
         case charging:
           ledseqStop(LED_RED, seq_lowbat);
@@ -390,24 +390,24 @@ void pmTask(void *param)
             pmSetChargeState(charge500mA);
             ledseqRun(LED_GREEN, seq_charging);
           }
-          systemSetCanFly(false);
+          systemSetCanFly(FALSE);
           //Due to voltage change radio must be restarted
           radiolinkReInit();
           break;
         case lowPower:
           ledseqRun(LED_RED, seq_lowbat);
-          systemSetCanFly(true);
+          systemSetCanFly(TRUE);
           break;
         case battery:
           ledseqStop(LED_GREEN, seq_charging);
           ledseqStop(LED_GREEN, seq_chargingMax);
           ledseqStop(LED_GREEN, seq_charged);
-          systemSetCanFly(true);
+          systemSetCanFly(TRUE);
           //Due to voltage change radio must be restarted
           radiolinkReInit();
           break;
         default:
-          systemSetCanFly(true);
+          systemSetCanFly(TRUE);
           break;
       }
       pmStateOld = pmState;

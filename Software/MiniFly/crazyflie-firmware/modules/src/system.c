@@ -52,7 +52,7 @@
 /* Private variable */
 static bool canFly;
 
-static bool isInit;
+static bool isInit=FALSE;
 
 /* System wide synchronisation */
 xSemaphoreHandle canStartMutex;
@@ -71,7 +71,7 @@ void systemLaunch(void)
 //This must be the first module to be initialized!
 void systemInit(void)
 {
-  if(isInit)
+  if(isInit==TRUE)
     return;
 
   canStartMutex = xSemaphoreCreateMutex();
@@ -83,7 +83,7 @@ void systemInit(void)
   ledseqInit();
   pmInit();
     
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool systemTest()
@@ -104,7 +104,7 @@ extern int paramsLen;
 
 void systemTask(void *arg)
 {
-  bool pass = true;
+  bool pass = TRUE;
   
   //Init the high-levels modules
   systemInit();
@@ -137,7 +137,7 @@ void systemTask(void *arg)
   pass &= stabilizerTest();
   
   //Start the firmware
-  if(pass)
+  if(pass==TRUE)
   {
     systemStart();
     ledseqRun(LED_RED, seq_alive);
@@ -156,7 +156,7 @@ void systemTask(void *arg)
     else
     {
       ledInit();
-      ledSet(LED_RED, true);
+      ledSet(LED_RED, TRUE);
     }
   }
   
@@ -178,7 +178,7 @@ void systemWaitStart(void)
 {
   //This permits to guarantee that the system task is initialized before other
   //tasks waits for the start event.
-  while(!isInit)
+  while(isInit==FALSE)
     vTaskDelay(2);
 
   xSemaphoreTake(canStartMutex, portMAX_DELAY);

@@ -27,6 +27,8 @@
 #ifndef __COMM_H__
 #define __COMM_H__
 
+#include "stm32f10x.h"
+
 void commInit(void);
 bool commTest(void);
 

@@ -23,7 +23,6 @@
  *
  *
  */
-#include "stm32f10x_conf.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -82,8 +81,8 @@ static float aslLong; // long term asl
 
 // Altitude hold variables
 static PidObject altHoldPID; // Used for altitute hold mode. I gets reset when the bat status changes
-bool altHold = false;          // Currently in altitude hold mode
-bool setAltHold = false;      // Hover mode has just been activated
+bool altHold = FALSE;          // Currently in altitude hold mode
+bool setAltHold = FALSE;      // Hover mode has just been activated
 static float accWZ     = 0.0;
 static float accMAG    = 0.0;
 static float vSpeedASL = 0.0;
@@ -130,7 +129,7 @@ uint32_t motorPowerM2;
 uint32_t motorPowerM1;
 uint32_t motorPowerM3;
 
-static bool isInit;
+static bool isInit = FALSE;
 
 static void stabilizerAltHoldUpdate(void);
 static void distributePower(const uint16_t thrust, const int16_t roll,
@@ -142,7 +141,7 @@ static float deadband(float value, const float threshold);
 
 void stabilizerInit(void)
 {
-  if(isInit)
+  if(isInit==TRUE)
     return;
 
   motorsInit();
@@ -162,7 +161,7 @@ void stabilizerInit(void)
 
 bool stabilizerTest(void)
 {
-  bool pass = true;
+  bool pass = TRUE;
 
   pass &= motorsTest();
   pass &= imu6Test();
@@ -317,7 +316,7 @@ static void stabilizerAltHoldUpdate(void)
     altHoldPID.integ = pre_integral;
 
     // Reset altHoldPID
-    altHoldPIDVal = pidUpdate(&altHoldPID, asl, false);
+    altHoldPIDVal = pidUpdate(&altHoldPID, asl, FALSE);
   }
 
   // In altitude hold mode
@@ -336,7 +335,7 @@ static void stabilizerAltHoldUpdate(void)
     // Smooth it and include barometer vspeed
     // TODO same as smoothing the error??
     altHoldPIDVal = (pidAlpha) * altHoldPIDVal + (1.f - pidAlpha) * ((vSpeedAcc * vSpeedAccFac) +
-                    (vSpeedASL * vSpeedASLFac) + pidUpdate(&altHoldPID, asl, false));
+                    (vSpeedASL * vSpeedASLFac) + pidUpdate(&altHoldPID, asl, FALSE));
 
     // compute new thrust
     actuatorThrust =  max(altHoldMinThrust, min(altHoldMaxThrust,

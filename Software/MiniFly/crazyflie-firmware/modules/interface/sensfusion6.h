@@ -25,7 +25,7 @@
 
 #ifndef SENSORFUSION6_H_
 #define SENSORFUSION6_H_
-#include <stdbool.h>
+#include "stm32f10x.h"
 
 void sensfusion6Init(void);
 bool sensfusion6Test(void);

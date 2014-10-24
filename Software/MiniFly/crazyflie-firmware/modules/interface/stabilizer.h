@@ -26,7 +26,7 @@
 #ifndef STABALIZER_H_
 #define STABALIZER_H_
 
-#include <stdbool.h>
+#include "stm32f10x.h"
 
 void stabilizerInit(void);
 

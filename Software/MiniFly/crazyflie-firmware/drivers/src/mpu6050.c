@@ -29,7 +29,6 @@
  */
 #define DEBUG_MODULE "MPU6050"
 
-#include "stm32f10x_conf.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -43,14 +42,14 @@
 static uint8_t devAddr;
 static I2C_TypeDef *I2Cx;
 static uint8_t buffer[14];
-static bool isInit;
+static bool isInit=FALSE;
 
 /** Default constructor, uses default I2C address.
  * @see MPU6050_DEFAULT_ADDRESS
  */
 void mpu6050Init(I2C_TypeDef *i2cPort)
 {
-  if (isInit)
+  if (isInit==TRUE)
     return;
 
   I2Cx = i2cPort;
@@ -63,7 +62,7 @@ bool mpu6050Test(void)
 {
   bool testStatus;
 
-  if (!isInit)
+  if (isInit==FALSE)
     return FALSE;
 
   testStatus = mpu6050TestConnection();
