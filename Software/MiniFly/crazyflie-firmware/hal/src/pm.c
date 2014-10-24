@@ -24,9 +24,7 @@
  * pm.c - Power Management driver and functions.
  */
 
-#include "stm32f10x_conf.h"
 #include <string.h>
-#include <stdbool.h>
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -49,7 +47,7 @@ static int32_t  batteryVRawFilt = PM_BAT_ADC_FOR_3_VOLT;
 static int32_t  batteryVRefRawFilt = PM_BAT_ADC_FOR_1p2_VOLT;
 static uint32_t batteryLowTimeStamp;
 static uint32_t batteryCriticalLowTimeStamp;
-static bool isInit;
+static bool isInit=FALSE;
 static PMStates pmState;
 static PMChargeStates pmChargeState;
 
@@ -73,7 +71,7 @@ void pmInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  if(isInit)
+  if(isInit==TRUE)
     return;
 
   RCC_APB2PeriphClockCmd(PM_GPIO_IN_PGOOD_PERIF | PM_GPIO_IN_CHG_PERIF |
@@ -118,7 +116,7 @@ void pmInit(void)
   xTaskCreate(pmTask, (const signed char * const)"PWRMGNT",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
   
-  isInit = true;
+  isInit = TRUE;
 }
 
 bool pmTest(void)
