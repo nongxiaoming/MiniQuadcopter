@@ -103,17 +103,17 @@ void uartInit(void)
 
   /* Enable GPIO and USART clock */
   RCC_APB2PeriphClockCmd(UART_GPIO_PERIF, ENABLE);
-  RCC_APB1PeriphClockCmd(UART_PERIF, ENABLE);
+  RCC_APB2PeriphClockCmd(UART_PERIF, ENABLE);
 
   /* Configure USART Rx as input floating */
   GPIO_InitStructure.GPIO_Pin   = UART_GPIO_RX;
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(UART_GPIO_PORT, &GPIO_InitStructure);
 /* Configure USART Tx as alternate function push-pull */
   GPIO_InitStructure.GPIO_Pin   = UART_GPIO_TX;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(UART_GPIO_PORT, &GPIO_InitStructure);
 
 #if defined(UART_OUTPUT_TRACE_DATA) || defined(ADC_OUTPUT_RAW_DATA) || defined(IMU_OUTPUT_RAW_DATA_ON_UART)
   USART_InitStructure.USART_BaudRate            = 2000000;
@@ -132,7 +132,7 @@ void uartInit(void)
   uartDmaInit();
 #else
   // Configure Tx buffer empty interrupt
-  NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;

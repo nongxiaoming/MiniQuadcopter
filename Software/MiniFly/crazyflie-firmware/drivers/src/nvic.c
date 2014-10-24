@@ -170,21 +170,11 @@ void DONT_DISCARD DMA1_Channel1_IRQHandler(void)
   adcInterruptHandler();
 }
 
-void DONT_DISCARD DMA1_Channel2_IRQHandler(void)
+void DONT_DISCARD DMA1_Channel4_IRQHandler(void)
 {
 #if defined(UART_OUTPUT_TRACE_DATA) || defined(ADC_OUTPUT_RAW_DATA)
   uartDmaIsr();
 #endif
-}
-
-void DONT_DISCARD DMA1_Channel4_IRQHandler(void)
-{
-  i2cDmaInterruptHandlerI2c2();
-}
-
-void DONT_DISCARD DMA1_Channel5_IRQHandler(void)
-{
-  i2cDmaInterruptHandlerI2c2();
 }
 
 void DONT_DISCARD DMA1_Channel6_IRQHandler(void)
@@ -203,7 +193,7 @@ void DONT_DISCARD EXTI1_IRQHandler(void)
   extiInterruptHandler();
 }
 
-void DONT_DISCARD USART3_IRQHandler(void)
+void DONT_DISCARD USART1_IRQHandler(void)
 {
   uartIsr();
 }
