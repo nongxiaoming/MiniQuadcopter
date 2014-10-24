@@ -198,7 +198,7 @@ void DONT_DISCARD DMA1_Channel7_IRQHandler(void)
 }
 
 
-void DONT_DISCARD EXTI9_5_IRQHandler(void)
+void DONT_DISCARD EXTI1_IRQHandler(void)
 {
   extiInterruptHandler();
 }
