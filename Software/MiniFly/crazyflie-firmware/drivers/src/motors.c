@@ -36,21 +36,38 @@
 #include "task.h"
 
 // HW defines
-#define MOTORS_GPIO_TIM_PERIF     RCC_APB1Periph_TIM3
-#define MOTORS_GPIO_TIM_M1_2      TIM3
-#define MOTORS_GPIO_TIM_M1_2_DBG  DBGMCU_TIM3_STOP
-#define MOTORS_REMAP              GPIO_PartialRemap_TIM3
+#define MOTOR1_TIM_PERIF     RCC_APB1Periph_TIM2
+#define MOTOR1_TIM           TIM2
+#define MOTOR1_TIM_DBG       DBGMCU_TIM2_STOP
+//#define MOTOR1_TIM_REMAP     GPIO_PartialRemap_TIM2
 
-#define MOTORS_GPIO_TIM_M3_4_PERIF  RCC_APB1Periph_TIM4
-#define MOTORS_GPIO_TIM_M3_4        TIM4
-#define MOTORS_GPIO_TIM_M3_4_DBG    DBGMCU_TIM4_STOP
+#define MOTOR2_TIM_PERIF     RCC_APB1Periph_TIM4
+#define MOTOR2_TIM           TIM4
+#define MOTOR2_TIM_DBG       DBGMCU_TIM4_STOP
 
-#define MOTORS_GPIO_PERIF         RCC_APB2Periph_GPIOB
-#define MOTORS_GPIO_PORT          GPIOB
-#define MOTORS_GPIO_M1            GPIO_Pin_1 // T3_CH4
-#define MOTORS_GPIO_M2            GPIO_Pin_0 // T3_CH3
-#define MOTORS_GPIO_M3            GPIO_Pin_9 // T4_CH4
-#define MOTORS_GPIO_M4            GPIO_Pin_8 // T4_CH3
+#define MOTOR3_TIM_PERIF     RCC_APB1Periph_TIM3
+#define MOTOR3_TIM           TIM3
+#define MOTOR3_TIM_DBG       DBGMCU_TIM3_STOP
+#define MOTOR3_TIM_REMAP     GPIO_FullRemap_TIM3
+
+#define MOTOR4_TIM_PERIF     RCC_APB1Periph_TIM3
+#define MOTOR4_TIM           TIM3
+#define MOTOR4_TIM_DBG       DBGMCU_TIM3_STOP
+#define MOTOR4_TIM_REMAP      GPIO_FullRemap_TIM3
+
+
+#define MOTOR1_GPIO_PERIF          RCC_APB2Periph_GPIOA
+#define MOTOR1_GPIO_PORT           GPIOA
+#define MOTOR1_GPIO_PIN            GPIO_Pin_3 // T2_CH4
+#define MOTOR2_GPIO_PERIF          RCC_APB2Periph_GPIOB
+#define MOTOR2_GPIO_PORT           GPIOB
+#define MOTOR2_GPIO_PIN            GPIO_Pin_9 // T4_CH4
+#define MOTOR3_GPIO_PERIF          RCC_APB2Periph_GPIOC
+#define MOTOR3_GPIO_PORT           GPIOC
+#define MOTOR3_GPIO_PIN            GPIO_Pin_9 // T3_CH4
+#define MOTOR4_GPIO_PERIF          RCC_APB2Periph_GPIOC
+#define MOTOR4_GPIO_PORT           GPIOC
+#define MOTOR4_GPIO_PIN            GPIO_Pin_8 // T3_CH3
 
 /* Utils Conversion macro */
 #ifdef BRUSHLESS_MOTORCONTROLLER
@@ -72,38 +89,72 @@ void motorsInit()
   if (isInit==TRUE)
     return;
 
-  //Init structures
+    //Init structures
   GPIO_InitTypeDef GPIO_InitStructure;
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
   TIM_OCInitTypeDef  TIM_OCInitStructure;
 
   //Enable gpio and the timer
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | MOTORS_GPIO_PERIF, ENABLE);
-  RCC_APB1PeriphClockCmd(MOTORS_GPIO_TIM_PERIF | MOTORS_GPIO_TIM_M3_4_PERIF, ENABLE);
-  // Configure the GPIO for the timer output
-  GPIO_InitStructure.GPIO_Pin = (MOTORS_GPIO_M1 |
-                                 MOTORS_GPIO_M2 |
-                                 MOTORS_GPIO_M3 |
-                                 MOTORS_GPIO_M4);
+  RCC_APB2PeriphClockCmd( RCC_APB2Periph_AFIO 
+	                    | MOTOR1_GPIO_PERIF
+						| MOTOR2_GPIO_PERIF 
+						| MOTOR3_GPIO_PERIF 
+						| MOTOR4_GPIO_PERIF, ENABLE);
+
+  RCC_APB1PeriphClockCmd( MOTOR1_TIM_PERIF 
+	                    | MOTOR2_TIM_PERIF 
+	                    | MOTOR3_TIM_PERIF
+	                    | MOTOR4_TIM_PERIF, ENABLE);
+
+  GPIO_AFIODeInit();  
+  //Remap MOTO3 TIM
+  GPIO_PinRemapConfig(MOTOR3_TIM_REMAP, ENABLE);
+
+  //Remap MOTO4 TIM
+  GPIO_PinRemapConfig(MOTOR4_TIM_REMAP, ENABLE);
+
+  // Configure the GPIO for the MOTO1 output
+  GPIO_InitStructure.GPIO_Pin = MOTOR1_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_Init(MOTORS_GPIO_PORT, &GPIO_InitStructure);
+  GPIO_Init(MOTOR1_GPIO_PORT, &GPIO_InitStructure);
 
-  //Remap M2-4
-  GPIO_PinRemapConfig(MOTORS_REMAP , ENABLE);
+  // Configure the GPIO for the MOTO2 output
+  GPIO_InitStructure.GPIO_Pin = MOTOR2_GPIO_PIN;
+  GPIO_Init(MOTOR2_GPIO_PORT, &GPIO_InitStructure);
+
+  // Configure the GPIO for the MOTO3 output
+  GPIO_InitStructure.GPIO_Pin = MOTOR3_GPIO_PIN;
+  GPIO_Init(MOTOR3_GPIO_PORT, &GPIO_InitStructure);
+
+  // Configure the GPIO for the MOTO2 output
+  GPIO_InitStructure.GPIO_Pin = MOTOR4_GPIO_PIN;
+  GPIO_Init(MOTOR4_GPIO_PORT, &GPIO_InitStructure);
 
   //Timer configuration
   TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
   TIM_TimeBaseStructure.TIM_Prescaler = MOTORS_PWM_PRESCALE;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit(MOTORS_GPIO_TIM_M1_2, &TIM_TimeBaseStructure);
+  TIM_TimeBaseInit(MOTOR1_TIM, &TIM_TimeBaseStructure);
 
   TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
   TIM_TimeBaseStructure.TIM_Prescaler = MOTORS_PWM_PRESCALE;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit(MOTORS_GPIO_TIM_M3_4, &TIM_TimeBaseStructure);
+  TIM_TimeBaseInit(MOTOR2_TIM, &TIM_TimeBaseStructure);
+
+  TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
+  TIM_TimeBaseStructure.TIM_Prescaler = MOTORS_PWM_PRESCALE;
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInit(MOTOR3_TIM, &TIM_TimeBaseStructure);
+
+  TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
+  TIM_TimeBaseStructure.TIM_Prescaler = MOTORS_PWM_PRESCALE;
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInit(MOTOR4_TIM, &TIM_TimeBaseStructure);
 
   //PWM channels configuration (All identical!)
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
@@ -111,27 +162,39 @@ void motorsInit()
   TIM_OCInitStructure.TIM_Pulse = 0;
   TIM_OCInitStructure.TIM_OCPolarity = MOTORS_POLARITY;
 
-  TIM_OC3Init(MOTORS_GPIO_TIM_M3_4, &TIM_OCInitStructure);
-  TIM_OC3PreloadConfig(MOTORS_GPIO_TIM_M3_4, TIM_OCPreload_Enable);
+  TIM_OC4Init(MOTOR1_TIM, &TIM_OCInitStructure);
+  TIM_OC4PreloadConfig(MOTOR1_TIM, TIM_OCPreload_Enable);
 
-  TIM_OC4Init(MOTORS_GPIO_TIM_M3_4, &TIM_OCInitStructure);
-  TIM_OC4PreloadConfig(MOTORS_GPIO_TIM_M3_4, TIM_OCPreload_Enable);
+  TIM_OC4Init(MOTOR2_TIM, &TIM_OCInitStructure);
+  TIM_OC4PreloadConfig(MOTOR2_TIM, TIM_OCPreload_Enable);
 
-  TIM_OC3Init(MOTORS_GPIO_TIM_M1_2, &TIM_OCInitStructure);
-  TIM_OC3PreloadConfig(MOTORS_GPIO_TIM_M1_2, TIM_OCPreload_Enable);
+  TIM_OC4Init(MOTOR3_TIM, &TIM_OCInitStructure);
+  TIM_OC4PreloadConfig(MOTOR3_TIM, TIM_OCPreload_Enable);
 
-  TIM_OC4Init(MOTORS_GPIO_TIM_M1_2, &TIM_OCInitStructure);
-  TIM_OC4PreloadConfig(MOTORS_GPIO_TIM_M1_2, TIM_OCPreload_Enable);
+  TIM_OC3Init(MOTOR4_TIM, &TIM_OCInitStructure);
+  TIM_OC3PreloadConfig(MOTOR4_TIM, TIM_OCPreload_Enable);
 
   //Enable the timer
-  TIM_Cmd(MOTORS_GPIO_TIM_M1_2, ENABLE);
-  TIM_Cmd(MOTORS_GPIO_TIM_M3_4, ENABLE);
+  TIM_Cmd(MOTOR1_TIM, ENABLE);
+  TIM_Cmd(MOTOR2_TIM, ENABLE);
+  TIM_Cmd(MOTOR3_TIM, ENABLE);
+  TIM_Cmd(MOTOR4_TIM, ENABLE);
   //Enable the timer PWM outputs
-  TIM_CtrlPWMOutputs(MOTORS_GPIO_TIM_M1_2, ENABLE);
-  TIM_CtrlPWMOutputs(MOTORS_GPIO_TIM_M3_4, ENABLE);
+  
+  //TIM_CtrlPWMOutputs(MOTOR1_TIM, ENABLE);
+  //TIM_CtrlPWMOutputs(MOTOR2_TIM, ENABLE);
+  //TIM_CtrlPWMOutputs(MOTOR3_TIM, ENABLE);
+  //TIM_CtrlPWMOutputs(MOTOR4_TIM, ENABLE); 
+  
+  TIM_ARRPreloadConfig(MOTOR1_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR2_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR3_TIM, ENABLE);
+  TIM_ARRPreloadConfig(MOTOR4_TIM, ENABLE);
   // Halt timer during debug halt.
-  DBGMCU_Config(MOTORS_GPIO_TIM_M1_2_DBG, ENABLE);
-  DBGMCU_Config(MOTORS_GPIO_TIM_M3_4_DBG, ENABLE);
+  DBGMCU_Config(MOTOR1_TIM_DBG, ENABLE);
+  DBGMCU_Config(MOTOR2_TIM_DBG, ENABLE);
+  DBGMCU_Config(MOTOR3_TIM_DBG, ENABLE);
+  DBGMCU_Config(MOTOR4_TIM_DBG, ENABLE);
   
   isInit = TRUE;
 }
@@ -156,35 +219,35 @@ bool motorsTest(void)
 
 void motorsSetRatio(int id, uint16_t ratio)
 {
-  switch(id)
+ switch(id)
   {
     case MOTOR_M1:
-      TIM_SetCompare4(MOTORS_GPIO_TIM_M1_2, C_16_TO_BITS(ratio));
+      MOTOR1_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M2:
-      TIM_SetCompare3(MOTORS_GPIO_TIM_M1_2, C_16_TO_BITS(ratio));
+      MOTOR2_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M3:
-      TIM_SetCompare4(MOTORS_GPIO_TIM_M3_4, C_16_TO_BITS(ratio));
+     MOTOR3_TIM->CCR4=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M4:
-      TIM_SetCompare3(MOTORS_GPIO_TIM_M3_4, C_16_TO_BITS(ratio));
+     MOTOR4_TIM->CCR3=C_16_TO_BITS(ratio);
       break;
   }
 }
 
 int motorsGetRatio(int id)
 {
-  switch(id)
+ switch(id)
   {
     case MOTOR_M1:
-      return C_BITS_TO_16(TIM_GetCapture4(MOTORS_GPIO_TIM_M1_2));
+      return C_BITS_TO_16(MOTOR1_TIM->CCR4);
     case MOTOR_M2:
-      return C_BITS_TO_16(TIM_GetCapture3(MOTORS_GPIO_TIM_M1_2));
+		return C_BITS_TO_16(MOTOR2_TIM->CCR4);
     case MOTOR_M3:
-      return C_BITS_TO_16(TIM_GetCapture4(MOTORS_GPIO_TIM_M3_4));
+		return C_BITS_TO_16(MOTOR3_TIM->CCR4);
     case MOTOR_M4:
-      return C_BITS_TO_16(TIM_GetCapture3(MOTORS_GPIO_TIM_M3_4));
+		return C_BITS_TO_16(MOTOR4_TIM->CCR3);
   }
 
   return -1;
