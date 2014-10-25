@@ -17,15 +17,13 @@
 
 #include <stdint.h>
 #include <rtthread.h>
-#include <drivers/spi.h>
+
 
 #include "stm32f10x.h"
-#include "drv_spi.h"
-//#define SPI_USE_DMA
+
 
 struct stm32_spi_bus
 {
-    struct rt_spi_bus parent;
     SPI_TypeDef * SPI;
 #ifdef SPI_USE_DMA
     DMA_Stream_TypeDef * DMA_Stream_TX;
@@ -47,9 +45,5 @@ struct stm32_spi_cs
     uint16_t GPIO_Pin;
 };
 
-/* public function */
-rt_err_t stm32_spi_register(SPI_TypeDef * SPI,
-                            struct stm32_spi_bus * stm32_spi,
-                            const char * spi_bus_name);
- void rt_hw_spi1_init(void);
+ void rt_hw_spi_init(void);
 #endif // STM32F20X_40X_SPI_H_INCLUDED
