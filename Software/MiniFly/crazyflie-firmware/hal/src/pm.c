@@ -49,7 +49,6 @@ static uint32_t batteryLowTimeStamp;
 static uint32_t batteryCriticalLowTimeStamp;
 static bool isInit=FALSE;
 static PMStates pmState;
-static PMChargeStates pmChargeState;
 
 static void pmSetBatteryVoltage(float voltage);
 
@@ -74,44 +73,13 @@ void pmInit(void)
   if(isInit==TRUE)
     return;
 
-  RCC_APB2PeriphClockCmd(PM_GPIO_IN_PGOOD_PERIF | PM_GPIO_IN_CHG_PERIF |
-                         PM_GPIO_SYSOFF_PERIF | PM_GPIO_EN1_PERIF | 
-                         PM_GPIO_EN2_PERIF | PM_GPIO_BAT_PERIF, ENABLE);
+  RCC_APB2PeriphClockCmd(PM_GPIO_BAT_PERIF, ENABLE);
 
-  // Configure PM PGOOD pin (Power good)
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_IN_PGOOD;
-  GPIO_Init(PM_GPIO_IN_PGOOD_PORT, &GPIO_InitStructure);
-  // Configure PM CHG pin (Charge)
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_IN_CHG;
-  GPIO_Init(PM_GPIO_IN_CHG_PORT, &GPIO_InitStructure);
-  // Configure PM EN2 pin
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_EN2;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-  GPIO_Init(PM_GPIO_EN2_PORT, &GPIO_InitStructure);
-  // Configure PM EN1 pin
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_EN1;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-  GPIO_Init(PM_GPIO_EN1_PORT, &GPIO_InitStructure);
-  // Configure PM SYSOFF pin
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_SYSOFF;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-  GPIO_Init(PM_GPIO_SYSOFF_PORT, &GPIO_InitStructure);
   // Configure battery ADC pin
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
   GPIO_InitStructure.GPIO_Pin = PM_GPIO_BAT;
   GPIO_Init(PM_GPIO_BAT_PORT, &GPIO_InitStructure);
-
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_USB_CON;
-  GPIO_Init(PM_GPIO_USB_CON_PORT, &GPIO_InitStructure);
   
   xTaskCreate(pmTask, (const signed char * const)"PWRMGNT",
               configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
@@ -122,55 +90,6 @@ void pmInit(void)
 bool pmTest(void)
 {
   return isInit;
-}
-
-/**
- * Test USB signals for host or power adapter
- */
-static PMUSBPower pmTestUSBPower(void)
-{
-  PMUSBPower pmUSBPower = USB500mA;
-
-#ifdef ENABLE_FAST_CHARGE
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  RCC_APB2PeriphClockCmd(PM_GPIO_USB_DM_PERIF | PM_GPIO_USB_DM_PERIF | PM_GPIO_USB_DP_PERIF, ENABLE);
-
-  // Configure USB connect pin
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_USB_CON;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-  GPIO_Init(PM_GPIO_USB_CON_PORT, &GPIO_InitStructure);
-  // Configure USB DM pin
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_USB_DM;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-  GPIO_Init(PM_GPIO_USB_DM_PORT, &GPIO_InitStructure);
-  // Configure USB DP pin
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_USB_DP;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-  GPIO_Init(PM_GPIO_USB_DP_PORT, &GPIO_InitStructure);
-  
-  // Enable 1.5K pull-up for USB DP signal
-  GPIO_SetBits(PM_GPIO_USB_CON_PORT, PM_GPIO_USB_CON);
-  // Let the voltage level setle.
-  vTaskDelay(M2T(1));
-  // Read the weak pull-down of USB-DM. If it is high, DP and DM are shorted.
-  if (GPIO_ReadInputDataBit(PM_GPIO_USB_DM_PORT, PM_GPIO_USB_DM) == Bit_SET)
-  {
-    pmUSBPower = USBWallAdapter;
-  }
-  else
-  {
-    pmUSBPower = USB500mA;
-  }
-  // Reset USB pins to default
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-  GPIO_InitStructure.GPIO_Pin = PM_GPIO_USB_DM | PM_GPIO_USB_CON | PM_GPIO_USB_DP;
-  GPIO_Init(PM_GPIO_USB_DP_PORT, &GPIO_InitStructure);
-#endif
-
-  return pmUSBPower;
 }
 
 /**
@@ -209,44 +128,11 @@ static void pmSetBatteryVoltage(float voltage)
   }
 }
 
-/**
- * Shutdown system
- */
-static void pmSystemShutdown(void)
-{
-#ifdef ACTIVATE_AUTO_SHUTDOWN
-  GPIO_SetBits(PM_GPIO_SYSOFF_PORT, PM_GPIO_SYSOFF);
-#endif
-}
-
-/**
- * Returns a number from 0 to 9 where 0 is completely discharged
- * and 9 is 90% charged.
- */
-static int32_t pmBatteryChargeFromVoltage(float voltage)
-{
-  int charge = 0;
-
-  if (voltage < bat671723HS25C[0])
-  {
-    return 0;
-  }
-  if (voltage > bat671723HS25C[9])
-  {
-    return 9;
-  }
-  while (voltage >  bat671723HS25C[charge])
-  {
-    charge++;
-  }
-
-  return charge;
-}
-
 
 float pmGetBatteryVoltage(void)
 {
-  return batteryVoltage;
+  //return batteryVoltage;
+	return 4.10;
 }
 
 float pmGetBatteryVoltageMin(void)
@@ -272,50 +158,15 @@ void pmBatteryUpdate(AdcGroup* adcValues)
   pmSetBatteryVoltage(vBat);
 }
 
-void pmSetChargeState(PMChargeStates chgState)
-{
-  pmChargeState = chgState;
-
-  switch (chgState)
-  {
-    case charge100mA:
-      GPIO_ResetBits(PM_GPIO_EN1_PORT, PM_GPIO_EN1);
-      GPIO_ResetBits(PM_GPIO_EN2_PORT, PM_GPIO_EN2);
-      break;
-    case charge500mA:
-      GPIO_SetBits(PM_GPIO_EN1_PORT, PM_GPIO_EN1);
-      GPIO_ResetBits(PM_GPIO_EN2_PORT, PM_GPIO_EN2);
-      break;
-    case chargeMax:
-      GPIO_ResetBits(PM_GPIO_EN1_PORT, PM_GPIO_EN1);
-      GPIO_SetBits(PM_GPIO_EN2_PORT, PM_GPIO_EN2);
-      break;
-  }
-}
-
-PMChargeStates pmGetChargeState(void)
-{
-  return pmChargeState;
-}
 
 PMStates pmUpdateState()
 {
   PMStates state;
-  bool isCharging = !GPIO_ReadInputDataBit(PM_GPIO_IN_CHG_PORT, PM_GPIO_IN_CHG);
-  bool isPgood = !GPIO_ReadInputDataBit(PM_GPIO_IN_PGOOD_PORT, PM_GPIO_IN_PGOOD);
   uint32_t batteryLowTime;
 
   batteryLowTime = xTaskGetTickCount() - batteryLowTimeStamp;
 
-  if (isPgood && !isCharging)
-  {
-    state = charged;
-  }
-  else if (isPgood && isCharging)
-  {
-    state = charging;
-  }
-  else if (!isPgood && !isCharging && (batteryLowTime > PM_BAT_LOW_TIMEOUT))
+ if (batteryLowTime > PM_BAT_LOW_TIMEOUT)
   {
     state = lowPower;
   }
@@ -328,13 +179,6 @@ PMStates pmUpdateState()
 }
 
 
-// return true if battery discharging
-bool pmIsDischarging(void) {
-    PMStates pmState;
-    pmState = pmUpdateState();
-    return (pmState == lowPower )|| (pmState == battery);
-}
-
 void pmTask(void *param)
 {
   PMStates pmStateOld = battery;
@@ -345,8 +189,6 @@ void pmTask(void *param)
   tickCount = xTaskGetTickCount();
   batteryLowTimeStamp = tickCount;
   batteryCriticalLowTimeStamp = tickCount;
-
-  pmSetChargeState(charge500mA);
 
   vTaskDelay(1000);
 
@@ -371,29 +213,6 @@ void pmTask(void *param)
       // Actions on state change
       switch (pmState)
       {
-        case charged:
-          ledseqStop(LED_GREEN, seq_charging);
-          ledseqStop(LED_GREEN, seq_chargingMax);
-          ledseqRun(LED_GREEN, seq_charged);
-          systemSetCanFly(FALSE);
-          break;
-        case charging:
-          ledseqStop(LED_RED, seq_lowbat);
-          ledseqStop(LED_GREEN, seq_charged);
-          if (pmTestUSBPower() == USBWallAdapter)
-          {
-            pmSetChargeState(chargeMax);
-            ledseqRun(LED_GREEN, seq_chargingMax);
-          }
-          else
-          {
-            pmSetChargeState(charge500mA);
-            ledseqRun(LED_GREEN, seq_charging);
-          }
-          systemSetCanFly(FALSE);
-          //Due to voltage change radio must be restarted
-          radiolinkReInit();
-          break;
         case lowPower:
           ledseqRun(LED_RED, seq_lowbat);
           systemSetCanFly(TRUE);
@@ -415,33 +234,14 @@ void pmTask(void *param)
     // Actions during state
     switch (pmState)
     {
-      case charged:
-        break;
-      case charging:
-        {
-          uint32_t onTime;
-          if (pmGetChargeState() == chargeMax)
-          {
-            onTime = pmBatteryChargeFromVoltage(pmGetBatteryVoltage()) *
-                     (LEDSEQ_CHARGE_CYCLE_TIME_MAX / 10);
-            ledseqSetTimes(seq_chargingMax, onTime, LEDSEQ_CHARGE_CYCLE_TIME_MAX - onTime);
-          }
-          else
-          {
-            onTime = pmBatteryChargeFromVoltage(pmGetBatteryVoltage()) *
-                     (LEDSEQ_CHARGE_CYCLE_TIME_500MA / 10);
-            ledseqSetTimes(seq_charging, onTime, LEDSEQ_CHARGE_CYCLE_TIME_500MA - onTime);
-          }
-        }
-        break;
       case lowPower:
         {
           uint32_t batteryCriticalLowTime;
-
+          
           batteryCriticalLowTime = tickCount - batteryCriticalLowTimeStamp;
           if (batteryCriticalLowTime > PM_BAT_CRITICAL_LOW_TIMEOUT)
           {
-            pmSystemShutdown();
+            //pmSystemShutdown();  //关闭系统电源
           }
         }
         break;
@@ -449,7 +249,7 @@ void pmTask(void *param)
         {
           if ((commanderGetInactivityTime() > PM_SYSTEM_SHUTDOWN_TIMEOUT))
           {
-            pmSystemShutdown();
+            //pmSystemShutdown();  //关闭系统电源
           }
         }
         break;
