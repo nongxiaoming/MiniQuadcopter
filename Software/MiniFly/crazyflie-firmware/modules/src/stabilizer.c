@@ -290,12 +290,6 @@ static void stabilizerAltHoldUpdate(void)
   vSpeed = vSpeed * vBiasAlpha + vSpeedASL * (1.f - vBiasAlpha);
   vSpeedAcc = vSpeed;
 
-  // Reset Integral gain of PID controller if being charged
-  if (!pmIsDischarging())
-  {
-    altHoldPID.integ = 0.0;
-  }
-
   // Altitude hold mode just activated, set target altitude as current altitude. Reuse previous integral term as a starting point
   if (setAltHold)
   {
