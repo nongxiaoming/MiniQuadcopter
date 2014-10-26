@@ -53,7 +53,7 @@ void mpu6050Init(I2C_TypeDef *i2cPort)
     return;
 
   I2Cx = i2cPort;
-  devAddr = MPU6050_ADDRESS_AD0_HIGH;
+  devAddr = MPU6050_DEFAULT_ADDRESS;
 
   isInit = TRUE;
 }
