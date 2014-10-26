@@ -354,7 +354,13 @@ void nrfInit(void)
   /* Enable SPI and GPIO clocks */
   RCC_APB2PeriphClockCmd(RADIO_GPIO_SPI_CLK | RADIO_GPIO_CS_PERIF | 
                          RADIO_GPIO_CE_PERIF | RADIO_GPIO_IRQ_PERIF, ENABLE);
-
+   
+  PWR_BackupAccessCmd(ENABLE);
+        
+  RCC_LSEConfig(RCC_LSE_OFF);
+        
+  PWR_BackupAccessCmd(DISABLE);
+		
   /* Enable SPI and GPIO clocks */
   RCC_APB1PeriphClockCmd(RADIO_SPI_CLK, ENABLE);
 
@@ -372,6 +378,7 @@ void nrfInit(void)
 
   /* Configure I/O for the Chip select */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(RADIO_GPIO_CS_PORT, &GPIO_InitStructure);
 
@@ -394,6 +401,7 @@ void nrfInit(void)
 
   /* Configure I/O for the Chip Enable */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CE;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(RADIO_GPIO_CE_PORT, &GPIO_InitStructure);
 
