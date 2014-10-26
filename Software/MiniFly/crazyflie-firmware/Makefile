@@ -36,7 +36,7 @@ STLIB = lib/
 ################ Build configuration ##################
 # St Lib
 VPATH += $(STLIB)/CMSIS/Core/CM3/startup/gcc
-CRT0=startup_stm32f10x_md.o
+CRT0=startup_stm32f10x_hd.o
 
 include scripts/st_obj.mk
 
@@ -98,7 +98,7 @@ INCLUDES+= -Iutils/interface -Idrivers/interface
 PROCESSOR = -mcpu=cortex-m3 -mthumb
 
 #Flags required by the ST library
-STFLAGS = -DSTM32F10X_MD -include stm32f10x_conf.h
+STFLAGS = -DSTM32F10X_HD -include stm32f10x_conf.h
 
 ifeq ($(DEBUG), 1)
   CFLAGS += -O0 -g3
