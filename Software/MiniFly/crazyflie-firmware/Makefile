@@ -4,7 +4,7 @@
 # image in ./cflie.elf and ./cflie.bin
 
 #Put your personal build config in config.mk and DO NOT COMMIT IT!
--include config.mk
+include config.mk
 
 ######### JTAG and environment configuration ##########
 OPENOCD_INTERFACE ?= interface/jtagkey.cfg
