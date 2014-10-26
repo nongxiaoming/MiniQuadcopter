@@ -358,7 +358,9 @@ void nrfInit(void)
   PWR_BackupAccessCmd(ENABLE);
         
   RCC_LSEConfig(RCC_LSE_OFF);
-        
+  
+  BKP_TamperPinCmd(DISABLE);   
+  
   PWR_BackupAccessCmd(DISABLE);
 		
   /* Enable SPI and GPIO clocks */
@@ -366,15 +368,15 @@ void nrfInit(void)
 
 
   /* Configure SPI pins: SCK, MISO and MOSI */
-  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_SCK |  RADIO_GPIO_SPI_MOSI;
+  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_SCK |  RADIO_GPIO_SPI_MOSI | RADIO_GPIO_SPI_MISO;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
 
-  //* Configure MISO */
-  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_MISO;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
+  /* Configure MISO */
+  // GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_MISO;
+  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  // GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
 
   /* Configure I/O for the Chip select */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;

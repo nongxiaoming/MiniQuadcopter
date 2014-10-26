@@ -44,6 +44,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -217,6 +218,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -297,6 +299,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -520,6 +523,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -623,6 +627,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -673,6 +678,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -727,6 +733,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -780,6 +787,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -1289,6 +1297,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -1326,6 +1335,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -1423,6 +1433,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -1480,6 +1491,7 @@
                 <Header RelativePath="lib\FreeRTOS\portable\GCC\ARM_CM3\portmacro.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -1574,6 +1586,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -1773,6 +1786,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_can.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
@@ -1801,6 +1815,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_crc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
@@ -1829,6 +1844,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dac.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
@@ -1965,6 +1981,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -2128,6 +2145,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -2156,6 +2174,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -2265,6 +2284,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
@@ -2455,6 +2475,7 @@
                 <Header RelativePath="lib\CMSIS\Core\CM3\system_stm32f10x.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\misc.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_adc.h" />
+                <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_bkp.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dbgmcu.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_dma.h" />
                 <Header RelativePath="lib\STM32F10x_StdPeriph_Driver\inc\stm32f10x_exti.h" />
