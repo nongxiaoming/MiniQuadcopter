@@ -26,9 +26,6 @@ static void ssd1306_gpio_init(void)
         
         RCC_LSEConfig(RCC_LSE_OFF);
         
-//        BKP_TamperPinCmd(DISABLE);        
-//          RCC_LSICmd(DISABLE);
-//  BKP_TamperPinCmd(DISABLE);
         PWR_BackupAccessCmd(DISABLE);
     GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
