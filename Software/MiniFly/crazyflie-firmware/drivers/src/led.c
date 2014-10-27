@@ -67,7 +67,7 @@ void ledInit()
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(LED_GPIO_PORT, &GPIO_InitStructure);
 
   //Turn off the LED:s
   ledSet(LED_GREEN, 0);
