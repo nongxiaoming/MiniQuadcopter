@@ -53,12 +53,12 @@
 #define MOTOR4_TIM_PERIF     RCC_APB1Periph_TIM3
 #define MOTOR4_TIM           TIM3
 #define MOTOR4_TIM_DBG       DBGMCU_TIM3_STOP
-#define MOTOR4_TIM_REMAP      GPIO_FullRemap_TIM3
+#define MOTOR4_TIM_REMAP     GPIO_FullRemap_TIM3
 
 
 #define MOTOR1_GPIO_PERIF          RCC_APB2Periph_GPIOA
 #define MOTOR1_GPIO_PORT           GPIOA
-#define MOTOR1_GPIO_PIN            GPIO_Pin_3 // T2_CH4
+#define MOTOR1_GPIO_PIN            GPIO_Pin_2 // T2_CH3
 #define MOTOR2_GPIO_PERIF          RCC_APB2Periph_GPIOB
 #define MOTOR2_GPIO_PORT           GPIOB
 #define MOTOR2_GPIO_PIN            GPIO_Pin_9 // T4_CH4
@@ -162,8 +162,8 @@ void motorsInit()
   TIM_OCInitStructure.TIM_Pulse = 0;
   TIM_OCInitStructure.TIM_OCPolarity = MOTORS_POLARITY;
 
-  TIM_OC4Init(MOTOR1_TIM, &TIM_OCInitStructure);
-  TIM_OC4PreloadConfig(MOTOR1_TIM, TIM_OCPreload_Enable);
+  TIM_OC3Init(MOTOR1_TIM, &TIM_OCInitStructure);
+  TIM_OC3PreloadConfig(MOTOR1_TIM, TIM_OCPreload_Enable);
 
   TIM_OC4Init(MOTOR2_TIM, &TIM_OCInitStructure);
   TIM_OC4PreloadConfig(MOTOR2_TIM, TIM_OCPreload_Enable);
@@ -181,10 +181,10 @@ void motorsInit()
   TIM_Cmd(MOTOR4_TIM, ENABLE);
   //Enable the timer PWM outputs
   
-  //TIM_CtrlPWMOutputs(MOTOR1_TIM, ENABLE);
-  //TIM_CtrlPWMOutputs(MOTOR2_TIM, ENABLE);
-  //TIM_CtrlPWMOutputs(MOTOR3_TIM, ENABLE);
-  //TIM_CtrlPWMOutputs(MOTOR4_TIM, ENABLE); 
+  // TIM_CtrlPWMOutputs(MOTOR1_TIM, ENABLE);
+  // TIM_CtrlPWMOutputs(MOTOR2_TIM, ENABLE);
+  // TIM_CtrlPWMOutputs(MOTOR3_TIM, ENABLE);
+  // TIM_CtrlPWMOutputs(MOTOR4_TIM, ENABLE); 
   
   TIM_ARRPreloadConfig(MOTOR1_TIM, ENABLE);
   TIM_ARRPreloadConfig(MOTOR2_TIM, ENABLE);
@@ -222,7 +222,7 @@ void motorsSetRatio(int id, uint16_t ratio)
  switch(id)
   {
     case MOTOR_M1:
-      MOTOR1_TIM->CCR4=C_16_TO_BITS(ratio);
+      MOTOR1_TIM->CCR3=C_16_TO_BITS(ratio);
       break;
     case MOTOR_M2:
       MOTOR2_TIM->CCR4=C_16_TO_BITS(ratio);
@@ -241,7 +241,7 @@ int motorsGetRatio(int id)
  switch(id)
   {
     case MOTOR_M1:
-      return C_BITS_TO_16(MOTOR1_TIM->CCR4);
+      return C_BITS_TO_16(MOTOR1_TIM->CCR3);
     case MOTOR_M2:
 		return C_BITS_TO_16(MOTOR2_TIM->CCR4);
     case MOTOR_M3:
@@ -284,10 +284,13 @@ void motorsTestTask(void* params)
   }
 }
 #else
+#include "debug.h"
 // FreeRTOS Task to test the Motors driver
 void motorsTestTask(void* params)
 {
-  static const int sequence[] = {0.1*(1<<16), 0.15*(1<<16), 0.2*(1<<16), 0.25*(1<<16)};
+ // static const int sequence[] = {0.0*(1<<16), 0.0*(1<<16), 0.0*(1<<16), 0.0*(1<<16)};
+  int temp = 0;
+  float speed = 0.0;
   int step=0;
 
   //Wait 3 seconds before starting the motors
@@ -295,13 +298,19 @@ void motorsTestTask(void* params)
 
   while(1)
   {
-    motorsSetRatio(MOTOR_M4, sequence[step%4]);
-    motorsSetRatio(MOTOR_M3, sequence[(step+1)%4]);
-    motorsSetRatio(MOTOR_M2, sequence[(step+2)%4]);
-    motorsSetRatio(MOTOR_M1, sequence[(step+3)%4]);
+	DEBUG_PRINT("motor pwm = %d\r\n",temp);
+    motorsSetRatio(MOTOR_M4, temp);
+    motorsSetRatio(MOTOR_M3, temp);
+    motorsSetRatio(MOTOR_M2, temp);
+    motorsSetRatio(MOTOR_M1, temp);
 
     if(++step>3) step=0;
-
+     speed+=0.01;
+	 if (speed>0.8)
+	 {
+		 speed = 0.1;
+	 }
+	 temp = speed*(1<<16);
     vTaskDelay(M2T(1000));
   }
 }

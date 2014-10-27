@@ -4,14 +4,14 @@
 # image in ./cflie.elf and ./cflie.bin
 
 #Put your personal build config in config.mk and DO NOT COMMIT IT!
--include config.mk
+include config.mk
 
 ######### JTAG and environment configuration ##########
 OPENOCD_INTERFACE ?= interface/jtagkey.cfg
 OPENOCD_TARGET    ?= target/stm32f1x.cfg
 CROSS_COMPILE     ?= arm-none-eabi-
 PYTHON2           ?= python
-CLOAD             ?= 1
+CLOAD             ?= 0
 DEBUG             ?= 0
 CLOAD_SCRIPT      ?= ../crazyflie-clients-python/bin/cfloader
 
@@ -36,7 +36,7 @@ STLIB = lib/
 ################ Build configuration ##################
 # St Lib
 VPATH += $(STLIB)/CMSIS/Core/CM3/startup/gcc
-CRT0=startup_stm32f10x_md.o
+CRT0=startup_stm32f10x_hd.o
 
 include scripts/st_obj.mk
 
@@ -98,7 +98,7 @@ INCLUDES+= -Iutils/interface -Idrivers/interface
 PROCESSOR = -mcpu=cortex-m3 -mthumb
 
 #Flags required by the ST library
-STFLAGS = -DSTM32F10X_MD -include stm32f10x_conf.h
+STFLAGS = -DSTM32F10X_HD -include stm32f10x_conf.h
 
 ifeq ($(DEBUG), 1)
   CFLAGS += -O0 -g3

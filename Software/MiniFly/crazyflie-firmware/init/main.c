@@ -95,8 +95,8 @@ static void prvClockInit(void)
     /* ADCCLK = PCLK2/6 = 72 / 6 = 12 MHz*/
     RCC_ADCCLKConfig(RCC_PCLK2_Div6);
 
-    /* PLLCLK = 16MHz/2 * 9 = 72 MHz */
-    RCC_PLLConfig(RCC_PLLSource_HSE_Div2, RCC_PLLMul_9);
+    /* PLLCLK = 8MHz * 9 = 72 MHz */
+    RCC_PLLConfig(RCC_PLLSource_HSE_Div1, RCC_PLLMul_9);
 
     /* Enable PLL */
     RCC_PLLCmd(ENABLE);
@@ -112,6 +112,12 @@ static void prvClockInit(void)
   } else {
       GPIO_InitTypeDef GPIO_InitStructure;
   
+	  // Enable GPIO
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | LED_GPIO_PERIF, ENABLE);
+
+    // Disable JTAG 
+    GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable , ENABLE);
+  
     //Cannot start the main oscillator: red/green LED of death...
     GPIO_InitStructure.GPIO_Pin = LED_GPIO_RED | LED_GPIO_GREEN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
@@ -119,8 +125,8 @@ static void prvClockInit(void)
 
     GPIO_Init(GPIOB, &GPIO_InitStructure);
     
-    GPIO_ResetBits(GPIOB, LED_RED);
-    GPIO_ResetBits(GPIOB, LED_GREEN);
+    GPIO_SetBits(GPIOB, LED_RED);
+    GPIO_SetBits(GPIOB, LED_GREEN);
 
     //Cannot start xtal oscillator!
     while(1); 

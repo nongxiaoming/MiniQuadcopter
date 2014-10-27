@@ -29,7 +29,7 @@
 
 #define RADIO_GPIO_IRQ_LINE EXTI_Line9
 
-static bool isInit;
+static bool isInit=FALSE;
 
 /* Interruption initialisation */
 void extiInit()

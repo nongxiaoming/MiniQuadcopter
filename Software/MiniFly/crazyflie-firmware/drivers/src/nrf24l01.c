@@ -83,10 +83,10 @@
 #define CMD_NOP                0xFF
 
 /* Usefull macro */
-#define RADIO_EN_CS() GPIO_ResetBits(RADIO_GPIO_CS_PORT, RADIO_GPIO_CS)
+#define RADIO_EN_CS()  GPIO_ResetBits(RADIO_GPIO_CS_PORT, RADIO_GPIO_CS)
 #define RADIO_DIS_CS() GPIO_SetBits(RADIO_GPIO_CS_PORT, RADIO_GPIO_CS)
 #define RADIO_DIS_CE() GPIO_ResetBits(RADIO_GPIO_CE_PORT, RADIO_GPIO_CE)
-#define RADIO_EN_CE() GPIO_SetBits(RADIO_GPIO_CE_PORT, RADIO_GPIO_CE)
+#define RADIO_EN_CE()  GPIO_SetBits(RADIO_GPIO_CE_PORT, RADIO_GPIO_CE)
 #define ACTIVATE_DATA   0x73
 
 /* Private variables */
@@ -98,6 +98,7 @@ static void (*interruptCb)(void) = NULL;
  ***********************/
 static char spiSendByte(char byte)
 {
+
   /* Loop while DR register in not emplty */
   while (SPI_I2S_GetFlagStatus(RADIO_SPI, SPI_I2S_FLAG_TXE) == RESET);
 
@@ -149,6 +150,7 @@ unsigned char nrfWriteReg(unsigned char address, char *buffer, int len)
 
   /* Send the write command with the address */
   status = spiSendByte( CMD_W_REG | (address&0x1F) );
+
   /* Write LEN bytes */
   for(i=0; i<len; i++)
     spiSendByte(buffer[i]);
@@ -352,26 +354,32 @@ void nrfInit(void)
   extiInit();
 
   /* Enable SPI and GPIO clocks */
-  RCC_APB2PeriphClockCmd(RADIO_GPIO_SPI_CLK | RADIO_GPIO_CS_PERIF | 
+  RCC_APB2PeriphClockCmd(RADIO_SPI_CLK | RADIO_GPIO_SPI_CLK | RADIO_GPIO_CS_PERIF | 
                          RADIO_GPIO_CE_PERIF | RADIO_GPIO_IRQ_PERIF, ENABLE);
-
-  /* Enable SPI and GPIO clocks */
-  RCC_APB1PeriphClockCmd(RADIO_SPI_CLK, ENABLE);
-
-
+   
+  PWR_BackupAccessCmd(ENABLE);
+        
+  RCC_LSEConfig(RCC_LSE_OFF);
+  
+  BKP_TamperPinCmd(DISABLE);   
+  
+  PWR_BackupAccessCmd(DISABLE);
+		
+  
   /* Configure SPI pins: SCK, MISO and MOSI */
-  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_SCK |  RADIO_GPIO_SPI_MOSI;
+  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_SCK |  RADIO_GPIO_SPI_MOSI | RADIO_GPIO_SPI_MISO;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
 
-  //* Configure MISO */
-  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_MISO;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
+  /* Configure MISO */
+  // GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_MISO;
+  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  // GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
 
   /* Configure I/O for the Chip select */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(RADIO_GPIO_CS_PORT, &GPIO_InitStructure);
 
@@ -394,6 +402,7 @@ void nrfInit(void)
 
   /* Configure I/O for the Chip Enable */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CE;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(RADIO_GPIO_CE_PORT, &GPIO_InitStructure);
 

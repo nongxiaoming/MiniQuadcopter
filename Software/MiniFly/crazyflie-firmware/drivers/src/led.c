@@ -60,14 +60,14 @@ void ledInit()
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | LED_GPIO_PERIF, ENABLE);
 
   // Remap PB4
-  GPIO_PinRemapConfig(GPIO_Remap_SWJ_NoJTRST , ENABLE);
+  GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable , ENABLE);
 
   //Initialize the LED pins as an output
   GPIO_InitStructure.GPIO_Pin = LED_GPIO_GREEN | LED_GPIO_RED;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 
-  GPIO_Init(GPIOB, &GPIO_InitStructure);
+  GPIO_Init(LED_GPIO_PORT, &GPIO_InitStructure);
 
   //Turn off the LED:s
   ledSet(LED_GREEN, 0);

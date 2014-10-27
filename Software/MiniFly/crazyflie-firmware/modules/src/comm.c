@@ -34,6 +34,7 @@
 #include "log.h"
 #include "eskylink.h"
 #include "uart.h"
+#include "debug.h"
 
 static bool isInit;
 
@@ -43,13 +44,17 @@ void commInit(void)
     return;
 
 #ifdef USE_ESKYLINK
+  DEBUG_PRINT("init eskylink...");
   eskylinkInit();
+  DEBUG_PRINT("pass!\r\n");
 #else
+  DEBUG_PRINT("init radiolink...");
   radiolinkInit();
+  DEBUG_PRINT("pass!\r\n");
 #endif
-
+  DEBUG_PRINT("init crtp...");
   crtpInit();
-
+  DEBUG_PRINT("pass!\r\n");
 #ifdef USE_UART_CRTP
   crtpSetLink(uartGetLink());
 #elif defined(USE_ESKYLINK)
@@ -57,7 +62,7 @@ void commInit(void)
 #else
   crtpSetLink(radiolinkGetLink());
 #endif
-
+  DEBUG_PRINT("link init pass!\r\n");
   crtpserviceInit();
   logInit();
   consoleInit();

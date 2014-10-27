@@ -53,7 +53,7 @@ void mpu6050Init(I2C_TypeDef *i2cPort)
     return;
 
   I2Cx = i2cPort;
-  devAddr = MPU6050_ADDRESS_AD0_HIGH;
+  devAddr = MPU6050_DEFAULT_ADDRESS;
 
   isInit = TRUE;
 }
@@ -156,7 +156,7 @@ bool mpu6050SelfTest()
       mpu6050EvaluateSelfTest(MPU6050_ST_ACCEL_LOW, MPU6050_ST_ACCEL_HIGH, ayfDiff, "acc Y") &&
       mpu6050EvaluateSelfTest(MPU6050_ST_ACCEL_LOW, MPU6050_ST_ACCEL_HIGH, azfDiff, "acc Z"))
   {
-    DEBUG_PRINT("Self test [OK].\n");
+    DEBUG_PRINT("Self test [OK].\r\n");
   }
   else
   {

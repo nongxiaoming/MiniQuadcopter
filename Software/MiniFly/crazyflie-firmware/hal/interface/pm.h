@@ -57,43 +57,32 @@
 #endif
 
 // Power managment pins
-#define PM_GPIO_SYSOFF_PERIF    RCC_APB2Periph_GPIOA
-#define PM_GPIO_SYSOFF_PORT     GPIOA
-#define PM_GPIO_SYSOFF          GPIO_Pin_1
+// #define PM_GPIO_SYSOFF_PERIF    RCC_APB2Periph_GPIOA
+// #define PM_GPIO_SYSOFF_PORT     GPIOA
+// #define PM_GPIO_SYSOFF          GPIO_Pin_1
 
-#define PM_GPIO_EN1_PERIF       RCC_APB2Periph_GPIOC
-#define PM_GPIO_EN1_PORT        GPIOC
-#define PM_GPIO_EN1             GPIO_Pin_13
+// #define PM_GPIO_EN1_PERIF       RCC_APB2Periph_GPIOC
+// #define PM_GPIO_EN1_PORT        GPIOC
+// #define PM_GPIO_EN1             GPIO_Pin_13
 
-#define PM_GPIO_EN2_PERIF       RCC_APB2Periph_GPIOA
-#define PM_GPIO_EN2_PORT        GPIOA
-#define PM_GPIO_EN2             GPIO_Pin_2
+// #define PM_GPIO_EN2_PERIF       RCC_APB2Periph_GPIOA
+// #define PM_GPIO_EN2_PORT        GPIOA
+// #define PM_GPIO_EN2             GPIO_Pin_2
 
-#define PM_GPIO_IN_CHG_PERIF    RCC_APB2Periph_GPIOB
-#define PM_GPIO_IN_CHG_PORT     GPIOB
-#define PM_GPIO_IN_CHG          GPIO_Pin_2
+// #define PM_GPIO_IN_CHG_PERIF    RCC_APB2Periph_GPIOB
+// #define PM_GPIO_IN_CHG_PORT     GPIOB
+// #define PM_GPIO_IN_CHG          GPIO_Pin_2
 
-#define PM_GPIO_IN_PGOOD_PERIF  RCC_APB2Periph_GPIOC
-#define PM_GPIO_IN_PGOOD_PORT   GPIOC
-#define PM_GPIO_IN_PGOOD        GPIO_Pin_15
+// #define PM_GPIO_IN_PGOOD_PERIF  RCC_APB2Periph_GPIOC
+// #define PM_GPIO_IN_PGOOD_PORT   GPIOC
+// #define PM_GPIO_IN_PGOOD        GPIO_Pin_15
 
 // Power managment pins
-#define PM_GPIO_BAT_PERIF       RCC_APB2Periph_GPIOA
-#define PM_GPIO_BAT_PORT        GPIOA
-#define PM_GPIO_BAT             GPIO_Pin_3
+#define PM_GPIO_BAT_PERIF       RCC_APB2Periph_GPIOB
+#define PM_GPIO_BAT_PORT        GPIOB
+#define PM_GPIO_BAT             GPIO_Pin_1
 
-//USB pins to detect adapter or host.
-#define PM_GPIO_USB_CON_PERIF   RCC_APB2Periph_GPIOA
-#define PM_GPIO_USB_CON_PORT    GPIOA
-#define PM_GPIO_USB_CON         GPIO_Pin_0
 
-#define PM_GPIO_USB_DM_PERIF    RCC_APB2Periph_GPIOA
-#define PM_GPIO_USB_DM_PORT     GPIOA
-#define PM_GPIO_USB_DM          GPIO_Pin_11
-
-#define PM_GPIO_USB_DP_PERIF    RCC_APB2Periph_GPIOA
-#define PM_GPIO_USB_DP_PORT     GPIOA
-#define PM_GPIO_USB_DP          GPIO_Pin_12
 
 #define PM_BAT_CRITICAL_LOW_VOLTAGE   3.0
 #define PM_BAT_CRITICAL_LOW_TIMEOUT   M2T(1000 * 5) // 5 sec
@@ -153,7 +142,6 @@ bool pmTest(void);
  */
 void pmTask(void *param);
 
-void pmSetChargeState(PMChargeStates chgState);
 
 /**
  * Returns the battery voltage i volts as a float
@@ -176,8 +164,5 @@ float pmGetBatteryVoltageMax(void);
  */
 void pmBatteryUpdate(AdcGroup* adcValues);
 
-/**
- * Returns true if the battery is currently in use
- */
-bool pmIsDischarging(void);
+
 #endif /* PM_H_ */

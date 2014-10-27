@@ -121,7 +121,7 @@ void adcInit(void)
 
   if(isInit==TRUE)
     return;
-
+/*
   ADC_InitTypeDef ADC_InitStructure;
   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
   TIM_OCInitTypeDef TIM_OCInitStructure;
@@ -208,9 +208,9 @@ void adcInit(void)
   NVIC_Init(&NVIC_InitStructure);
 
   adcQueue = xQueueCreate(1, sizeof(AdcGroup*));
-
-  xTaskCreate(adcTask, (const signed char * const)"ADC",
-              configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
+*/
+  // xTaskCreate(adcTask, (const signed char * const)"ADC",
+              // configMINIMAL_STACK_SIZE, NULL, /*priority*/3, NULL);
 
   isInit = TRUE;
 }

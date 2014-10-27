@@ -50,7 +50,7 @@
 #include "console.h"
 
 /* Private variable */
-static bool canFly;
+static bool canFly=FALSE;
 
 static bool isInit=FALSE;
 
@@ -120,10 +120,10 @@ void systemTask(void *arg)
 
   commInit();
 
-  DEBUG_PRINT("Crazyflie is up and running!\n");
-  DEBUG_PRINT("Build %s:%s (%s) %s\n", V_SLOCAL_REVISION,
+  DEBUG_PRINT("Crazyflie is up and running!\r\n");
+  DEBUG_PRINT("Build %s:%s (%s) %s\r\n", V_SLOCAL_REVISION,
               V_SREVISION, V_STAG, (V_MODIFIED)?"MODIFIED":"CLEAN");
-  DEBUG_PRINT("I am 0x%X%X%X and I have %dKB of flash!\n",
+  DEBUG_PRINT("I am 0x%X%X%X and I have %dKB of flash!\r\n",
               *((int*)(0x1FFFF7E8+8)), *((int*)(0x1FFFF7E8+4)),
               *((int*)(0x1FFFF7E8+0)), *((short*)(0x1FFFF7E0)));
 
@@ -135,10 +135,11 @@ void systemTask(void *arg)
   pass &= commTest();
   pass &= commanderTest();
   pass &= stabilizerTest();
-  
+
   //Start the firmware
   if(pass==TRUE)
   {
+	DEBUG_PRINT("modules test pass!\r\n");
     systemStart();
     ledseqRun(LED_RED, seq_alive);
     ledseqRun(LED_GREEN, seq_testPassed);
@@ -155,6 +156,7 @@ void systemTask(void *arg)
     }
     else
     {
+      DEBUG_PRINT("systemTest test not pass!\r\n");
       ledInit();
       ledSet(LED_RED, TRUE);
     }
