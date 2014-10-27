@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252" ?>
 <TKStudioProject Name="crazyfile" ProjectGUID="{FE70CAA6-55A7-4ff5-8289-4C7532A89F7F}" BuildTool="10" ToolVer="gcc4.8.3" Version="3.00" Author="YinHandong[Òüº®¶¬]">
     <Configurations>
-        <Configuration Name="bin" MakeFile="0,()" CLK="8.000000" OS="0" Mode="1,0,0" XROM="0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0" XRAM="0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0" OldCPU="STM32F103CB" IROM="1,0x08000000,0x00020000,1#0,0xffffffff,0x00000000,0" IRAM="1,0x20000000,0x00005000,1#0,0xffffffff,0x00000000,0" OPTDBG="1,101476092,1,1,1,1,()" DEVICE="STM32F103CB" VENDOR="STMicroelectronics" FAMINY="3" SIMCLK="8.000000" cModify="0" linkModify="0">
+        <Configuration Name="bin" MakeFile="0,()" CLK="8.000000" OS="0" Mode="1,0,0" XROM="0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0" XRAM="0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0#0,0xffffffff,0x00000000,0" OldCPU="STM32F103CB" IROM="1,0x08000000,0x00020000,1#0,0xffffffff,0x00000000,0" IRAM="1,0x20000000,0x00005000,1#0,0xffffffff,0x00000000,0" OPTDBG="1,89155324,1,1,1,1,()" DEVICE="STM32F103CB" VENDOR="STMicroelectronics" FAMINY="3" SIMCLK="8.000000" cModify="0" linkModify="0">
             <GNU_Output OutName=".\bin\crazyfile" OutType="0" DBGInfo="1" Bath="0" OutFormat="0" />
             <GNU_List Path=".\bin" Asm="0,1,1,1,1,1,1,1" CLan="0" Link="0,1,1" />
             <GNU_User BfC="0,&lt;&gt;#0,&lt;&gt;" BfB="0,&lt;&gt;#0,&lt;&gt;" AfB="0,&lt;&gt;#0,&lt;&gt;" Beep="1" SDebug="0" />
