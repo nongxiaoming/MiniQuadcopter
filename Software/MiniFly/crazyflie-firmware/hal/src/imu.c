@@ -140,11 +140,11 @@ void imu6Init(void)
   mpu6050Init(I2C1);
   if (mpu6050TestConnection() == TRUE)
   {
-    DEBUG_PRINT("MPU6050 I2C connection [OK].\n");
+    DEBUG_PRINT("MPU6050 I2C connection [OK].\r\n");
   }
   else
   {
-    DEBUG_PRINT("MPU6050 I2C connection [FAIL].\n");
+    DEBUG_PRINT("MPU6050 I2C connection [FAIL].\r\n");
   }
 
   mpu6050Reset();
@@ -185,11 +185,11 @@ void imu6Init(void)
   if (hmc5883lTestConnection() == TRUE)
   {
     isHmc5883lPresent = TRUE;
-    DEBUG_PRINT("HMC5883 I2C connection [OK].\n");
+    DEBUG_PRINT("HMC5883 I2C connection [OK].\r\n");
   }
   else
   {
-    DEBUG_PRINT("HMC5883L I2C connection [FAIL].\n");
+    DEBUG_PRINT("HMC5883L I2C connection [FAIL].\r\n");
   }
 #endif
 
@@ -197,11 +197,11 @@ void imu6Init(void)
   if (ms5611Init(I2C1) == TRUE)
   {
     isMs5611Present = TRUE;
-    DEBUG_PRINT("MS5611 I2C connection [OK].\n");
+    DEBUG_PRINT("MS5611 I2C connection [OK].\r\n");
   }
   else
   {
-    DEBUG_PRINT("MS5611 I2C connection [FAIL].\n");
+    DEBUG_PRINT("MS5611 I2C connection [FAIL].\r\n");
   }
 #endif
 
@@ -224,14 +224,14 @@ bool imu6Test(void)
 
   if (isInit==FALSE)
   {
-    DEBUG_PRINT("Uninitialized");
+    DEBUG_PRINT("Uninitialized\r\n");
     testStatus = FALSE;
   }
   // Test for CF 10-DOF variant with none responding sensor
   if((isHmc5883lPresent && !isMs5611Present) ||
      (!isHmc5883lPresent && isMs5611Present))
   {
-    DEBUG_PRINT("HMC5883L or MS5611 is not responding");
+    DEBUG_PRINT("HMC5883L or MS5611 is not responding\r\n");
     testStatus = FALSE;
   }
   if (testStatus)

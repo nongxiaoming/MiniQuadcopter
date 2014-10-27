@@ -156,7 +156,7 @@ bool mpu6050SelfTest()
       mpu6050EvaluateSelfTest(MPU6050_ST_ACCEL_LOW, MPU6050_ST_ACCEL_HIGH, ayfDiff, "acc Y") &&
       mpu6050EvaluateSelfTest(MPU6050_ST_ACCEL_LOW, MPU6050_ST_ACCEL_HIGH, azfDiff, "acc Z"))
   {
-    DEBUG_PRINT("Self test [OK].\n");
+    DEBUG_PRINT("Self test [OK].\r\n");
   }
   else
   {
