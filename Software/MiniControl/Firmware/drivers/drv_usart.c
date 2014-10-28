@@ -1,7 +1,7 @@
 /*
  * File      : usart.c
  * This file is part of RT-Thread RTOS
- * COPYRIGHT (C) 2006-2013, RT-Thread Development Team
+ * COPYRIGHT (C) 2006-2014, RT-Thread Development Team
  *
  * The license and distribution terms for this file may be
  * found in the file LICENSE in this distribution or at
@@ -9,9 +9,7 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2009-01-05     Bernard      the first version
- * 2010-03-29     Bernard      remove interrupt Tx and DMA Rx mode
- * 2013-05-13     aozima       update for kehong-lingtai.
+ * 2014-10-25     xiaonong      the first version
  */
 
 #include "stm32f10x.h"
@@ -25,115 +23,85 @@
 #define UART1_GPIO			GPIOA
 
 
-/* STM32 uart driver */
-struct stm32_uart
-{
-    USART_TypeDef* uart_device;
-    IRQn_Type irq;
-};
 
-static rt_err_t stm32_configure(struct stm32_uart *serial, rt_uint32_t baudrate)
+static rt_err_t USART_Configuration(void)
 {
-    struct stm32_uart* uart;
     USART_InitTypeDef USART_InitStructure;
 
-    RT_ASSERT(serial != RT_NULL);
-
-    USART_InitStructure.USART_BaudRate = baudrate;
+     /* Enable UART clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
+	
+    USART_InitStructure.USART_BaudRate = 115200;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_Parity = USART_Parity_No;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-    USART_Init(uart->uart_device, &USART_InitStructure);
+    USART_Init(USART1, &USART_InitStructure);
 
     /* Enable USART */
-    USART_Cmd(uart->uart_device, ENABLE);
+    USART_Cmd(USART1, ENABLE);
     /* enable interrupt */
-    USART_ITConfig(uart->uart_device, USART_IT_RXNE, ENABLE);
+    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
 
     return RT_EOK;
 }
 
 
-static int stm32_putc(struct stm32_uart* uart, char c)
+static int stm32_putc(USART_TypeDef* uart, char c)
 {
 
-    while (!(uart->uart_device->SR & USART_FLAG_TXE));
-    uart->uart_device->DR = c;
+    while (!(uart->SR & USART_FLAG_TXE));
+    uart->DR = c;
 
     return 1;
 }
 
-static int stm32_getc(struct stm32_uart* uart)
+static int stm32_getc(USART_TypeDef* uart)
 {
     int ch;
 
     ch = -1;
-    if (uart->uart_device->SR & USART_FLAG_RXNE)
+    if (uart->SR & USART_FLAG_RXNE)
     {
-        ch = uart->uart_device->DR & 0xff;
+        ch = uart->DR & 0xff;
     }
 
     return ch;
 }
 
 
-#if defined(RT_USING_UART1)
-/* UART1 device driver structure */
-
-struct stm32_uart uart1 =
-{
-    USART1,
-    USART1_IRQn,
-};
-
 
 void USART1_IRQHandler(void)
 {
-    struct stm32_uart* uart;
-
-    uart = &uart1;
 
     /* enter interrupt */
     rt_interrupt_enter();
-    if(USART_GetITStatus(uart->uart_device, USART_IT_RXNE) != RESET)
+    if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
     {
  
         /* clear interrupt */
-        USART_ClearITPendingBit(uart->uart_device, USART_IT_RXNE);
+        USART_ClearITPendingBit(USART1, USART_IT_RXNE);
     }
-    if (USART_GetITStatus(uart->uart_device, USART_IT_TC) != RESET)
+    if (USART_GetITStatus(USART1, USART_IT_TC) != RESET)
     {
         /* clear interrupt */
-        USART_ClearITPendingBit(uart->uart_device, USART_IT_TC);
+        USART_ClearITPendingBit(USART1, USART_IT_TC);
     }
 
     /* leave interrupt */
     rt_interrupt_leave();
 }
-#endif /* RT_USING_UART1 */
 
-
-static void RCC_Configuration(void)
-{
-#ifdef RT_USING_UART1
-    /* Enable UART GPIO clocks */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    /* Enable UART clock */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-#endif /* RT_USING_UART1 */
-
-
-}
 
 static void GPIO_Configuration(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
-
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-
-#ifdef RT_USING_UART1
+   
+	 /* Enable UART GPIO clocks */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+   
     /* Configure USART Rx/tx PIN */
+	  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
     GPIO_InitStructure.GPIO_Pin = UART1_GPIO_RX;
     GPIO_Init(UART1_GPIO, &GPIO_InitStructure);
@@ -141,16 +109,14 @@ static void GPIO_Configuration(void)
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Pin = UART1_GPIO_TX;
     GPIO_Init(UART1_GPIO, &GPIO_InitStructure);
-#endif /* RT_USING_UART1 */
-
 }
 
-static void NVIC_Configuration(struct stm32_uart* uart)
+static void NVIC_Configuration(void)
 {
     NVIC_InitTypeDef NVIC_InitStructure;
 
     /* Enable the USART1 Interrupt */
-    NVIC_InitStructure.NVIC_IRQChannel = uart->irq;
+    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
@@ -160,16 +126,18 @@ static void NVIC_Configuration(struct stm32_uart* uart)
 void rt_hw_usart_init(void)
 {
  
-    RCC_Configuration();
     GPIO_Configuration();
-
-#ifdef RT_USING_UART1
-
-
-    NVIC_Configuration(&uart1);
-#endif /* RT_USING_UART1 */
-
-
-
+    USART_Configuration();
+    NVIC_Configuration();
 
 }
+#ifdef __MICROLIB
+#include "stdio.h"
+
+int fputc(int ch,FILE *f)
+{
+  stm32_putc(USART1,(char)ch);
+  return ch;																	   
+}
+
+#endif
