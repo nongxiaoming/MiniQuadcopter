@@ -1,19 +1,30 @@
-#ifndef __LED_H
-#define __LED_H
+#ifndef __DRV_ADC_H
+#define __DRV_ADC_H
+
 #include "stm32f10x.h"
 
-#define LED0 GPIO_Pin_10
-#define LED1 GPIO_Pin_11
+typedef struct
+{
+uint16_t adc_value1;
+uint16_t adc_value2;
+uint16_t adc_value3;
+uint16_t adc_value4;
+uint16_t adc_value5;
+uint16_t adc_value6;	
+}adc_values_t;
 
-#define led_hw_off(led) GPIO_SetBits(GPIOB,led)
-#define led_hw_on(led) GPIO_ResetBits(GPIOB,led)
+#define ADC_MEAN_SIZE         4
 
+#define ADC_SAMPLING_FREQ      100
+#define ADC_OVERSAMPLING_FREQ  (ADC_SAMPLING_FREQ * ADC_MEAN_SIZE)
 
-/******************************************************************************************
-*函数名：led_hw_init()
-* 参数：void
-* 返回值：void
-* 功能：LED初始化
-*********************************************************************************************/
-void led_hw_init(void);
+#define ADC_TRIG_PRESCALE       1
+#define ADC_TRIG_PRESCALE_FREQ  (72000000 / (ADC_TRIG_PRESCALE + 1))
+#define ADC_TRIG_PERIOD         (ADC_TRIG_PRESCALE_FREQ / (ADC_OVERSAMPLING_FREQ))
+
+void ADC_DMA_IRQHandler(void);
+void ADC_StartConver(void);
+void ADC_StopConver(void);
+void adc_hw_init(void);
+
 #endif
