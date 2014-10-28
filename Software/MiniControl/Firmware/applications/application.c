@@ -66,14 +66,8 @@ static void led_thread_entry(void* parameter)
 
 void rt_init_thread_entry(void* parameter)
 {
-#ifdef RT_USING_COMPONENTS_INIT
-    /* initialization RT-Thread Components */
-    rt_components_init();
-#endif
+
   glcd_test();
-#ifdef  RT_USING_FINSH
-    finsh_set_device(RT_CONSOLE_DEVICE_NAME);
-#endif  /* RT_USING_FINSH */
 
 }
 
@@ -97,15 +91,10 @@ int rt_application_init(void)
         rt_thread_startup(&led_thread);
     }
 
-#if (RT_THREAD_PRIORITY_MAX == 32)
     init_thread = rt_thread_create("init",
                                    rt_init_thread_entry, RT_NULL,
                                    2048, 8, 20);
-#else
-    init_thread = rt_thread_create("init",
-                                   rt_init_thread_entry, RT_NULL,
-                                   2048, 80, 20);
-#endif
+
 
     if (init_thread != RT_NULL)
         rt_thread_startup(init_thread);
