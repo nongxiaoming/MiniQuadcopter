@@ -12,442 +12,456 @@
  * 2013-09-01    xiaonong       first implementation.
  */
 
-#include "drv_spi.h"
+#include "drv_nrf24l01.h"
 
-/* private rt-thread spi ops function */
-static rt_err_t configure(struct rt_spi_device* device, struct rt_spi_configuration* configuration);
-static rt_uint32_t xfer(struct rt_spi_device* device, struct rt_spi_message* message);
 
-static struct rt_spi_ops stm32_spi_ops =
-{
-    configure,
-    xfer
+/* Defines for the SPI and GPIO pins used to drive the SPI Flash */
+#define RADIO_GPIO_CS             GPIO_Pin_6
+#define RADIO_GPIO_CS_PORT        GPIOB
+#define RADIO_GPIO_CS_PERIF       RCC_APB2Periph_GPIOB
+
+
+#define RADIO_GPIO_CE             GPIO_Pin_8
+#define RADIO_GPIO_CE_PORT        GPIOB
+#define RADIO_GPIO_CE_PERIF       RCC_APB2Periph_GPIOB
+
+#define RADIO_GPIO_IRQ            GPIO_Pin_15
+#define RADIO_GPIO_IRQ_PORT       GPIOA
+#define RADIO_GPIO_IRQ_PERIF      RCC_APB2Periph_GPIOA
+#define RADIO_GPIO_IRQ_SRC_PORT   GPIO_PortSourceGPIOA
+#define RADIO_GPIO_IRQ_SRC        GPIO_PinSource15
+#define RADIO_GPIO_IRQ_LINE       EXTI_Line15
+#define RADIO_GPIO_IRQ_CHANNEL    EXTI15_10_IRQn
+
+#define RADIO_SPI                 SPI1
+#define RADIO_SPI_CLK             RCC_APB2Periph_SPI1
+#define RADIO_GPIO_SPI_PORT       GPIOB
+#define RADIO_GPIO_SPI_CLK        RCC_APB2Periph_GPIOB
+#define RADIO_GPIO_SPI_SCK        GPIO_Pin_3
+#define RADIO_GPIO_SPI_MISO       GPIO_Pin_4
+#define RADIO_GPIO_SPI_MOSI       GPIO_Pin_5
+
+#define RADIO_EN_CS()  GPIO_ResetBits(RADIO_GPIO_CS_PORT, RADIO_GPIO_CS)
+#define RADIO_DIS_CS() GPIO_SetBits(RADIO_GPIO_CS_PORT, RADIO_GPIO_CS)
+#define RADIO_DIS_CE() GPIO_ResetBits(RADIO_GPIO_CE_PORT, RADIO_GPIO_CE)
+#define RADIO_EN_CE()  GPIO_SetBits(RADIO_GPIO_CE_PORT, RADIO_GPIO_CE)
+
+#define CE_PULSE() { RADIO_EN_CE(); rt_thread_delay(1); RADIO_DIS_CE();}
+
+static  struct {
+  char dataRate;
+  char power;
+  char arc;
+  char ard;
+  char contCarrier;
+} radioConf = {
+  /*.dataRate =*/ DATA_RATE_2M,
+  /*.power =*/ RADIO_POWER_0dBm,
+  /*.arc =*/ 3,
+  /*.ard =*/ ARD_PLOAD | 32,
+  /*.contCarrier =*/ 0,
 };
+//Ack payload length by ARD step (steps of 250uS) (From nrf24l01 doc p.34)
+static const unsigned char ardStep[3][6] = { {0, 0, 8, 16, 24, 32}, //250Kps
+                                              {15, 32},              //1Mps
+                                              {5, 32},               //2Mps
+                                            };
 
-#ifdef SPI_USE_DMA
-static uint8_t dummy = 0xFF;
-static void DMA_RxConfiguration(struct stm32_spi_bus * stm32_spi_bus,
-                                const void * send_addr,
-                                void * recv_addr,
-                                rt_size_t size)
+static const unsigned char setupDataRate[] = {0x20, 0x00, 0x08};
+
+static char SPI_SendByte(char byte)
 {
-    DMA_InitTypeDef DMA_InitStructure;
 
-    /* Reset DMA Stream registers (for debug purpose) */
-    DMA_DeInit(stm32_spi_bus->DMA_Stream_RX);
-    DMA_DeInit(stm32_spi_bus->DMA_Stream_TX);
+  /* Loop while DR register in not emplty */
+  while (SPI_I2S_GetFlagStatus(RADIO_SPI, SPI_I2S_FLAG_TXE) == RESET);
 
-    /* Check if the DMA Stream is disabled before enabling it.
-       Note that this step is useful when the same Stream is used multiple times:
-       enabled, then disabled then re-enabled... In this case, the DMA Stream disable
-       will be effective only at the end of the ongoing data transfer and it will
-       not be possible to re-configure it before making sure that the Enable bit
-       has been cleared by hardware. If the Stream is used only once, this step might
-       be bypassed. */
-    while (DMA_GetCmdStatus(stm32_spi_bus->DMA_Stream_RX) != DISABLE);
-    while (DMA_GetCmdStatus(stm32_spi_bus->DMA_Stream_TX) != DISABLE);
+  /* Send byte through the SPI1 peripheral */
+  SPI_I2S_SendData(RADIO_SPI, byte);
 
-    /* Configure DMA_RX Stream */
-    DMA_Cmd(stm32_spi_bus->DMA_Stream_RX, DISABLE);
+  /* Wait to receive a byte */
+  while (SPI_I2S_GetFlagStatus(RADIO_SPI, SPI_I2S_FLAG_RXNE) == RESET);
 
-    DMA_InitStructure.DMA_Channel = stm32_spi_bus->DMA_Channel_RX;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&(stm32_spi_bus->SPI->DR));
-    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-    DMA_InitStructure.DMA_BufferSize = (uint32_t)size;
-    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-
-    if(recv_addr != RT_NULL)
-    {
-        DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) recv_addr;
-        DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    }
-    else
-    {
-        DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t) (&dummy);
-        DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
-    }
-
-    DMA_Init(stm32_spi_bus->DMA_Stream_RX, &DMA_InitStructure);
-
-    DMA_Cmd(stm32_spi_bus->DMA_Stream_RX, ENABLE);
-
-    /* Configure DMA_TX Stream */
-    DMA_Cmd(stm32_spi_bus->DMA_Stream_TX, DISABLE);
-
-    DMA_InitStructure.DMA_Channel = stm32_spi_bus->DMA_Channel_TX;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)(&(stm32_spi_bus->SPI->DR));
-    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-    DMA_InitStructure.DMA_BufferSize = (uint32_t)size;
-    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-
-    if(send_addr != RT_NULL)
-    {
-        DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)send_addr;
-        DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    }
-    else
-    {
-        dummy = 0xFF;
-        DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)(&dummy);;
-        DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
-    }
-
-    DMA_Init(stm32_spi_bus->DMA_Stream_TX, &DMA_InitStructure);
-
-    DMA_Cmd(stm32_spi_bus->DMA_Stream_TX, ENABLE);
-}
-#endif
-
-static rt_err_t configure(struct rt_spi_device* device,
-                          struct rt_spi_configuration* configuration)
-{
-    struct stm32_spi_bus * stm32_spi_bus = (struct stm32_spi_bus *)device->bus;
-    SPI_InitTypeDef SPI_InitStructure;
-
-    SPI_StructInit(&SPI_InitStructure);
-
-    /* data_width */
-    if(configuration->data_width <= 8)
-    {
-        SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
-    }
-    else if(configuration->data_width <= 16)
-    {
-        SPI_InitStructure.SPI_DataSize = SPI_DataSize_16b;
-    }
-    else
-    {
-        return RT_EIO;
-    }
-
-    /* baudrate */
-    {
-        uint32_t SPI_APB_CLOCK;
-        uint32_t stm32_spi_max_clock;
-        uint32_t max_hz;
-
-        stm32_spi_max_clock = 18000000;
-        max_hz = configuration->max_hz;
-#ifdef STM32F4XX
-        stm32_spi_max_clock = 37500000;
-#elif STM32F2XX
-        stm32_spi_max_clock = 30000000;
-#endif
-
-        if(max_hz > stm32_spi_max_clock)
-        {
-            max_hz = stm32_spi_max_clock;
-        }
-
-        SPI_APB_CLOCK = SystemCoreClock / 4;
-
-        /* STM32F2xx SPI MAX 30Mhz */
-        /* STM32F4xx SPI MAX 37.5Mhz */
-        if(max_hz >= SPI_APB_CLOCK/2 && SPI_APB_CLOCK/2 <= 30000000)
-        {
-            SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
-        }
-        else if(max_hz >= SPI_APB_CLOCK/4)
-        {
-            SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
-        }
-        else if(max_hz >= SPI_APB_CLOCK/8)
-        {
-            SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
-        }
-        else if(max_hz >= SPI_APB_CLOCK/16)
-        {
-            SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_16;
-        }
-        else if(max_hz >= SPI_APB_CLOCK/32)
-        {
-            SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
-        }
-        else if(max_hz >= SPI_APB_CLOCK/64)
-        {
-            SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_64;
-        }
-        else if(max_hz >= SPI_APB_CLOCK/128)
-        {
-            SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_128;
-        }
-        else
-        {
-            /*  min prescaler 256 */
-            SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_256;
-        }
-    } /* baudrate */
-
-    /* CPOL */
-    if(configuration->mode & RT_SPI_CPOL)
-    {
-        SPI_InitStructure.SPI_CPOL = SPI_CPOL_High;
-    }
-    else
-    {
-        SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-    }
-    /* CPHA */
-    if(configuration->mode & RT_SPI_CPHA)
-    {
-        SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
-    }
-    else
-    {
-        SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-    }
-    /* MSB or LSB */
-    if(configuration->mode & RT_SPI_MSB)
-    {
-        SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
-    }
-    else
-    {
-        SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_LSB;
-    }
-    SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
-    SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
-    SPI_InitStructure.SPI_NSS  = SPI_NSS_Soft;
-
-    /* init SPI */
-    SPI_I2S_DeInit(stm32_spi_bus->SPI);
-    SPI_Init(stm32_spi_bus->SPI, &SPI_InitStructure);
-    /* Enable SPI_MASTER */
-    SPI_Cmd(stm32_spi_bus->SPI, ENABLE);
-    SPI_CalculateCRC(stm32_spi_bus->SPI, DISABLE);
-
-    return RT_EOK;
-};
-
-static rt_uint32_t xfer(struct rt_spi_device* device, struct rt_spi_message* message)
-{
-    struct stm32_spi_bus * stm32_spi_bus = (struct stm32_spi_bus *)device->bus;
-    struct rt_spi_configuration * config = &device->config;
-    SPI_TypeDef * SPI = stm32_spi_bus->SPI;
-    struct stm32_spi_cs * stm32_spi_cs = device->parent.user_data;
-    rt_uint32_t size = message->length;
-
-    /* take CS */
-    if(message->cs_take)
-    {
-        GPIO_ResetBits(stm32_spi_cs->GPIOx, stm32_spi_cs->GPIO_Pin);
-    }
-
-#ifdef SPI_USE_DMA
-    if(message->length > 32)
-    {
-        if(config->data_width <= 8)
-        {
-            DMA_RxConfiguration(stm32_spi_bus, message->send_buf, message->recv_buf, message->length);
-//            SPI_I2S_ClearFlag(SPI, SPI_I2S_FLAG_RXNE);
-            SPI_I2S_DMACmd(SPI, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, ENABLE);
-            while (DMA_GetFlagStatus(stm32_spi_bus->DMA_Stream_RX, stm32_spi_bus->DMA_Channel_RX_FLAG_TC) == RESET
-                    || DMA_GetFlagStatus(stm32_spi_bus->DMA_Stream_TX, stm32_spi_bus->DMA_Channel_TX_FLAG_TC) == RESET);
-            SPI_I2S_DMACmd(SPI, SPI_I2S_DMAReq_Tx | SPI_I2S_DMAReq_Rx, DISABLE);
-        }
-    }
-    else
-#endif
-    {
-        if(config->data_width <= 8)
-        {
-            const rt_uint8_t * send_ptr = message->send_buf;
-            rt_uint8_t * recv_ptr = message->recv_buf;
-
-            while(size--)
-            {
-                rt_uint8_t data = 0xFF;
-
-                if(send_ptr != RT_NULL)
-                {
-                    data = *send_ptr++;
-                }
-
-                //Wait until the transmit buffer is empty
-                while (SPI_I2S_GetFlagStatus(SPI, SPI_I2S_FLAG_TXE) == RESET);
-                // Send the byte
-                SPI_I2S_SendData(SPI, data);
-
-                //Wait until a data is received
-                while (SPI_I2S_GetFlagStatus(SPI, SPI_I2S_FLAG_RXNE) == RESET);
-                // Get the received data
-                data = SPI_I2S_ReceiveData(SPI);
-
-                if(recv_ptr != RT_NULL)
-                {
-                    *recv_ptr++ = data;
-                }
-            }
-        }
-        else if(config->data_width <= 16)
-        {
-            const rt_uint16_t * send_ptr = message->send_buf;
-            rt_uint16_t * recv_ptr = message->recv_buf;
-
-            while(size--)
-            {
-                rt_uint16_t data = 0xFF;
-
-                if(send_ptr != RT_NULL)
-                {
-                    data = *send_ptr++;
-                }
-
-                //Wait until the transmit buffer is empty
-                while (SPI_I2S_GetFlagStatus(SPI, SPI_I2S_FLAG_TXE) == RESET);
-                // Send the byte
-                SPI_I2S_SendData(SPI, data);
-
-                //Wait until a data is received
-                while (SPI_I2S_GetFlagStatus(SPI, SPI_I2S_FLAG_RXNE) == RESET);
-                // Get the received data
-                data = SPI_I2S_ReceiveData(SPI);
-
-                if(recv_ptr != RT_NULL)
-                {
-                    *recv_ptr++ = data;
-                }
-            }
-        }
-    }
-
-    /* release CS */
-    if(message->cs_release)
-    {
-        GPIO_SetBits(stm32_spi_cs->GPIOx, stm32_spi_cs->GPIO_Pin);
-    }
-
-    return message->length;
-};
-
-/** \brief init and register stm32 spi bus.
- *
- * \param SPI: STM32 SPI, e.g: SPI1,SPI2,SPI3.
- * \param stm32_spi: stm32 spi bus struct.
- * \param spi_bus_name: spi bus name, e.g: "spi1"
- * \return
- *
- */
-rt_err_t stm32_spi_register(SPI_TypeDef * SPI,
-                            struct stm32_spi_bus * stm32_spi,
-                            const char * spi_bus_name)
-{
-    if(SPI == SPI1)
-    {
-    	stm32_spi->SPI = SPI1;
-#ifdef SPI_USE_DMA
-        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
-        /* DMA2_Stream0 DMA_Channel_3 : SPI1_RX */
-        /* DMA2_Stream2 DMA_Channel_3 : SPI1_RX */
-        stm32_spi->DMA_Stream_RX = DMA2_Stream0;
-        stm32_spi->DMA_Channel_RX = DMA_Channel_3;
-        stm32_spi->DMA_Channel_RX_FLAG_TC = DMA_FLAG_TCIF0;
-        /* DMA2_Stream3 DMA_Channel_3 : SPI1_TX */
-        /* DMA2_Stream5 DMA_Channel_3 : SPI1_TX */
-        stm32_spi->DMA_Stream_TX = DMA2_Stream3;
-        stm32_spi->DMA_Channel_TX = DMA_Channel_3;
-        stm32_spi->DMA_Channel_TX_FLAG_TC = DMA_FLAG_TCIF3;
-#endif
-        RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1, ENABLE);
-    }
-    else if(SPI == SPI2)
-    {
-        stm32_spi->SPI = SPI2;
-#ifdef SPI_USE_DMA
-        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
-        /* DMA1_Stream3 DMA_Channel_0 : SPI2_RX */
-        stm32_spi->DMA_Stream_RX = DMA1_Stream3;
-        stm32_spi->DMA_Channel_RX = DMA_Channel_0;
-        stm32_spi->DMA_Channel_RX_FLAG_TC = DMA_FLAG_TCIF3;
-        /* DMA1_Stream4 DMA_Channel_0 : SPI2_TX */
-        stm32_spi->DMA_Stream_TX = DMA1_Stream4;
-        stm32_spi->DMA_Channel_TX = DMA_Channel_0;
-        stm32_spi->DMA_Channel_TX_FLAG_TC = DMA_FLAG_TCIF4;
-#endif
-        RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
-    }
-    else if(SPI == SPI3)
-    {
-    	stm32_spi->SPI = SPI3;
-#ifdef SPI_USE_DMA
-        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA1, ENABLE);
-        /* DMA1_Stream2 DMA_Channel_0 : SPI3_RX */
-        stm32_spi->DMA_Stream_RX = DMA1_Stream2;
-        stm32_spi->DMA_Channel_RX = DMA_Channel_0;
-        stm32_spi->DMA_Channel_RX_FLAG_TC = DMA_FLAG_TCIF2;
-        /* DMA1_Stream5 DMA_Channel_0 : SPI3_TX */
-        stm32_spi->DMA_Stream_TX = DMA1_Stream5;
-        stm32_spi->DMA_Channel_TX = DMA_Channel_0;
-        stm32_spi->DMA_Channel_TX_FLAG_TC = DMA_FLAG_TCIF5;
-#endif
-        RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI3, ENABLE);
-    }
-    else
-    {
-        return RT_ENOSYS;
-    }
-
-    return rt_spi_bus_register(&stm32_spi->parent, spi_bus_name, &stm32_spi_ops);
+  /* Return the byte read from the SPI bus */
+  return SPI_I2S_ReceiveData(RADIO_SPI);
 }
 
-/*
-SPI1_MOSI: PA7
-SPI1_MISO: PA6
-SPI1_SCK : PA5
-
-CS0: PA4  NRF24L01
-*/
- void rt_hw_spi_init(void)
+static char SPI_ReceiveByte(void)
 {
-    /* register spi bus */
-    {
-        static struct stm32_spi_bus stm32_spi;
-        GPIO_InitTypeDef GPIO_InitStructure;
+  return SPI_SendByte(DUMMY_BYTE);
+}
 
-        RCC_APB2PeriphClockCmd( RCC_APB2Periph_GPIOA, ENABLE);
+//Nop command, permit to get the status byte
+char NRF24L01_Nop()
+{
+  char status;
+  
+  RADIO_EN_CS();
+  status = SPI_SendByte(CMD_NOP);
+  RADIO_DIS_CS();
+  
+  return status;
+}
 
-        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF_PP;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+char NRF24L01_FlushTx()
+{
+  char status;
+  
+  RADIO_EN_CS();
+  status = SPI_SendByte(CMD_FLUSH_TX);
+  RADIO_DIS_CS();
+  
+  return status;
+}
 
-        /*!< SPI SCK pin configuration */
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-        GPIO_Init(GPIOA, &GPIO_InitStructure);
+char NRF24L01_FlushRx()
+{
+  char status;
+  
+  RADIO_EN_CS();
+  status = SPI_SendByte(CMD_FLUSH_RX);
+  RADIO_DIS_CS();
+  
+  return status;
+}
 
-        stm32_spi_register(SPI1, &stm32_spi, "spi1");
-    }
+char NRF24L01_ReadReg(char addr)
+{
+  char value;
+  
+  RADIO_EN_CS();
+  SPI_SendByte(CMD_R_REG | (addr&0x1F));
+  value = SPI_ReceiveByte();
+  RADIO_DIS_CS();
+  
+  return value;
+}
 
-		 /* attach cs */
-    {
-        static struct rt_spi_device spi_device;
-        static struct stm32_spi_cs  spi_cs;
+char NRF24L01_WriteReg(char addr, char value)
+{
+  char status;
+  
+  RADIO_EN_CS();
+  status = SPI_SendByte(CMD_W_REG | (addr&0x1F));
+  SPI_SendByte(value);
+  RADIO_DIS_CS();
+  
+  return value;
+}
 
-        GPIO_InitTypeDef GPIO_InitStructure;
+// Send a packet.
+void NRF24L01_TxPacket(char *payload, char len)
+{
+  int i;
 
-        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  //Send the packet in the TX buffer
+  RADIO_EN_CS();
+  SPI_SendByte(CMD_W_TX_PAYLOAD);
+  for(i=0;i<len;i++)
+    SPI_SendByte(payload[i]);
+  RADIO_DIS_CS();
+  
+  //Pulse CE
+  CE_PULSE();
+  
+  return;
+}
 
-        /* spi10: PA4 */
-        spi_cs.GPIOx = GPIOA;
-        spi_cs.GPIO_Pin = GPIO_Pin_4;
-        GPIO_InitStructure.GPIO_Pin = spi_cs.GPIO_Pin;
-        GPIO_SetBits(spi_cs.GPIOx, spi_cs.GPIO_Pin);
-        GPIO_Init(spi_cs.GPIOx, &GPIO_InitStructure);
-        rt_spi_bus_attach_device(&spi_device, "spi10", "spi1", (void*)&spi_cs);
-    }
+//Send a packed in no-ack mode
+void NRF24L01_TxPacketNoAck(char *payload, char len)
+{
+  int i;
+
+  //Send the packet in the TX buffer
+  RADIO_EN_CS();
+  SPI_SendByte(CMD_W_PAYLOAD_NO_ACK);
+  for(i=0;i<len;i++)
+    SPI_SendByte(payload[i]);
+  RADIO_DIS_CS();
+  
+  //Pulse CE
+  CE_PULSE();
+  
+  return;
+}
+
+//Fetch the next act payload
+//Return the payload length
+char NRF24L01_RxPacket(char *payload)
+{
+  int len;
+  int i;
+
+  //Get the packet length
+  RADIO_EN_CS();
+  SPI_SendByte(CMD_RX_PL_WID);
+  len = SPI_ReceiveByte();
+  RADIO_DIS_CS();  
+  
+  if (len>0 && len<33)
+  {
+    //Read the packet from the RX buffer
+    RADIO_EN_CS();
+    SPI_SendByte(CMD_R_RX_PAYLOAD);
+    for(i=0;i<len;i++)
+      payload[i] = SPI_ReceiveByte();
+    RADIO_DIS_CS();
+  } else {
+    len=0;
+  }
+  
+  //Pulse CE
+  //CE_PULSE();
+  
+  return len;
+}
+
+//Send a packet and receive the ACK
+//Return true in case of success.
+//Polling implementation
+unsigned char NRF24L01_SendPacket(char *payload, char len, char *ackPayload, char *ackLen)
+{
+  char status = 0;
+  
+  //Send the packet
+  NRF24L01_TxPacket(payload, len);
+  //Wait for something to happen
+  while(((status=NRF24L01_Nop())&0x70) == 0);
+  
+  // Clear the flags
+  NRF24L01_WriteReg(REG_STATUS, 0x70);
+  
+  //Return FALSE if the packet has not been transmited
+  if (status&BIT_MAX_RT) {
+    NRF24L01_FlushTx();
+    return 0;
+  }
+    
+  //Receive the ackPayload if any has been received
+  if (status&BIT_RX_DR)
+    *ackLen = NRF24L01_RxPacket(ackPayload);
+  else 
+    *ackLen = 0;
+  
+  NRF24L01_FlushRx();
+  
+  return status&BIT_TX_DS;
+}
+
+//Send a packet and don't wait for the Acknoledge
+void NRF24L01_SendPacketNoAck(char *payload, char len)
+{
+  //Wait for the TX fifo not to be full
+  while((NRF24L01_Nop()&0x01) != 0);
+
+  //Send the packet
+  NRF24L01_TxPacketNoAck(payload, len);
+
+  //Nothing to wait for, the packet is 'just' sent!
+}
+
+//Raw registers update (for internal use)
+void NRF24L01_UpdateRetr()
+{
+  char ard=0;
+  unsigned char nbytes;
+  
+  if (radioConf.ard & ARD_PLOAD)
+  {
+    nbytes = ((radioConf.ard&0x7F)>32)?32:(radioConf.ard&0x7F);
+    for (ard=0; ardStep[radioConf.dataRate][ard]<nbytes; ard++)
+      continue;
+  } else
+    ard = radioConf.ard & 0x0F;
+  
+  NRF24L01_WriteReg(REG_SETUP_RETR, (ard<<4) | (radioConf.arc&0x0F)); 
+}
+
+void NRF24L01_UpdateRfSetup()
+{
+  unsigned char setup=0;
+  
+  setup = setupDataRate[radioConf.dataRate];
+  setup |= radioConf.power<<1;
+  
+  if (radioConf.contCarrier)
+    setup |= 0x90;
+  
+  NRF24L01_WriteReg(REG_RF_SETUP, setup);
+}
+
+//Set the radio channel.
+void NRF24L01_SetChannel(char channel)
+{
+  //Test the input
+  if(channel<0 || channel>125)
+    return;
+   
+  //Change the channel
+  RADIO_DIS_CE();
+  NRF24L01_WriteReg(REG_RF_CH, channel);
+  
+  //CE is continously activated if in continous carrier mode
+  if(radioConf.contCarrier)
+    RADIO_EN_CE();
+}
+
+//Set the radio datarate
+void NRF24L01_SetDataRate(unsigned char dr)
+{
+  if (dr>=3)
+    return;
+  
+  radioConf.dataRate = dr;
+  
+  NRF24L01_UpdateRfSetup();
+  NRF24L01_UpdateRetr();
+}
+
+char NRF24L01_GetDataRate()
+{
+  return radioConf.dataRate;
+}
+void NRF24L01_SetPower(char power)
+{
+  radioConf.power = power&0x03;
+  
+  NRF24L01_UpdateRfSetup();
+}
+
+void NRF24L01_SetArd(char ard)
+{
+  radioConf.ard = ard;
+  
+  NRF24L01_UpdateRetr(); 
+}
+
+void NRF24L01_SetArc(char arc)
+{
+  radioConf.arc = arc;
+  
+  NRF24L01_UpdateRetr();
+}
+
+void NRF24L01_SetContCarrier(rt_bool_t contCarrier)
+{
+  radioConf.contCarrier = contCarrier?1:0;
+  
+  RADIO_DIS_CE();
+  
+  NRF24L01_UpdateRfSetup();
+  
+  if(contCarrier)
+    RADIO_EN_CE();
+}
+//Set the TX and RX address
+void NRF24L01_SetAddress(char* address)
+{
+  int i;
+
+  RADIO_EN_CS();
+  SPI_SendByte(CMD_W_REG | REG_TX_ADDR);
+  for(i=0; i<5; i++)
+    SPI_SendByte(address[i]);
+  RADIO_DIS_CS();
+
+  RADIO_EN_CS();
+  SPI_SendByte(CMD_W_REG | REG_RX_ADDR_P0);
+  for(i=0; i<5; i++)
+    SPI_SendByte(address[i]);
+  RADIO_DIS_CS();
+}
+
+//Get the radio power detector value
+uint8_t NRF24L01_GetRpd(void)
+{
+    return NRF24L01_ReadReg(REG_RPD);
+}
+
+//Get the number of retry to send the last packet
+uint8_t NRF24L01_GetTxRetry(void)
+{
+    return NRF24L01_ReadReg(REG_OBSERVE_TX)&0x0F;
+}
+
+void rt_hw_nrf24l01_init(void)
+{
+  SPI_InitTypeDef  SPI_InitStructure;
+  EXTI_InitTypeDef EXTI_InitStructure;
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  //if (isInit==TRUE)
+   // return;
+
+  /* Enable the EXTI interrupt router */
+ // extiInit();
+
+  /* Enable SPI and GPIO clocks */
+  RCC_APB2PeriphClockCmd(RADIO_SPI_CLK | RADIO_GPIO_SPI_CLK | RADIO_GPIO_CS_PERIF | 
+                         RADIO_GPIO_CE_PERIF | RADIO_GPIO_IRQ_PERIF, ENABLE);
+	
+  /* Disable JTAG */
+  GPIO_PinRemapConfig(GPIO_Remap_SWJ_JTAGDisable , ENABLE);
+	
+	/* Remap SPI1 */
+	GPIO_PinRemapConfig(GPIO_Remap_SPI1 , ENABLE);
+  
+  /* Configure SPI pins: SCK, MISO and MOSI */
+  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_SCK |  RADIO_GPIO_SPI_MOSI | RADIO_GPIO_SPI_MISO;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
+
+  /* Configure MISO */
+  // GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_MISO;
+  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  // GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
+
+  /* Configure I/O for the Chip select */
+  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_Init(RADIO_GPIO_CS_PORT, &GPIO_InitStructure);
+
+  /* Configure the interruption (EXTI Source) */
+  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_IRQ;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
+  GPIO_Init(RADIO_GPIO_IRQ_PORT, &GPIO_InitStructure);
+
+  GPIO_EXTILineConfig(RADIO_GPIO_IRQ_SRC_PORT, RADIO_GPIO_IRQ_SRC);
+  EXTI_InitStructure.EXTI_Line = RADIO_GPIO_IRQ_LINE;
+  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+  EXTI_Init(&EXTI_InitStructure);
+
+
+  /* disable the chip select */
+  RADIO_DIS_CS();
+
+  /* Configure I/O for the Chip Enable */
+  GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CE;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_Init(RADIO_GPIO_CE_PORT, &GPIO_InitStructure);
+
+  /* disable the chip enable */
+  RADIO_DIS_CE();
+
+  /* SPI configuration */
+  SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+  SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
+  SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
+  SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
+  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
+  SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
+  SPI_InitStructure.SPI_CRCPolynomial = 7;
+  SPI_Init(RADIO_SPI, &SPI_InitStructure);
+
+  /* Enable the SPI  */
+  SPI_Cmd(RADIO_SPI, ENABLE);
+  
+  //isInit = TRUE;
 }
