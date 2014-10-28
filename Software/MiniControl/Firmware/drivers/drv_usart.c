@@ -34,6 +34,7 @@ static rt_err_t USART_Configuration(void)
     USART_InitStructure.USART_BaudRate = 115200;
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_Parity = USART_Parity_No;
+	  USART_InitStructure.USART_StopBits = USART_StopBits_1;
     USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
     USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
     USART_Init(USART1, &USART_InitStructure);
@@ -76,6 +77,7 @@ void USART1_IRQHandler(void)
 
     /* enter interrupt */
     rt_interrupt_enter();
+	
     if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
     {
  
@@ -98,7 +100,7 @@ static void GPIO_Configuration(void)
     GPIO_InitTypeDef GPIO_InitStructure;
    
 	 /* Enable UART GPIO clocks */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO | RCC_APB2Periph_GPIOA, ENABLE);
    
     /* Configure USART Rx/tx PIN */
 	  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -131,7 +133,7 @@ void rt_hw_usart_init(void)
     NVIC_Configuration();
 
 }
-#ifdef __MICROLIB
+
 #include "stdio.h"
 
 int fputc(int ch,FILE *f)
@@ -140,4 +142,4 @@ int fputc(int ch,FILE *f)
   return ch;																	   
 }
 
-#endif
+
