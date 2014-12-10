@@ -23,9 +23,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
-#include <board.h>
-#include <rtthread.h>
-#include "drv_adc.h"
+#include "board.h"
+#include "ANO_Config.h"
 
 /** @addtogroup Template_Project
   * @{
@@ -108,10 +107,26 @@ void DebugMon_Handler(void)
 {
 }
 
-void  DMA1_Channel1_IRQHandler(void)
+ARMAPI void SysTick_Handler(void)
 {
-  ADC_DMA_IRQHandler();
+	SysTick_IRQ();
 }
+
+
+ARMAPI void USART1_IRQHandler(void)
+{
+
+}
+
+/******************************************************************************/
+/*                 STM32F10x Peripherals Interrupt Handlers                   */
+/*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
+/*  available peripheral interrupt handler's name please refer to the startup */
+/*  file (startup_stm32f10x_xx.s).                                            */
+/******************************************************************************/
+
+
+
 
 /**
   * @}

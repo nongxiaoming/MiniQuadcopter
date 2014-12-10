@@ -20,10 +20,7 @@
 
 #include <board.h>
 #include <rtthread.h>
-
-#ifdef  RT_USING_COMPONENTS_INIT
-#include <components.h>
-#endif  /* RT_USING_COMPONENTS_INIT */
+#include "drv_adc.h"
 
 #ifdef RT_USING_DFS
 /* dfs filesystem:ELM filesystem init */
@@ -68,7 +65,8 @@ void rt_init_thread_entry(void* parameter)
 {
 
   glcd_test();
-
+  adc_hw_init();
+	ADC_StartConver();
 }
 
 int rt_application_init(void)
