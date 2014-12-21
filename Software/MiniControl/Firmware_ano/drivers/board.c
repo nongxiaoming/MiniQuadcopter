@@ -25,9 +25,6 @@ void ANO_Remoter_board_Init(void)
 	//初始化系统滴答定时器
 	SysTick_Config(SystemCoreClock / 1000);	
 	
-	//初始化模拟I2C
-	ANO_I2C_Soft::Init();	
-	
 	//初始化串口1
 	Uart1_Init(500000);
 	

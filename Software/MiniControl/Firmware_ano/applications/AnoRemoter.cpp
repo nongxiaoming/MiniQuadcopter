@@ -18,9 +18,6 @@ int main(void)
 	//初始化参数
 	param.Init();
 	
-	//初始化IMU（惯性测量单元）
-	imu.Init();		
-	
 	while(1)
 	{
 		ANO_Loop();

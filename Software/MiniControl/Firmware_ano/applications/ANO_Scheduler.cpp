@@ -18,11 +18,11 @@ static void ANO_Loop_1000Hz(void)	//1ms执行一次
 
 static void ANO_Loop_500Hz(void)	//2ms执行一次
 {	
-	//更新传感器数据	
-	imu.updateSensor();		
-	
-	//计算飞行器姿态
-	imu.getAttitude();	
+//	//更新传感器数据	
+//	imu.updateSensor();		
+//	
+//	//计算飞行器姿态
+//	imu.getAttitude();	
 }
 
 static void ANO_Loop_200Hz(void)	//5ms执行一次
