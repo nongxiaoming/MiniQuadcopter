@@ -84,69 +84,6 @@ void SysTick_Handler(void)
 	rt_interrupt_leave();
 }
 
-#ifdef RT_USING_SPI
-#include "stm32f20x_40x_spi.h"
-
-/*
-SPI1_MOSI: PA7
-SPI1_MISO: PA6
-SPI1_SCK : PA5
-
-CS0: PA4
-*/
-int rt_hw_spi_init(void)
-{
-    /* register spi bus */
-    {
-        static struct stm32_spi_bus stm32_spi;
-        GPIO_InitTypeDef GPIO_InitStructure;
-
-        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-
-        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_AF;
-        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-        GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-
-        /*!< SPI pin configuration */
-        GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
-        GPIO_Init(GPIOA, &GPIO_InitStructure);
-
-        /* Connect alternate function */
-        GPIO_PinAFConfig(GPIOA, GPIO_PinSource5, GPIO_AF_SPI1);
-        GPIO_PinAFConfig(GPIOA, GPIO_PinSource6, GPIO_AF_SPI1);
-        GPIO_PinAFConfig(GPIOA, GPIO_PinSource7, GPIO_AF_SPI1);
-
-        stm32_spi_register(SPI1, &stm32_spi, "spi1");
-    }
-
-    /* attach cs */
-    {
-        static struct rt_spi_device spi_device;
-        static struct stm32_spi_cs  spi_cs;
-
-        GPIO_InitTypeDef GPIO_InitStructure;
-
-        GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
-        GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-        GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
-        GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-
-        /* spi10: PA4 */
-        spi_cs.GPIOx = GPIOA;
-        spi_cs.GPIO_Pin = GPIO_Pin_4;
-        RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
-
-        GPIO_InitStructure.GPIO_Pin = spi_cs.GPIO_Pin;
-        GPIO_SetBits(spi_cs.GPIOx, spi_cs.GPIO_Pin);
-        GPIO_Init(spi_cs.GPIOx, &GPIO_InitStructure);
-
-        rt_spi_bus_attach_device(&spi_device, "spi10", "spi1", (void*)&spi_cs);
-    }
-
-    return 0;
-}
-#endif /* RT_USING_SPI */
 
 /**
  * This function will initial STM32 board.

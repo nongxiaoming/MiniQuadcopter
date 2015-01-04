@@ -20,7 +20,7 @@
  extern "C" {
 #endif /* __cplusplus */
 
-#include <stm32f2xx.h>
+#include <stm32f10x.h>
 
 /* board configuration */
 
@@ -38,7 +38,7 @@
 
 // <o> Internal SRAM memory size[Kbytes] <8-128>
 //	<i>Default: 64
-#define STM32_SRAM_SIZE         128
+#define STM32_SRAM_SIZE         64
 #define STM32_SRAM_END          (0x20000000 + STM32_SRAM_SIZE * 1024)
 
 
