@@ -1,34 +1,17 @@
+#ifndef __MPU6500_H
+#define __MPU6500_H
+#include <rtthread.h>
 
-#ifndef __STM32_EVAL_I2C_TSENSOR_CPAL_H
-#define __STM32_EVAL_I2C_TSENSOR_CPAL_H
-
-#include "drv_i2c.h"
-   
-/** 
-  * @brief  TSENSOR Status  
-  */ 
-typedef enum
-{
-  MPU6050_OK = 0,
-  MPU6050_FAIL
-}MPU6050_Status_TypDef;
-
-
-#define MPU6050_i2c                i2c1_dev   
-
-
-#define I2C_SPEED                        400000
-
-
-   
-#define MPU6050_TIMEOUT        ((uint32_t)0x3FFFF)
-
+#ifdef __cplusplus
+ extern "C" {
+#endif /* __cplusplus */
+	 
 /**
   * @brief  Internal register Memory
   */
 #define MPU6050_ADDRESS_AD0_LOW     0x68 // address pin low (GND), default for InvenSense evaluation board
 #define MPU6050_ADDRESS_AD0_HIGH    0x69 // address pin high (VCC)
-#define MPU6050_DEFAULT_ADDRESS     MPU6050_ADDRESS_AD0_LOW
+#define MPU6050_DEFAULT_ADDRESS     MPU6050_ADDRESS_AD0_HIGH
 
 #define MPU6050_RA_XG_OFFS_TC       0x00 //[7] PWR_MODE, [6:1] XG_OFFS_TC, [0] OTP_BNK_VLD
 #define MPU6050_RA_YG_OFFS_TC       0x01 //[7] PWR_MODE, [6:1] YG_OFFS_TC, [0] OTP_BNK_VLD
@@ -375,27 +358,18 @@ typedef enum
 
 #define MPU6050_WHO_AM_I_BIT        6
 #define MPU6050_WHO_AM_I_LENGTH     6
-   
 
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */ 
+typedef struct
+{
+    struct rt_i2c_bus_device *i2c_bus;
+    rt_uint16_t addr;
+} mpu6050_dev_t;
 
-void MPU6050_DeInit(void);
-void MPU6050_Config(void);
- void MPU6050_StructInit(void);
- void MPU6050_Init(void);
-int16_t MPU6050_ReadTemp(void);
-uint8_t MPU6050_ReadReg(uint8_t RegName);
-uint8_t MPU6050_WriteReg(uint8_t RegName, uint8_t RegValue);
+void rt_hw_mpu6050_init(const char *i2c_bus_name, rt_uint16_t addr);
 
-uint8_t MPU6050_ShutDown(FunctionalState NewState);
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
-void MPU6050ReadTemp(short *tempData);
-void MPU6050ReadGyro(short *gyroData);
-void MPU6050ReadData(short *accData);
-
-u8 MPU6050ReadID(void);
-
-
-#endif 
+#endif
 

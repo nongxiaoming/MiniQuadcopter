@@ -16,7 +16,11 @@
 #ifndef __BOARD_H__
 #define __BOARD_H__
 
-#include "stm32f10x.h"
+#ifdef __cplusplus
+ extern "C" {
+#endif /* __cplusplus */
+
+#include <stm32f2xx.h>
 
 /* board configuration */
 
@@ -32,16 +36,22 @@
 #define STM32_EXT_SRAM_END      0x68080000 /* the end address of external SRAM */
 // </e>
 
-// <o> Internal SRAM memory size[Kbytes] <8-64>
+// <o> Internal SRAM memory size[Kbytes] <8-128>
 //	<i>Default: 64
-#define STM32_SRAM_SIZE         64
+#define STM32_SRAM_SIZE         128
 #define STM32_SRAM_END          (0x20000000 + STM32_SRAM_SIZE * 1024)
 
-/* USART driver select. */
-#define RT_USING_UART1
-//#define RT_USING_UART2
-//#define RT_USING_UART3
 
-#endif /* __BOARD_H__ */
+#define RT_USING_UART1
+void rt_hw_board_init(void);
+void rt_hw_usart_init(void);
+int rt_hw_spi_init(void);
+uint32_t GetSysTime_us(void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif
 
 // <<< Use Configuration Wizard in Context Menu >>>
