@@ -1,7 +1,7 @@
 #include <rtthread.h>
 #include <rtdevice.h>
 #include <finsh.h>
-#include "mpu6050.h"
+#include "drv_mpu6050.h"
 
 
 static void mpu6050_write_bit(rt_device_t dev,rt_uint8_t reg, rt_uint8_t bitNum, rt_uint8_t data);
