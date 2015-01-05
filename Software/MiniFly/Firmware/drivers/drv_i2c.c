@@ -80,9 +80,7 @@ static const struct rt_i2c_bit_ops bit_ops =
 
 
 void rt_hw_i2c_init(void)
-{
-    GPIO_InitTypeDef  GPIO_InitStructure;
-	
+{	
 	GPIO_InitTypeDef  GPIO_InitStructure; 
   RCC_APB2PeriphClockCmd(RCC_I2C_SCL | RCC_I2C_SDA , ENABLE );
   GPIO_InitStructure.GPIO_Pin =  PIN_I2C_SCL;
