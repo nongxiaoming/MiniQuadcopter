@@ -41,6 +41,7 @@ static rt_uint16_t pwm_value[MOTORS_NUM_MAX];
 static rt_err_t rt_motors_init(rt_device_t dev)
 {
 
+	uint16_t PrescalerValue = 0;
 	 //Init structures
   GPIO_InitTypeDef GPIO_InitStructure;
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
@@ -82,37 +83,24 @@ static rt_err_t rt_motors_init(rt_device_t dev)
   // Configure the GPIO for the MOTO2 output
   GPIO_InitStructure.GPIO_Pin = MOTOR4_GPIO_PIN;
   GPIO_Init(MOTOR4_GPIO_PORT, &GPIO_InitStructure);
-
+ 
+  PrescalerValue = (uint16_t) (SystemCoreClock / 24000000) - 1;
   //Timer configuration
-  TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
-  TIM_TimeBaseStructure.TIM_Prescaler = MOTORS_PWM_PRESCALE;
+  TIM_TimeBaseStructure.TIM_Period = 999;
+  TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit(MOTOR1_TIM, &TIM_TimeBaseStructure);
-
-  TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
-  TIM_TimeBaseStructure.TIM_Prescaler = MOTORS_PWM_PRESCALE;
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit(MOTOR2_TIM, &TIM_TimeBaseStructure);
 	
-	 TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
-  TIM_TimeBaseStructure.TIM_Prescaler = MOTORS_PWM_PRESCALE;
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInit(MOTOR1_TIM, &TIM_TimeBaseStructure);
+  TIM_TimeBaseInit(MOTOR2_TIM, &TIM_TimeBaseStructure);
   TIM_TimeBaseInit(MOTOR3_TIM, &TIM_TimeBaseStructure);
-
-  TIM_TimeBaseStructure.TIM_Period = MOTORS_PWM_PERIOD;
-  TIM_TimeBaseStructure.TIM_Prescaler = MOTORS_PWM_PRESCALE;
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseInit(MOTOR4_TIM, &TIM_TimeBaseStructure);
 
   //PWM channels configuration (All identical!)
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = 0;
-  TIM_OCInitStructure.TIM_OCPolarity = MOTORS_POLARITY;
+  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
   TIM_OC3Init(MOTOR1_TIM, &TIM_OCInitStructure);
   TIM_OC3PreloadConfig(MOTOR1_TIM, TIM_OCPreload_Enable);
