@@ -1,6 +1,6 @@
 #ifndef __ANO_DT_H
 #define __ANO_DT_H
-#include "stm32f2xx.h"
+#include "stm32f10x.h"
 
 #include <rtthread.h>
 

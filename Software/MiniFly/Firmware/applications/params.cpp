@@ -167,10 +167,10 @@ void Params_Save(void)
     address_end = address + sizeof(params_t);
 	  
 	      /* Clear pending flags (if any) */
-    FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR |
-                    FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR|FLASH_FLAG_PGSERR);
-	 
-	  FLASH_EraseSector(PARAMS_SAVE_Sector, VoltageRange_3);
+//    FLASH_ClearFlag(FLASH_FLAG_EOP | FLASH_FLAG_OPERR | FLASH_FLAG_WRPERR |
+//                    FLASH_FLAG_PGAERR | FLASH_FLAG_PGPERR|FLASH_FLAG_PGSERR);
+//	 
+//	  FLASH_EraseSector(PARAMS_SAVE_Sector, VoltageRange_3);
 	
     while(address < address_end)
     {

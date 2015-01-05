@@ -362,7 +362,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD, USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>.;..\..\rt-thread\components\CMSIS\Include;..\..\rt-thread\components\drivers\include;..\..\rt-thread\components\finsh;..\..\rt-thread\components\init;..\..\rt-thread\include;..\..\rt-thread\libcpu\arm\common;..\..\rt-thread\libcpu\arm\cortex-m3;applications;drivers;libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;libraries\STM32F10x_StdPeriph_Driver\inc</IncludePath>
+              <IncludePath>.;..\..\rt-thread\components\CMSIS\Include;..\..\rt-thread\components\drivers\include;..\..\rt-thread\components\finsh;..\..\rt-thread\components\init;..\..\rt-thread\include;..\..\rt-thread\libcpu\arm\common;..\..\rt-thread\libcpu\arm\cortex-m3;applications;drivers;libraries\CMSIS\CM3\DeviceSupport\ST\STM32F10x;libraries\STM32F10x_StdPeriph_Driver\inc;.\Math</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -406,14 +406,64 @@
           <GroupName>Applications</GroupName>
           <Files>
             <File>
-              <FileName>application.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\application.c</FilePath>
+              <FileName>application.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\application.cpp</FilePath>
             </File>
             <File>
-              <FileName>startup.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>applications\startup.c</FilePath>
+              <FileName>commander.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\commander.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>config.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\config.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>copter.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\copter.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>filter.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\filter.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>imu.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\imu.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>params.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\params.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>pid.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\pid.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>pidctrl.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\pidctrl.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>rc.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\rc.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>sensor.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\sensor.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>startup.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\applications\startup.cpp</FilePath>
             </File>
           </Files>
         </Group>
@@ -449,6 +499,16 @@
               <FileName>drv_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\drv_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_motors.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\drv_motors.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu6050.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\drv_mpu6050.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -789,6 +849,31 @@
               <FileName>components.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\rt-thread\components\init\components.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Math</GroupName>
+          <Files>
+            <File>
+              <FileName>AMath.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Math\AMath.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Matrix3.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Math\Matrix3.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Quaternion.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Math\Quaternion.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>Vector3.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\Math\Vector3.cpp</FilePath>
             </File>
           </Files>
         </Group>

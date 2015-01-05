@@ -15,7 +15,7 @@
 #include <rthw.h>
 #include <rtthread.h>
 
-#include <stm32f2xx.h>
+#include <stm32f10x.h>
 #include "board.h"
 
 /**

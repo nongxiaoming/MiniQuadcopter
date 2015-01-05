@@ -21,26 +21,17 @@
 #include <rtthread.h>
 #include <rtdevice.h>
 #include "drv_led.h"
-#include "spi_wifi_rw009.h"
-#include "copter.h"
+
 #include "drv_motors.h"
-#include "stm32_i2c.h"
-#include "mpu6050.h"
+#include "drv_i2c.h"
+#include "drv_mpu6050.h"
+
+#include "copter.h"
 
 #ifdef RT_USING_FINSH
 #include "shell.h"
 #endif
 
-#ifdef RT_USING_LWIP
-#include <lwip/sys.h>
-#include <lwip/api.h>
-#include <netif/ethernetif.h>
-#include "tcpserver.h"
-#include "telnet.h"
-#endif
-
-extern "C" void set_if(char* netif_name, char* ip_addr, char* gw_addr, char* nm_addr);
-extern "C" int lwip_system_init(void);
 
 void rt_init_thread_entry(void* parameter)
 {
@@ -70,7 +61,6 @@ void rt_init_thread_entry(void* parameter)
  		rw009_join("rtthread_11n","rtthread_finsh");
  	}
  #endif
-	rt_tcpserver_init();
 	apps_copter_init();
 		
 	
@@ -79,8 +69,6 @@ void rt_init_thread_entry(void* parameter)
  	finsh_system_init();
  	finsh_set_device(RT_CONSOLE_DEVICE_NAME);
  #endif
-  telnet_server_init();
-	sys_led_init();
 }
 
 int rt_application_init()
