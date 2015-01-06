@@ -29,10 +29,10 @@ void pidctrl::Init()
 //÷ÿ÷√PID≤Œ ˝
 void pidctrl::PID_Reset(void)
 {
-	pid_group[PIDROLL].set_pid(70, 15, 120, 2000000);
-	pid_group[PIDPITCH].set_pid(70, 30, 120, 2000000);
-	pid_group[PIDYAW].set_pid(100, 50, 0, 2000000);
-	pid_group[PIDLEVEL].set_pid(280, 0, 0, 0);
+	pid_group[PIDROLL].set_pid(50, 10, 80, 2000000);
+	pid_group[PIDPITCH].set_pid(50, 10, 80, 2000000);
+	pid_group[PIDYAW].set_pid(80, 35, 0, 2000000);
+	pid_group[PIDLEVEL].set_pid(300, 0, 0, 0);
 	pid_group[PIDMAG].set_pid(15, 0, 0, 0);
 }
 
