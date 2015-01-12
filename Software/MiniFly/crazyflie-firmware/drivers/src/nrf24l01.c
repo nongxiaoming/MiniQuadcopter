@@ -372,11 +372,6 @@ void nrfInit(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
 
-  /* Configure MISO */
-  // GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_SPI_MISO;
-  // GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;
-  // GPIO_Init(RADIO_GPIO_SPI_PORT, &GPIO_InitStructure);
-
   /* Configure I/O for the Chip select */
   GPIO_InitStructure.GPIO_Pin = RADIO_GPIO_CS;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
