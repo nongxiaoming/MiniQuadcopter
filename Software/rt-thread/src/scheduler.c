@@ -34,6 +34,7 @@
  *                             issue found by kuronca
  * 2010-12-13     Bernard      add defunct list initialization even if not use heap.
  * 2011-05-10     Bernard      clean scheduler debug log.
+ * 2013-12-21     Grissiom     add rt_critical_level
  */
 
 #include <rtthread.h>
@@ -226,10 +227,12 @@ void rt_schedule(void)
 
             /* switch to new thread */
             RT_DEBUG_LOG(RT_DEBUG_SCHEDULER,
-                         ("[%d]switch to priority#%d thread:%s\n",
-                          rt_interrupt_nest,
-                          highest_ready_priority,
-                          to_thread->name));
+                         ("[%d]switch to priority#%d "
+                          "thread:%.*s(sp:0x%p), "
+                          "from thread:%.*s(sp: 0x%p)\n",
+                          rt_interrupt_nest, highest_ready_priority,
+                          RT_NAME_MAX, to_thread->name, to_thread->sp,
+                          RT_NAME_MAX, from_thread->name, from_thread->sp));
 
 #ifdef RT_USING_OVERFLOW_CHECK
             _rt_scheduler_stack_check(to_thread);
@@ -279,11 +282,12 @@ void rt_schedule_insert_thread(struct rt_thread *thread)
 
     /* set priority mask */
 #if RT_THREAD_PRIORITY_MAX <= 32
-    RT_DEBUG_LOG(RT_DEBUG_SCHEDULER, ("insert thread[%s], the priority: %d\n",
-                                      thread->name, thread->current_priority));
+    RT_DEBUG_LOG(RT_DEBUG_SCHEDULER, ("insert thread[%.*s], the priority: %d\n",
+                                      RT_NAME_MAX, thread->name, thread->current_priority));
 #else
     RT_DEBUG_LOG(RT_DEBUG_SCHEDULER,
-                 ("insert thread[%s], the priority: %d 0x%x %d\n",
+                 ("insert thread[%.*s], the priority: %d 0x%x %d\n",
+                  RT_NAME_MAX,
                   thread->name,
                   thread->number,
                   thread->number_mask,
@@ -316,11 +320,13 @@ void rt_schedule_remove_thread(struct rt_thread *thread)
     temp = rt_hw_interrupt_disable();
 
 #if RT_THREAD_PRIORITY_MAX <= 32
-    RT_DEBUG_LOG(RT_DEBUG_SCHEDULER, ("remove thread[%s], the priority: %d\n",
-                                      thread->name, thread->current_priority));
+    RT_DEBUG_LOG(RT_DEBUG_SCHEDULER, ("remove thread[%.*s], the priority: %d\n",
+                                      RT_NAME_MAX, thread->name,
+                                      thread->current_priority));
 #else
     RT_DEBUG_LOG(RT_DEBUG_SCHEDULER,
-                 ("remove thread[%s], the priority: %d 0x%x %d\n",
+                 ("remove thread[%.*s], the priority: %d 0x%x %d\n",
+                  RT_NAME_MAX,
                   thread->name,
                   thread->number,
                   thread->number_mask,
@@ -393,5 +399,14 @@ void rt_exit_critical(void)
     }
 }
 
+/**
+ * Get the scheduler lock level
+ *
+ * @return the level of the scheduler lock. 0 means unlocked.
+ */
+rt_uint16_t rt_critical_level(void)
+{
+    return rt_scheduler_lock_nest;
+}
 /*@}*/
 

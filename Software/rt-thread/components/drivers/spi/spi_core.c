@@ -142,7 +142,7 @@ rt_err_t rt_spi_send_then_send(struct rt_spi_device *device,
                 goto __exit;
             }
         }
-		
+
         /* send data1 */
         message.send_buf   = send_buf1;
         message.recv_buf   = RT_NULL;
@@ -150,6 +150,7 @@ rt_err_t rt_spi_send_then_send(struct rt_spi_device *device,
         message.cs_take    = 1;
         message.cs_release = 0;
         message.next       = RT_NULL;
+
         result = device->bus->ops->xfer(device, &message);
         if (result == 0)
         {
