@@ -8,6 +8,8 @@ cwd     = os.path.join(str(Dir('#')), 'drivers')
 src = Split("""
 board.c
 stm32f10x_it.c
+drv_motors.c
+drv_mpu6050.c
 drv_led.c
 drv_usart.c
 """)
@@ -15,6 +17,7 @@ drv_usart.c
 # add Ethernet drvers.
 if GetDepend('RT_USING_SPI'):
     src += ['drv_spi.c']
+    src += ['drv_nrf24l01.c']
 # add Ethernet drvers.
 if GetDepend('RT_USING_RTC'):
     src += ['drv_rtc.c']

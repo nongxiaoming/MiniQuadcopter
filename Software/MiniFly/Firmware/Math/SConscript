@@ -1,0 +1,12 @@
+Import('RTT_ROOT')
+Import('rtconfig')
+from building import *
+
+cwd     = os.path.join(str(Dir('#')), 'Math')
+src	= Glob('*.c')
+src	+= Glob('*.cpp')
+CPPPATH = [cwd, str(Dir('#'))]
+
+group = DefineGroup('Math', src, depend = [''], CPPPATH = CPPPATH)
+
+Return('group')
