@@ -43,7 +43,7 @@ extern int __bss_end;
 #define RT_USING_UART1
 void rt_hw_board_init(void);
 void rt_hw_usart_init(void);
-int rt_hw_spi_init(void);
+
 uint32_t GetSysTime_us(void);
 
 #ifdef __cplusplus

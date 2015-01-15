@@ -46,7 +46,7 @@ void led(rt_uint32_t led, rt_uint32_t value)
     /* init led configuration if it's not inited. */
     if (RT_FALSE==led_inited)
     {
-        rt_hw_led_init();
+        led_hw_init();
     }
 
     if ( led < LED_NUM )
