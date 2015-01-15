@@ -9,6 +9,7 @@ src = Split("""
 board.c
 stm32f10x_it.c
 drv_led.c
+drv_adc.c
 drv_usart.c
 drv_ssd1306.c
 """)
@@ -16,6 +17,7 @@ drv_ssd1306.c
 # add Ethernet drvers.
 if GetDepend('RT_USING_SPI'):
     src += ['drv_spi.c']
+    src += ['drv_nrf24l01.c']
 # add Ethernet drvers.
 if GetDepend('RT_USING_RTC'):
     src += ['drv_rtc.c']
