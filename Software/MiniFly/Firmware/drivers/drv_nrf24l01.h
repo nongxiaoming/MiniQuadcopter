@@ -16,7 +16,12 @@ typedef enum
  NRF24L01_MODE_TX2,
  NRF24L01_MODE_RX2,
 }nrf24l01_mode_t;
-
+typedef enum
+{
+NRF24L01_BUADRATE_250K,
+NRF24L01_BUADRATE_1M,
+NRF24L01_BUADRATE_2M,
+}nrf24l01_buadrate_t;
 rt_err_t rt_hw_nrf24l01_init(const char *spi_name, nrf24l01_mode_t mode);
 
 #ifdef __cplusplus

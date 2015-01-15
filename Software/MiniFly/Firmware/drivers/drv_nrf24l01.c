@@ -46,6 +46,14 @@
 #define CMD_W_PAYLOAD_NO_ACK    0xD0
 #define CMD_NOP                 0xFF
 
+#define VAL_RF_SETUP_250K 0x26
+#define VAL_RF_SETUP_1M   0x06
+#define VAL_RF_SETUP_2M   0x0E
+
+#define VAL_SETUP_AW_3B 1
+#define VAL_SETUP_AW_4B 2
+#define VAL_SETUP_AW_5B 3
+
 /* nRF24l01 Hardware connect
 *  nRF24l01 CE   <---> PC14
 *  nRF24l01 IRQ  <---> PA1
@@ -66,7 +74,12 @@ typedef struct
 {
   struct rt_spi_device *spi;     /* SPI device */
 	nrf24l01_mode_t mode;          /* nRF24l01 work mode */
+	 /* nrf enable */
+  void (*enable)(rt_bool_t enable);
 } nrf24l01_dev_t;
+
+static const char Tx_Address[5] = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7};
+static const char Rx_Address[5] = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7};
 
 static void RCC_Configuration(void)
 {
@@ -120,6 +133,104 @@ static void NVIC_Configuration(void)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 }
+/* Write len bytes a nRF24L register. 5 Bytes max */
+rt_inline rt_uint8_t write_registers(nrf24l01_dev_t *dev,rt_uint8_t reg, char *buffer, int len)
+{
+   rt_uint8_t command,status;
+
+  command = CMD_W_REG | (reg&0x1F);
+  	/* enable nrf24l01 */
+  dev->enable(RT_TRUE);
+	rt_spi_transfer(dev->spi,&command,&status,1);
+	/* send register value */
+	rt_spi_transfer(dev->spi, buffer, RT_NULL, len);
+	/* disable nrf24l01 */
+  dev->enable(RT_FALSE);
+	
+  return status;
+}
+
+rt_inline rt_uint8_t write_one_register(nrf24l01_dev_t *dev,rt_uint8_t reg, rt_uint8_t value)
+{
+   rt_uint8_t command,status;
+
+  command = CMD_W_REG | (reg&0x1F);
+  	/* enable nrf24l01 */
+  dev->enable(RT_TRUE);
+	rt_spi_transfer(dev->spi,&command,&status,1);
+	/* send register value */
+	rt_spi_transfer(dev->spi, &value, RT_NULL, 1);
+	/* disable nrf24l01 */
+  dev->enable(RT_FALSE);
+	
+  return status;
+}
+rt_inline rt_uint8_t flush_rx(nrf24l01_dev_t *dev)
+{
+  rt_uint8_t command,status;
+
+	command = CMD_FLUSH_RX;
+	/* enable nrf24l01 */
+  dev->enable(RT_TRUE);
+	rt_spi_transfer(dev->spi,&command,&status,1);
+	/* disable nrf24l01 */
+  dev->enable(RT_FALSE);
+
+  return status;
+}
+
+rt_inline rt_uint8_t flush_tx(nrf24l01_dev_t *dev)
+{
+  rt_uint8_t command,status;
+
+	command = CMD_FLUSH_TX;
+	/* enable nrf24l01 */
+  dev->enable(RT_TRUE);
+	rt_spi_transfer(dev->spi,&command,&status,1);
+	/* disable nrf24l01 */
+  dev->enable(RT_FALSE);
+
+  return status;
+}
+rt_inline rt_uint8_t set_address(nrf24l01_dev_t *dev,rt_uint8_t pipe, const char* address)
+{
+  int len = 5;
+ 	rt_uint8_t command,status;
+	
+  RT_ASSERT(pipe<6);
+
+  if (pipe > 1)
+    len = 1;
+
+  /* Send the write command with the address */
+	command = CMD_W_REG | ((REG_RX_ADDR_P0 + pipe)&0x1F);
+	/* enable nrf24l01 */
+  dev->enable(RT_TRUE);
+	
+	rt_spi_transfer(dev->spi,&command,&status,1);
+	/* send address */
+	rt_spi_transfer(dev->spi, address, RT_NULL, len);
+	
+	/* disable nrf24l01 */
+  dev->enable(RT_FALSE);
+
+  return status;
+}
+rt_inline void set_buadrate(nrf24l01_dev_t *dev,nrf24l01_buadrate_t buadrate)
+{
+  switch(buadrate)
+  {
+    case NRF24L01_BUADRATE_250K:
+      write_one_register(dev,REG_RF_SETUP, VAL_RF_SETUP_250K);
+      break;
+    case NRF24L01_BUADRATE_1M:
+      write_one_register(dev,REG_RF_SETUP, VAL_RF_SETUP_1M);
+      break;
+    case NRF24L01_BUADRATE_2M:
+      write_one_register(dev,REG_RF_SETUP, VAL_RF_SETUP_2M);
+      break;
+  }  
+}
 
 static rt_size_t nrf24l01_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size)
 {
@@ -139,8 +250,33 @@ static rt_size_t nrf24l01_write(rt_device_t dev, rt_off_t pos, const void *buffe
  */
 static rt_err_t nrf24l01_init(rt_device_t dev)
 {
+	 int i;
+	 nrf24l01_dev_t *nrf24l01;
+   RT_ASSERT(dev!=NULL);
+	 RT_ASSERT(dev->user_data!=RT_NULL);
+	 nrf24l01 = (nrf24l01_dev_t *) dev->user_data;
 
-	
+  //Set the radio channel
+  nrfSetChannel(configblockGetRadioChannel());
+  //Set the radio data rate
+  nrfSetDatarate(configblockGetRadioSpeed());
+  //Set radio address
+  set_address(nrf24l01, 0, Tx_Address);
+
+  //Power the radio, Enable the DS interruption, set the radio in PRX mode
+  write_one_register(nrf24l01,REG_CONFIG, 0x3F);
+  rt_thread_delay(2); //Wait for the chip to be ready
+  // Enable the dynamic payload size and the ack payload for the pipe 0
+  write_one_register(REG_FEATURE, 0x06);
+  nrfWrite1Reg(REG_DYNPD, 0x01);
+
+  //Flush RX
+  for(i=0;i<3;i++)
+    flush_rx(nrf24l01);
+  //Flush TX
+  for(i=0;i<3;i++)
+    flush_tx(nrf24l01);
+		
     return RT_EOK;
 }
 
@@ -185,7 +321,7 @@ rt_err_t rt_hw_nrf24l01_init(const char *spi_name, nrf24l01_mode_t mode)
 		}
     nrf24l01->spi = spi;
     nrf24l01->mode = mode;
-
+    
 		 /* config spi */
     spi_cfg.data_width = 8;
     spi_cfg.mode = RT_SPI_MODE_0 | RT_SPI_MSB; /* SPI Compatible: Mode 0 and Mode 3 */
@@ -211,8 +347,15 @@ rt_err_t rt_hw_nrf24l01_init(const char *spi_name, nrf24l01_mode_t mode)
     device->write       = nrf24l01_write;
     device->control     = nrf24l01_control;
     device->user_data   = nrf24l01;
-
+		
+    RCC_Configuration();
+		GPIO_Configuration();
+		EXTI_Configuration();
+		NVIC_Configuration();
+		
     rt_device_register(device, "nrf24l01", RT_DEVICE_FLAG_RDWR);
+		
+		return RT_EOK;
 }
 
 
