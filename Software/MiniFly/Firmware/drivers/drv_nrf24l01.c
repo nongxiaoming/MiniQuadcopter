@@ -192,7 +192,7 @@ rt_inline rt_uint8_t flush_tx(nrf24l01_dev_t *dev)
 
   return status;
 }
-rt_inline rt_uint8_t set_address(nrf24l01_dev_t *dev,rt_uint8_t pipe, const char* address)
+rt_inline rt_uint8_t set_rx_address(nrf24l01_dev_t *dev,rt_uint8_t pipe, const char* address)
 {
   int len = 5;
  	rt_uint8_t command,status;
@@ -204,6 +204,25 @@ rt_inline rt_uint8_t set_address(nrf24l01_dev_t *dev,rt_uint8_t pipe, const char
 
   /* Send the write command with the address */
 	command = CMD_W_REG | ((REG_RX_ADDR_P0 + pipe)&0x1F);
+	/* enable nrf24l01 */
+  dev->enable(RT_TRUE);
+	
+	rt_spi_transfer(dev->spi,&command,&status,1);
+	/* send address */
+	rt_spi_transfer(dev->spi, address, RT_NULL, len);
+	
+	/* disable nrf24l01 */
+  dev->enable(RT_FALSE);
+
+  return status;
+}
+rt_inline rt_uint8_t set_tx_address(nrf24l01_dev_t *dev, const char* address)
+{
+  int len = 5;
+ 	rt_uint8_t command,status;
+	
+  /* Send the write command with the address */
+	command = CMD_W_REG | (REG_TX_ADDR&0x1F);
 	/* enable nrf24l01 */
   dev->enable(RT_TRUE);
 	
@@ -259,16 +278,18 @@ static rt_err_t nrf24l01_init(rt_device_t dev)
   //Set the radio channel
   nrfSetChannel(configblockGetRadioChannel());
   //Set the radio data rate
-  nrfSetDatarate(configblockGetRadioSpeed());
-  //Set radio address
-  set_address(nrf24l01, 0, Tx_Address);
-
+  set_buadrate(nrf24l01,NRF24L01_BUADRATE_1M);
+  //Set radio rx address
+  set_rx_address(nrf24l01, 0, Rx_Address);
+  //Set radio rx address
+  set_tx_address(nrf24l01, Tx_Address);
+	
   //Power the radio, Enable the DS interruption, set the radio in PRX mode
   write_one_register(nrf24l01,REG_CONFIG, 0x3F);
   rt_thread_delay(2); //Wait for the chip to be ready
   // Enable the dynamic payload size and the ack payload for the pipe 0
-  write_one_register(REG_FEATURE, 0x06);
-  nrfWrite1Reg(REG_DYNPD, 0x01);
+  write_one_register(nrf24l01,REG_FEATURE, 0x06);
+  write_one_register(nrf24l01,REG_DYNPD, 0x01);
 
   //Flush RX
   for(i=0;i<3;i++)
