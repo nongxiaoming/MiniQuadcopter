@@ -378,7 +378,7 @@ SPI1_MOSI: PA7
 SPI1_MISO: PA6
 SPI1_SCK : PA5
 
-CS0: PA4  NRF24L01
+CS0: PC15  NRF24L01
 */
 int rt_hw_spi_init(void)
 {
@@ -406,12 +406,23 @@ int rt_hw_spi_init(void)
 
         GPIO_InitTypeDef GPIO_InitStructure;
 
+			   /* Enable CS GPIO clocks */
+        RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+   
+        PWR_BackupAccessCmd(ENABLE);
+        
+        RCC_LSEConfig(RCC_LSE_OFF);
+  
+        BKP_TamperPinCmd(DISABLE);   
+  
+        PWR_BackupAccessCmd(DISABLE);
+			
         GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_Out_PP;
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
-        /* spi10: PA4 */
-        spi_cs.GPIOx = GPIOA;
-        spi_cs.GPIO_Pin = GPIO_Pin_4;
+        /* spi10: PC15 */
+        spi_cs.GPIOx = GPIOC;
+        spi_cs.GPIO_Pin = GPIO_Pin_15;
         GPIO_InitStructure.GPIO_Pin = spi_cs.GPIO_Pin;
         GPIO_SetBits(spi_cs.GPIOx, spi_cs.GPIO_Pin);
         GPIO_Init(spi_cs.GPIOx, &GPIO_InitStructure);
