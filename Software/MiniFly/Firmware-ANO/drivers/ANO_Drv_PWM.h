@@ -1,20 +1,20 @@
-#ifndef __ANO_DRV_PWM_H__
-#define __ANO_DRV_PWM_H__
+#ifndef __DRV_MOTORS_H
+#define __DRV_MOTORS_H
 
-#include "board.h"
-
-#define MAXMOTORS 4
-
-class ANO_PWM
-{
-
-public:
-	static void out_Init(uint16_t hz);
-	void SetPwm(uint16_t pwm[MAXMOTORS]);
-	
-};
-
-extern ANO_PWM pwm;
+#ifdef __cplusplus
+ extern "C" {
+#endif /* __cplusplus */
+	 
+#define MOTORS_NUM_MAX    4	 
+#define MOTORS_PWM_MAX 2000
+#define MOTORS_PWM_MIN 1000	 
+	 
+void motors_hw_init(void);	 
+void motors_set_pwm(uint16_t *value);
+	 
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif
 
