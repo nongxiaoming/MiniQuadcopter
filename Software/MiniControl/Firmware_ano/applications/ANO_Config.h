@@ -6,8 +6,6 @@
 #include "ANO_DT.h"
 #include "ANO_RC.h"
 #include "ANO_Param.h"
-#include "ANO_Filter.h"
-#include "ANO_IMU.h"
 
 /*----------------------IMU--------------------*/
 #define IMU_LOOP_TIME					2000	//µ¥Î»ÎªuS

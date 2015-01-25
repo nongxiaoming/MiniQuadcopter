@@ -34,18 +34,11 @@ void ANO_RC::DataGet(void)
 
 void ANO_RC::DataCalculate(void)
 {
-	if(ano.f.STICKMODE)
-	{
-		Data[ROLL] = (u16)(1000 - DataRaw[ROLL]/2 + 1000) - DataTrim[ROLL];	
-		Data[ROLL] =	(Data[ROLL] - 1500) * 0.8 +1500;
-		Data[PITCH] = (u16)(DataRaw[PITCH]/2 + 1000) - DataTrim[PITCH];	
-		Data[PITCH] =	(Data[PITCH] - 1500) * 0.8 +1500;
-	}
-	else if(ano.f.ACCELMODE)
-	{
-		Data[ROLL] =  constrain_int16(imu.angle.x * 10, -500, +500) * 0.8 + 1500;
-		Data[PITCH] = constrain_int16(imu.angle.y * 10, -500, +500) * 0.8 + 1500;
-	}
+
+	Data[ROLL] = (u16)(1000 - DataRaw[ROLL]/2 + 1000) - DataTrim[ROLL];	
+	Data[ROLL] =	(Data[ROLL] - 1500) * 0.8 +1500;
+	Data[PITCH] = (u16)(DataRaw[PITCH]/2 + 1000) - DataTrim[PITCH];	
+	Data[PITCH] =	(Data[PITCH] - 1500) * 0.8 +1500;
 	
 	Data[YAW] = (u16)(1000 - DataRaw[YAW]/2  + 1000) - DataTrim[YAW];		
 	Data[YAW] =	(Data[YAW] - 1500) * 0.8 +1500;
