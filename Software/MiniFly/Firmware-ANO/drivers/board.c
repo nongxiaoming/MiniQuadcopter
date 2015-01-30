@@ -57,7 +57,7 @@ void ANO_Quadcopter_board_Init(void)
 	nrf.Init(MODEL_TX2,80);
 	
 	//初始化定时器输出PWM,24KHz
-	ANO_PWM::out_Init(24000);
+	motors_hw_init();
 
 	ANO_LED::Init();
 	led.ON();	

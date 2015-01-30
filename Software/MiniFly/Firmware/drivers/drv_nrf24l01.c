@@ -287,21 +287,10 @@ static rt_err_t nrf24l01_init(rt_device_t dev)
   //Power the radio, Enable the DS interruption, set the radio in PRX mode
   write_one_register(nrf24l01,REG_CONFIG, 0x3F);
   rt_thread_delay(2); //Wait for the chip to be ready
-	switch(nrf24l01->mode)
-	{
-		case NRF24L01_MODE_TX1:
-			break;
-		case NRF24L01_MODE_RX1:
-			break;
-		case NRF24L01_MODE_TX2:
-			break;
-		case NRF24L01_MODE_RX2:
-			break;
-
-	}
-	// Enable the dynamic payload size and the ack payload for the pipe 0
+  // Enable the dynamic payload size and the ack payload for the pipe 0
   write_one_register(nrf24l01,REG_FEATURE, 0x06);
   write_one_register(nrf24l01,REG_DYNPD, 0x01);
+
   //Flush RX
   for(i=0;i<3;i++)
     flush_rx(nrf24l01);
