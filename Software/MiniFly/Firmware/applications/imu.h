@@ -14,7 +14,8 @@ struct IMU
 	LPF2ndData_t Acc_lpf_2nd;
 
 	float magHold;
-
+	
+  Vector3f V_error_I;
 };
 
 void IMU_Init(void);

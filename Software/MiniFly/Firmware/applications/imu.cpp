@@ -30,7 +30,7 @@ void IMU_Init()
 	//滤波器参数初始化
 	filter_Init();
 	//传感器初始化
-	Sensor_Init("mpu6050");	
+	Sensor_Init("mpu6050",ORIENT_BOTTOM_0DEG);	
 }
 
 //更新传感器数据
@@ -108,7 +108,7 @@ static void DCM_CF(Vector3f gyro,Vector3f acc, float deltaT)
 //四元数更新姿态
 static void Quaternion_CF(Vector3f gyro,Vector3f acc, float deltaT)
 {
-	Vector3f V_gravity, V_error, V_error_I;
+	Vector3f V_gravity, V_error;
 	
 	//重力加速度归一化
 	acc.normalize();
@@ -120,10 +120,10 @@ static void Quaternion_CF(Vector3f gyro,Vector3f acc, float deltaT)
 	V_error = acc % V_gravity;
 	
 	//对误差进行积分	
-	V_error_I += V_error * Ki;
+	imu.V_error_I += V_error * Ki;
 	
 	//互补滤波，姿态误差补偿到角速度上，修正角速度积分漂移
-	imu.Gyro += V_error * Kp + V_error_I;		
+	imu.Gyro += V_error * Kp + imu.V_error_I;		
 	
 	//一阶龙格库塔法更新四元数
 	Q.Runge_Kutta_1st(imu.Gyro, deltaT);
