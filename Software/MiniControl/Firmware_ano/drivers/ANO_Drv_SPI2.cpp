@@ -9,6 +9,9 @@
 #include "board.h"
 #include "ANO_Drv_SPI2.h"
 
+#define SPI2_Pin_SCK		GPIO_Pin_13
+#define SPI2_Pin_MISO		GPIO_Pin_14
+#define SPI2_Pin_MOSI		GPIO_Pin_15
 
 void ANO_SPI2::Init(void)
 {

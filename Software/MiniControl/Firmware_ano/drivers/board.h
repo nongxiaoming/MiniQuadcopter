@@ -17,9 +17,7 @@
 /***************SPI2 GPIO∂®“Â******************/
 #define ANO_GPIO_SPI2		GPIOB
 #define ANO_GPIO_CE2		GPIOB
-#define SPI2_Pin_SCK		GPIO_Pin_13
-#define SPI2_Pin_MISO		GPIO_Pin_14
-#define SPI2_Pin_MOSI		GPIO_Pin_15
+
 #define SPI2_Pin_CE2		GPIO_Pin_5
 #define SPI2_Pin_CSN		GPIO_Pin_12
 #define RCC_GPIO_SPI2		RCC_APB2Periph_GPIOB
