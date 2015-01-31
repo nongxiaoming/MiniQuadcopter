@@ -1,7 +1,7 @@
 #include <rtthread.h>
 #include "params.h"
 #include "sensor.h"
-#include "drv_mpu6050.h"
+#include "mpu6050.h"
 
 struct Sensor  sensor;
 
@@ -14,7 +14,7 @@ static	void Sensor_CalOffsetAcc(void);
 	//陀螺仪零偏矫正
 static	void Sensor_CalOffsetGyro(void);
 //MPU6050初始化，传入参数：采样率，低通滤波频率
-void Sensor_Init(const char *dev_name)
+void Sensor_Init(const char *dev_name,Orientation_t orient)
 {
 	//uint8_t default_filter;
   mpu6050 = rt_device_find(dev_name);
@@ -24,27 +24,94 @@ void Sensor_Init(const char *dev_name)
 	 return ;
 	}
 	rt_device_open(mpu6050,RT_DEVICE_FLAG_RDWR);
+	sensor.orientation = orient;
 }
 
 //读取加速度和角速度
 void Sensor_ReadData(void)
 {
-	int16_t acc_temp[3];
-	int16_t gyro_temp[3];
+	//int16_t acc_temp[3];
+	Vector3i accel_data,gyro_data;
+	//int16_t gyro_temp[3];
 	rt_device_read(mpu6050,MPU6050_RA_ACCEL_XOUT_H,mpu6050_buffer,sizeof(mpu6050_buffer));
     
 	//MPU6050_ReadData(mpu6050_buffer);
+	switch (sensor.orientation) {
+		case ORIENT_TOP_0DEG:
+			accel_data.y = (int16_t)(mpu6050_buffer[IDX_ACCEL_XOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_XOUT_L]);
+			accel_data.x = (int16_t)(mpu6050_buffer[IDX_ACCEL_YOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_YOUT_L]);
+			gyro_data.y  = (int16_t)(mpu6050_buffer[IDX_GYRO_XOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_XOUT_L]);
+			gyro_data.x  = (int16_t)(mpu6050_buffer[IDX_GYRO_YOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_YOUT_L]);
+			gyro_data.z  = - (int16_t)(mpu6050_buffer[IDX_GYRO_ZOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_ZOUT_L]);
+			accel_data.z = - (int16_t)(mpu6050_buffer[IDX_ACCEL_ZOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_ZOUT_L]);
+			break;
+		case ORIENT_TOP_90DEG:
+			accel_data.y = - (int16_t)(mpu6050_buffer[IDX_ACCEL_YOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_YOUT_L]);
+			accel_data.x = (int16_t)(mpu6050_buffer[IDX_ACCEL_XOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_XOUT_L]);
+			gyro_data.y  = - (int16_t)(mpu6050_buffer[IDX_GYRO_YOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_YOUT_L]);
+			gyro_data.x  = (int16_t)(mpu6050_buffer[IDX_GYRO_XOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_XOUT_L]);
+			gyro_data.z  = - (int16_t)(mpu6050_buffer[IDX_GYRO_ZOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_ZOUT_L]);
+			accel_data.z = - (int16_t)(mpu6050_buffer[IDX_ACCEL_ZOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_ZOUT_L]);
+			break;
+		case ORIENT_TOP_180DEG:
+			accel_data.y = - (int16_t)(mpu6050_buffer[IDX_ACCEL_XOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_XOUT_L]);
+			accel_data.x = - (int16_t)(mpu6050_buffer[IDX_ACCEL_YOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_YOUT_L]);
+			gyro_data.y  = - (int16_t)(mpu6050_buffer[IDX_GYRO_XOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_XOUT_L]);
+			gyro_data.x  = - (int16_t)(mpu6050_buffer[IDX_GYRO_YOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_YOUT_L]);
+			gyro_data.z  = - (int16_t)(mpu6050_buffer[IDX_GYRO_ZOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_ZOUT_L]);
+			accel_data.z = - (int16_t)(mpu6050_buffer[IDX_ACCEL_ZOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_ZOUT_L]);
+			break;
+		case ORIENT_TOP_270DEG:
+			accel_data.y = (int16_t)(mpu6050_buffer[IDX_ACCEL_YOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_YOUT_L]);
+			accel_data.x = - (int16_t)(mpu6050_buffer[IDX_ACCEL_XOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_XOUT_L]);
+			gyro_data.y  = (int16_t)(mpu6050_buffer[IDX_GYRO_YOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_YOUT_L]);
+			gyro_data.x  = - (int16_t)(mpu6050_buffer[IDX_GYRO_XOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_XOUT_L]);
+			gyro_data.z  = - (int16_t)(mpu6050_buffer[IDX_GYRO_ZOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_ZOUT_L]);
+			accel_data.z = - (int16_t)(mpu6050_buffer[IDX_ACCEL_ZOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_ZOUT_L]);
+			break;
+		case ORIENT_BOTTOM_0DEG:
+			accel_data.y = - (int16_t)(mpu6050_buffer[IDX_ACCEL_XOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_XOUT_L]);
+			accel_data.x = (int16_t)(mpu6050_buffer[IDX_ACCEL_YOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_YOUT_L]);
+			gyro_data.y  = - (int16_t)(mpu6050_buffer[IDX_GYRO_XOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_XOUT_L]);
+			gyro_data.x  = (int16_t)(mpu6050_buffer[IDX_GYRO_YOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_YOUT_L]);
+			gyro_data.z  = (int16_t)(mpu6050_buffer[IDX_GYRO_ZOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_ZOUT_L]);
+			accel_data.z = (int16_t)(mpu6050_buffer[IDX_ACCEL_ZOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_ZOUT_L]);
+			break;
+		case ORIENT_BOTTOM_90DEG:
+			accel_data.y = (int16_t)(mpu6050_buffer[IDX_ACCEL_YOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_YOUT_L]);
+			accel_data.x = (int16_t)(mpu6050_buffer[IDX_ACCEL_XOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_XOUT_L]);
+			gyro_data.y  = (int16_t)(mpu6050_buffer[IDX_GYRO_YOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_YOUT_L]);
+			gyro_data.x  = (int16_t)(mpu6050_buffer[IDX_GYRO_XOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_XOUT_L]);
+			gyro_data.z  = (int16_t)(mpu6050_buffer[IDX_GYRO_ZOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_ZOUT_L]);
+			accel_data.z = (int16_t)(mpu6050_buffer[IDX_ACCEL_ZOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_ZOUT_L]);
+			break;
+		case ORIENT_BOTTOM_180DEG:
+			accel_data.y = (int16_t)(mpu6050_buffer[IDX_ACCEL_XOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_XOUT_L]);
+			accel_data.x = - (int16_t)(mpu6050_buffer[IDX_ACCEL_YOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_YOUT_L]);
+			gyro_data.y  = (int16_t)(mpu6050_buffer[IDX_GYRO_XOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_XOUT_L]);
+			gyro_data.x  = - (int16_t)(mpu6050_buffer[IDX_GYRO_YOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_YOUT_L]);
+			gyro_data.z  = (int16_t)(mpu6050_buffer[IDX_GYRO_ZOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_ZOUT_L]);
+			accel_data.z = (int16_t)(mpu6050_buffer[IDX_ACCEL_ZOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_ZOUT_L]);
+			break;
+		case ORIENT_BOTTOM_270DEG:
+			accel_data.y = - (int16_t)(mpu6050_buffer[IDX_ACCEL_YOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_YOUT_L]);
+			accel_data.x = - (int16_t)(mpu6050_buffer[IDX_ACCEL_XOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_XOUT_L]);
+			gyro_data.y  = - (int16_t)(mpu6050_buffer[IDX_GYRO_YOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_YOUT_L]);
+			gyro_data.x  = - (int16_t)(mpu6050_buffer[IDX_GYRO_XOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_XOUT_L]);
+			gyro_data.z  = (int16_t)(mpu6050_buffer[IDX_GYRO_ZOUT_H] << 8 | mpu6050_buffer[IDX_GYRO_ZOUT_L]);
+			accel_data.z = (int16_t)(mpu6050_buffer[IDX_ACCEL_ZOUT_H] << 8 | mpu6050_buffer[IDX_ACCEL_ZOUT_L]);
+			break;
+		}
+	accel_data.x = accel_data.x - sensor.Acc_Offset.x;  //加速度X轴
+	accel_data.y = accel_data.y - sensor.Acc_Offset.y;  //加速度Y轴
+	accel_data.z = accel_data.z - sensor.Acc_Offset.z;  //加速度Z轴
 	
-	acc_temp[0] = ((((int16_t)mpu6050_buffer[0]) << 8) | mpu6050_buffer[1])- sensor.Acc_Offset.x;  //加速度X轴
-	acc_temp[1] = ((((int16_t)mpu6050_buffer[2]) << 8) | mpu6050_buffer[3])- sensor.Acc_Offset.y;  //加速度Y轴
-	acc_temp[2] = ((((int16_t)mpu6050_buffer[4]) << 8) | mpu6050_buffer[5])- sensor.Acc_Offset.z;  //加速度Z轴
-	
-	gyro_temp[0] = ((((int16_t)mpu6050_buffer[8]) << 8) | mpu6050_buffer[9])- sensor.Gyro_Offset.x;  //加速度X轴
-	gyro_temp[1] = ((((int16_t)mpu6050_buffer[10]) << 8) | mpu6050_buffer[11])- sensor.Gyro_Offset.y;  //加速度Y轴
-	gyro_temp[2] = ((((int16_t)mpu6050_buffer[12]) << 8) | mpu6050_buffer[13])- sensor.Gyro_Offset.z;  //加速度Z轴
+	gyro_data.x = gyro_data.x - sensor.Gyro_Offset.x;  //加速度X轴
+	gyro_data.y = gyro_data.y - sensor.Gyro_Offset.y;  //加速度Y轴
+	gyro_data.z = gyro_data.z - sensor.Gyro_Offset.z;  //加速度Z轴
 
- Acc_ADC((float)acc_temp[0],(float)acc_temp[1],(float)acc_temp[2]);
- Gyro_ADC((float)gyro_temp[0],(float)gyro_temp[1],(float)gyro_temp[2]);
+ Acc_ADC((float)accel_data.x,(float)accel_data.y,(float)accel_data.z);
+ Gyro_ADC((float)gyro_data.x,(float)gyro_data.y,(float)gyro_data.z);
 	Sensor_CalOffsetGyro();
 	Sensor_CalOffsetAcc();
 }
