@@ -30,7 +30,7 @@ void IMU_Init()
 	//滤波器参数初始化
 	filter_Init();
 	//传感器初始化
-	Sensor_Init("mpu6050",ORIENT_BOTTOM_0DEG);	
+	Sensor_Init("mpu6050",ORIENT_TOP_0DEG);	
 }
 
 //更新传感器数据
