@@ -8,11 +8,6 @@
 
 #define ARMAPI extern "C"
 
-/***************LED GPIO定义******************/
-#define ANO_RCC_LED			RCC_APB2Periph_GPIOC
-#define ANO_GPIO_LED		GPIOC
-#define ANO_Pin_LED			GPIO_Pin_13
-/*********************************************/
 
 /***************SPI2 GPIO定义******************/
 #define ANO_GPIO_SPI2		GPIOB
@@ -34,7 +29,7 @@
 #include "ANO_Drv_ADC.h"
 #include "ANO_Drv_SPI2.h"
 #include "ANO_Drv_Nrf24l01.h"
-#include "ANO_Drv_EEPROM.h"
+#include "ANO_Drv_EEPROM.h"u
 
 void ANO_Remoter_board_Init(void);
 void SysTick_IRQ(void);
