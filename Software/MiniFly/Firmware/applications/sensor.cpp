@@ -1,7 +1,7 @@
 #include <rtthread.h>
 #include "params.h"
 #include "sensor.h"
-#include "mpu6050.h"
+#include "drv_mpu6050.h"
 
 struct Sensor  sensor;
 
